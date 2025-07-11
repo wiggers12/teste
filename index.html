@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Espaço Tai Botelho - Sistema</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: #fff0f5;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #ab47bc;
+      color: white;
+      padding: 15px 20px;
+      font-size: 1.5em;
+      text-align: center;
+    }
+    nav {
+      display: flex;
+      gap: 10px;
+      background: #ce93d8;
+      padding: 10px 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    nav button {
+      background: #7b1fa2;
+      border: none;
+      padding: 10px 15px;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    nav button:hover {
+      background: #4a148c;
+    }
+    section {
+      padding: 20px;
+      flex-grow: 1;
+      max-width: 900px;
+      margin: 0 auto 40px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    h3 {
+      margin-top: 0;
+      color: #6a1b9a;
+    }
+    .form-group {
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+    }
+    .form-group label {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 8px;
+      font-size: 1em;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #7b1fa2;
+      border: none;
+      color: white;
+      padding: 10px 16px;
+      font-size: 1em;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #4a148c;
+    }
+    .busca input {
+      padding: 8px;
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 12px;
+      font-size: 1em;
+    }
+    .item {
+      background: #fce4ec;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      box-shadow: 1px 1px 5px rgba(123,31,162,0.2);
+    }
+    .item strong {
+      color: #6a1b9a;
+      font-size: 1.1em;
+    }
+    .item small {
+      color: #7b1fa2;
+      font-style: italic;
+    }
+    .item button {
+      margin-right: 8px;
+      font-size: 0.9em;
+      padding: 6px 12px;
+    }
+    ul {
+      padding-left: 20px;
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+    /* Dashboard cards */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+      gap: 20px;
+      margin-top: 10px;
+    }
+    .dash-card {
+      background: #ab47bc;
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(123,31,162,0.4);
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+    #graficoFinanceiro {
+      max-width: 100%;
+      height: 300px;
+      margin-top: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(123,31,162,0.3);
+      background: white;
+    }
+    /* Responsive */
+    @media(max-width:600px){
+      nav {
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<header>Espaço Tai Botelho - Sistema</header>
+
+<nav>
+  <button onclick="abrirSecao('dashboardSection')">Dashboard</button>
+  <button onclick="abrirSecao('clientesSection')">Clientes</button>
+  <button onclick="abrirSecao('profissionaisSection')">Profissionais</button>
+  <button onclick="abrirSecao('produtosSection')">Produtos</button>
+  <button onclick="abrirSecao('agendamentosSection')">Agendamentos</button>
+  <button onclick="abrirSecao('financeiroSection')">Financeiro</button>
+  <button onclick="abrirSecao('backupSection')">Backup / Restauração</button>
+</nav>
+
+<!-- Dashboard -->
+<section id="dashboardSection" style="display:none;">
+  <h3>Dashboard</h3>
+  <div class="dashboard-grid">
+    <div class="dash-card">Clientes: <span id="dashTotalClientes">0</span></div>
+    <div class="dash-card">Profissionais: <span id="dashTotalProfissionais">0</span></div>
+    <div class="dash-card">Produtos em Estoque: <span id="dashTotalProdutos">0</span></div>
+    <div class="dash-card">Agendamentos Pendentes: <span id="dashTotalAgendamentos">0</span></div>
+    <div class="dash-card">Caixa Atual: R$ <span id="dashCaixaAtual">0,00</span></div>
+  </div>
+  <canvas id="graficoFinanceiro"></canvas>
+</section>
+
+<!-- Clientes -->
+<section id="clientesSection" style="display:none;">
+  <h3>Clientes</h3>
+  <div class="form-group">
+    <label for="nomeCliente">Nome:</label>
+    <input type="text" id="nomeCliente" />
+  </div>
+  <div class="form-group">
+    <label for="telefoneCliente">Telefone:</label>
+    <input type="tel" id="telefoneCliente" />
+  </div>
+  <div class="form-group">
+    <label for="emailCliente">Email:</label>
+    <input type="email" id="emailCliente" />
+  </div>
+  <div class="form-group">
+    <label for="obsCliente">Observações:</label>
+    <textarea id="obsCliente" rows="3"></textarea>
+  </div>
+  <button onclick="salvarCliente()">Salvar Cliente</button>
+
+  <div class="busca" style="margin-top: 20px;">
+    <input type="text" id="buscaCliente" placeholder="Buscar cliente..." oninput="listarClientes()" />
+  </div>
+  <div id="listaClientes"></div>
+</section>
+
+<!-- Profissionais -->
+<section id="profissionaisSection" style="display:none;">
+  <h3>Profissionais</h3>
+  <div class="form-group">
+    <label for="nomeProf">Nome:</label>
+    <input type="text" id="nomeProf" />
+  </div>
+  <div class="form-group">
+    <label for="espProf">Profissão:</label>
+    <input type="text" id="espProf" placeholder="Ex: Cabeleireira, Manicure..." />
+  </div>
+  <div class="form-group">
+    <label for="servicoProf">Serviço:</label>
+    <input type="text" id="servicoProf" placeholder="Nome do serviço" />
+  </div>
+  <button onclick="salvarProfissional()">Salvar Profissional</button>
+
+  <div class="busca" style="margin-top:10px;">
+    <input type="text" id="buscaProfissional" placeholder="Buscar profissional..." oninput="listarProfissionais()" />
+  </div>
+  <div id="listaProfissionais"></div>
+</section>
+
+<!-- Produtos -->
+<section id="produtosSection" style="display:none;">
+  <h3>Produtos</h3>
+  <div class="form-group">
+    <label for="nomeProduto">Nome:</label>
+    <input type="text" id="nomeProduto" />
+  </div>
+  <div class="form-group">
+    <label for="tipoProduto">Tipo:</label>
+    <input type="text" id="tipoProduto" placeholder="Ex: Shampoo, Creme..." />
+  </div>
+  <div class="form-group">
+    <label for="quantidadeProduto">Quantidade:</label>
+    <input type="number" id="quantidadeProduto" min="0" />
+  </div>
+  <div class="form-group">
+    <label for="minQuantidadeProduto">Quantidade Mínima para Alerta:</label>
+    <input type="number" id="minQuantidadeProduto" min="0" />
+  </div>
+  <div class="form-group">
+    <label for="validadeProduto">Validade:</label>
+    <input type="date" id="validadeProduto" />
+  </div>
+  <button onclick="salvarProduto()">Salvar Produto</button>
+
+  <div class="busca" style="margin-top:10px;">
+    <input type="text" id="buscaProduto" placeholder="Buscar produto..." oninput="listarProdutos()" />
+  </div>
+  <div id="listaProdutos"></div>
+
+  <h4>Produtos em Falta</h4>
+  <div id="produtosEmFalta"></div>
+
+  <h4>Uso de Produtos</h4>
+  <select id="selectProdutoUso"></select>
+  <input type="number" id="quantidadeUso" placeholder="Quantidade usada" min="1" />
+  <button onclick="usarProduto()">Usar Produto</button>
+
+  <h4>Histórico de Movimentações</h4>
+  <div id="historicoMovimentacoes"></div>
+</section>
+
+<!-- Agendamentos -->
+<section id="agendamentosSection" style="display:none;">
+  <h3>Agendamentos</h3>
+  <div class="form-group">
+    <label for="selectClienteAgendamento">Cliente:</label>
+    <select id="selectClienteAgendamento"></select>
+  </div>
+  <div class="form-group">
+    <label for="selectProfissionalAgendamento">Profissional:</label>
+    <select id="selectProfissionalAgendamento" onchange="atualizarServicosProfissional()"></select>
+  </div>
+  <div class="form-group">
+    <label for="selectServicoAgendamento">Serviço:</label>
+    <select id="selectServicoAgendamento"></select>
+  </div>
+  <div class="form-group">
+    <label for="dataAgendamento">Data:</label>
+    <input type="date" id="dataAgendamento" />
+  </div>
+  <div class="form-group">
+    <label for="horaAgendamento">Hora:</label>
+    <input type="time" id="horaAgendamento" />
+  </div>
+  <button onclick="salvarAgendamento()">Salvar Agendamento</button>
+
+  <div class="busca" style="margin-top:20px;">
+    <input type="text" id="buscaAgendamento" placeholder="Buscar por nome do cliente..." oninput="listarAgendamentos()" />
+  </div>
+  <div class="flex-row" style="gap:10px; margin: 10px 0;">
+    <label>
+      <input type="checkbox" id="filtroPendentes" checked onchange="listarAgendamentos()" />
+      Mostrar apenas pendentes
+    </label>
+    <label style="flex-grow:1;">
+      Filtrar por data:
+      <input type="date" id="filtroData" onchange="listarAgendamentos()" />
+    </label>
+    <button onclick="limparFiltrosAgendamento()">Limpar filtros</button>
+  </div>
+
+  <div id="listaAgendamentos"></div>
+</section>
+
+<!-- Financeiro -->
+<section id="financeiroSection" style="display:none;">
+  <h3>Financeiro</h3>
+
+  <div class="form-group">
+    <label for="caixaInicial">Caixa Inicial (R$):</label>
+    <input type="number" id="caixaInicial" min="0" step="0.01" />
+    <button onclick="salvarCaixaInicial()">Salvar Caixa Inicial</button>
+  </div>
+
+  <h4>Ganhos (Agendamentos realizados)</h4>
+  <div id="listaGanhos" style="max-height: 150px; overflow-y: auto; background: #fce4ec; padding: 10px; border-radius: 12px;"></div>
+
+  <h4>Gastos</h4>
+  <div class="form-group">
+    <label for="descricaoGasto">Descrição:</label>
+    <input type="text" id="descricaoGasto" />
+  </div>
+  <div class="form-group">
+    <label for="valorGasto">Valor (R$):</label>
+    <input type="number" id="valorGasto" min="0" step="0.01" />
+  </div>
+  <div class="form-group">
+    <label for="dataGasto">Data:</label>
+    <input type="date" id="dataGasto" />
+  </div>
+  <button onclick="salvarGasto()">Salvar Gasto</button>
+
+  <h4>Lista de Gastos</h4>
+  <div id="listaGastos" style="max-height: 150px; overflow-y: auto; background: #fce4ec; padding: 10px; border-radius: 12px;"></div>
+
+  <h4>Resumo Financeiro Mensal</h4>
+  <p><strong>Caixa Atual:</strong> R$ <span id="caixaAtual">0,00</span></p>
+  <p><strong>Ganhos Totais:</strong> R$ <span id="ganhosTotais">0,00</span></p>
+  <p><strong>Gastos Totais:</strong> R$ <span id="gastosTotais">0,00</span></p>
+  <p><strong>Lucro Total:</strong> R$ <span id="lucroTotal">0,00</span></p>
+</section>
+
+<!-- Backup / Restore -->
+<section id="backupSection" style="display:none;">
+  <h3>Backup e Restauração de Dados</h3>
+  <button onclick="exportarDados()">Exportar Dados (Backup)</button>
+  <button onclick="document.getElementById('inputImport').click()">Importar Dados</button>
+  <input type="file" id="inputImport" accept="application/json" style="display:none" onchange="importarDados(event)" />
+</section>
+
+<script>
+  // Dados em memória
+  let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
+  let profissionais = JSON.parse(localStorage.getItem("profissionais")) || [];
+  let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
+  let agendamentos = JSON.parse(localStorage.getItem("agendamentos")) || [];
+  let gastos = JSON.parse(localStorage.getItem("gastos")) || [];
+  let caixaInicial = parseFloat(localStorage.getItem("caixaInicial")) || 0;
+
+  let clienteEditando = null;
+  let profissionalEditando = null;
+  let produtoEditando = null;
+  let agendamentoEditando = null;
+
+  // ================== NAVEGAÇÃO ======================
+  function abrirSecao(id) {
+    const secoes = [
+      "dashboardSection",
+      "clientesSection",
+      "profissionaisSection",
+      "produtosSection",
+      "agendamentosSection",
+      "financeiroSection",
+      "backupSection"
+    ];
+    secoes.forEach(s => {
+      document.getElementById(s).style.display = s === id ? "block" : "none";
+    });
+
+    if(id === "clientesSection") listarClientes();
+    if(id === "profissionaisSection") listarProfissionais();
+    if(id === "produtosSection") {
+      listarProdutos();
+      carregarSelectProdutoUso();
+    }
+    if(id === "agendamentosSection") {
+      listarAgendamentos();
+      carregarSelectClienteAgendamento();
+      carregarSelectProfissionalAgendamento();
+    }
+    if(id === "financeiroSection") carregarFinanceiro();
+    if(id === "dashboardSection") {
+      atualizarDashboard();
+      desenharGraficoFinanceiro();
+    }
+  }
+
+  abrirSecao("dashboardSection");
+
+  // ================== CLIENTES ======================
+  function salvarCliente() {
+    const nome = document.getElementById("nomeCliente").value.trim();
+    const telefone = document.getElementById("telefoneCliente").value.trim();
+    const email = document.getElementById("emailCliente").value.trim();
+    const obs = document.getElementById("obsCliente").value.trim();
+
+    if (!nome) {
+      alert("Nome é obrigatório.");
+      return;
+    }
+
+    const dados = { nome, telefone, email, obs };
+
+    if (clienteEditando !== null) {
+      clientes[clienteEditando] = dados;
+      clienteEditando = null;
+    } else {
+      clientes.push(dados);
+    }
+
+    localStorage.setItem("clientes", JSON.stringify(clientes));
+    listarClientes();
+    limparCamposCliente();
+    atualizarDashboard();
+  }
+
+  function limparCamposCliente() {
+    document.getElementById("nomeCliente").value = "";
+    document.getElementById("telefoneCliente").value = "";
+    document.getElementById("emailCliente").value = "";
+    document.getElementById("obsCliente").value = "";
+  }
+
+  function listarClientes() {
+    const busca = document.getElementById("buscaCliente").value.toLowerCase();
+    const lista = document.getElementById("listaClientes");
+    lista.innerHTML = "";
+    clientes.forEach((c, i) => {
+      if (!c.nome.toLowerCase().includes(busca)) return;
+      lista.innerHTML += `
+        <div class="item">
+          <strong>${c.nome}</strong><br>
+          <small>Telefone: ${c.telefone || "-"}</small><br>
+          <small>Email: ${c.email || "-"}</small><br>
+          <small>Obs: ${c.obs || "-"}</small><br>
+          <button class="editar" onclick="editarCliente(${i})">Editar</button>
+          <button class="excluir" onclick="excluirCliente(${i})">Excluir</button>
+        </div>`;
+    });
+  }
+
+  function editarCliente(i) {
+    const c = clientes[i];
+    document.getElementById("nomeCliente").value = c.nome;
+    document.getElementById("telefoneCliente").value = c.telefone;
+    document.getElementById("emailCliente").value = c.email;
+    document.getElementById("obsCliente").value = c.obs;
+    clienteEditando = i;
+  }
+
+  function excluirCliente(i) {
+    if (confirm("Excluir cliente?")) {
+      clientes.splice(i, 1);
+      localStorage.setItem("clientes", JSON.stringify(clientes));
+      listarClientes();
+      atualizarDashboard();
+    }
+  }
+
+  // ================== PROFISSIONAIS ======================
+  function salvarProfissional() {
+    const nome = document.getElementById("nomeProf").value.trim();
+    const profissao = document.getElementById("espProf").value.trim();
+    const servicoNome = document.getElementById("servicoProf").value.trim();
+
+    if (!nome || !profissao || !servicoNome) {
+      alert("Preencha todos os campos corretamente.");
+      return;
+    }
+
+    const servicos = [{ nome: servicoNome }];
+
+    const dados = { nome, profissao, servicos };
+
+    if (profissionalEditando !== null) {
+      profissionais[profissionalEditando] = dados;
+      profissionalEditando = null;
+    } else {
+      profissionais.push(dados);
+    }
+    localStorage.setItem("profissionais", JSON.stringify(profissionais));
+    listarProfissionais();
+    limparCamposProfissional();
+    atualizarDashboard();
+  }
+
+  function limparCamposProfissional() {
+    document.getElementById("nomeProf").value = "";
+    document.getElementById("espProf").value = "";
+    document.getElementById("servicoProf").value = "";
+  }
+
+  function listarProfissionais() {
+    const busca = document.getElementById("buscaProfissional").value.toLowerCase();
+    const lista = document.getElementById("listaProfissionais");
+    lista.innerHTML = "";
+    profissionais.forEach((p, i) => {
+      if (!p.nome.toLowerCase().includes(busca) && !p.profissao.toLowerCase().includes(busca)) return;
+
+      let servicosHTML = p.servicos.map(s => `<li>${s.nome}</li>`).join("");
+      lista.innerHTML += `
+        <div class="item">
+          <strong>${p.nome}</strong> <small>(${p.profissao})</small>
+          <ul>${servicosHTML}</ul>
+          <button class="editar" onclick="editarProfissional(${i})">Editar</button>
+          <button class="excluir" onclick="excluirProfissional(${i})">Excluir</button>
+        </div>`;
+    });
+  }
+
+  function editarProfissional(i) {
+    const p = profissionais[i];
+    document.getElementById("nomeProf").value = p.nome;
+    document.getElementById("espProf").value = p.profissao;
+    document.getElementById("servicoProf").value = p.servicos[0]?.nome || "";
+    profissionalEditando = i;
+  }
+
+  function excluirProfissional(i) {
+    if (confirm("Excluir profissional?")) {
+      profissionais.splice(i, 1);
+      localStorage.setItem("profissionais", JSON.stringify(profissionais));
+      listarProfissionais();
+      atualizarDashboard();
+    }
+  }
+
+  // ================== PRODUTOS ======================
+  function salvarProduto() {
+    const nome = document.getElementById("nomeProduto").value.trim();
+    const tipo = document.getElementById("tipoProduto").value.trim();
+    const quantidade = parseInt(document.getElementById("quantidadeProduto").value);
+    const minQuantidade = parseInt(document.getElementById("minQuantidadeProduto").value);
+    const validade = document.getElementById("validadeProduto").value;
+
+    if (!nome || !tipo || isNaN(quantidade) || isNaN(minQuantidade)) {
+      alert("Preencha todos os campos corretamente.");
+      return;
+    }
+
+    const dados = { nome, tipo, quantidade, minQuantidade, validade, historico: [] };
+
+    if (produtoEditando !== null) {
+      dados.historico = produtos[produtoEditando].historico || [];
+      produtos[produtoEditando] = dados;
+      produtoEditando = null;
+    } else {
+      produtos.push(dados);
+    }
+    localStorage.setItem("produtos", JSON.stringify(produtos));
+    listarProdutos();
+    carregarSelectProdutoUso();
+    limparCamposProduto();
+    atualizarDashboard();
+  }
+
+  function limparCamposProduto() {
+    document.getElementById("nomeProduto").value = "";
+    document.getElementById("tipoProduto").value = "";
+    document.getElementById("quantidadeProduto").value = "";
+    document.getElementById("minQuantidadeProduto").value = "";
+    document.getElementById("validadeProduto").value = "";
+  }
+
+  function listarProdutos() {
+    const busca = document.getElementById("buscaProduto").value.toLowerCase();
+    const lista = document.getElementById("listaProdutos");
+    const falta = document.getElementById("produtosEmFalta");
+    lista.innerHTML = "";
+    falta.innerHTML = "";
+
+    produtos.forEach((p, i) => {
+      if (!p.nome.toLowerCase().includes(busca) && !p.tipo.toLowerCase().includes(busca)) return;
+
+      lista.innerHTML += `
+        <div class="item">
+          <strong>${p.nome}</strong> (${p.tipo})<br>
+          Quantidade: ${p.quantidade}<br>
+          Quantidade Mínima para alerta: ${p.minQuantidade}<br>
+          Validade: ${p.validade || '-'}<br>
+          <button class="editar" onclick="editarProduto(${i})">Editar</button>
+          <button class="excluir" onclick="excluirProduto(${i})">Excluir</button>
+        </div>`;
+
+      if (p.quantidade <= p.minQuantidade) {
+        falta.innerHTML += `<div class="item">${p.nome} (${p.tipo}) - Quantidade: ${p.quantidade}</div>`;
+      }
+    });
+  }
+
+  function editarProduto(i) {
+    const p = produtos[i];
+    document.getElementById("nomeProduto").value = p.nome;
+    document.getElementById("tipoProduto").value = p.tipo;
+    document.getElementById("quantidadeProduto").value = p.quantidade;
+    document.getElementById("minQuantidadeProduto").value = p.minQuantidade;
+    document.getElementById("validadeProduto").value = p.validade || "";
+    produtoEditando = i;
+  }
+
+  function excluirProduto(i) {
+    if (confirm("Excluir produto?")) {
+      produtos.splice(i, 1);
+      localStorage.setItem("produtos", JSON.stringify(produtos));
+      listarProdutos();
+      carregarSelectProdutoUso();
+      atualizarDashboard();
+    }
+  }
+
+  function carregarSelectProdutoUso() {
+    const select = document.getElementById("selectProdutoUso");
+    select.innerHTML = "";
+    produtos.forEach((p, i) => {
+      select.innerHTML += `<option value="${i}">${p.nome} (${p.tipo}) - Estoque: ${p.quantidade}</option>`;
+    });
+  }
+
+  function usarProduto() {
+    const select = document.getElementById("selectProdutoUso");
+    const index = parseInt(select.value);
+    const qtdUso = parseInt(document.getElementById("quantidadeUso").value);
+
+    if (isNaN(index) || isNaN(qtdUso) || qtdUso <= 0) {
+      alert("Selecione um produto e informe uma quantidade válida.");
+      return;
+    }
+
+    if (produtos[index].quantidade < qtdUso) {
+      alert("Quantidade insuficiente no estoque.");
+      return;
+    }
+
+    produtos[index].quantidade -= qtdUso;
+    const hoje = new Date().toISOString().slice(0,10);
+    produtos[index].historico.push({ tipo: "Uso", quantidade: qtdUso, data: hoje });
+
+    localStorage.setItem("produtos", JSON.stringify(produtos));
+    listarProdutos();
+    carregarSelectProdutoUso();
+    listarHistoricoMovimentacoes();
+    atualizarDashboard();
+  }
+
+  function listarHistoricoMovimentacoes() {
+    const div = document.getElementById("historicoMovimentacoes");
+    div.innerHTML = "";
+    produtos.forEach(p => {
+      p.historico.forEach(h => {
+        div.innerHTML += `<div>${p.nome} - ${h.tipo} - Qtd: ${h.quantidade} - Data: ${h.data}</div>`;
+      });
+    });
+  }
+
+  // ================== AGENDAMENTOS ======================
+  function carregarSelectClienteAgendamento() {
+    const select = document.getElementById("selectClienteAgendamento");
+    select.innerHTML = "<option value=''>-- Selecione --</option>";
+    clientes.forEach((c, i) => {
+      select.innerHTML += `<option value="${i}">${c.nome}</option>`;
+    });
+  }
+
+  function carregarSelectProfissionalAgendamento() {
+    const select = document.getElementById("selectProfissionalAgendamento");
+    select.innerHTML = "<option value=''>-- Selecione --</option>";
+    profissionais.forEach((p, i) => {
+      select.innerHTML += `<option value="${i}">${p.nome} (${p.profissao})</option>`;
+    });
+    atualizarServicosProfissional();
+  }
+
+  function atualizarServicosProfissional() {
+    const profIndex = parseInt(document.getElementById("selectProfissionalAgendamento").value);
+    const selectServico = document.getElementById("selectServicoAgendamento");
+    selectServico.innerHTML = "<option value=''>-- Selecione --</option>";
+    if (isNaN(profIndex) || profIndex < 0 || profIndex >= profissionais.length) return;
+    profissionais[profIndex].servicos.forEach((s, i) => {
+      selectServico.innerHTML += `<option value="${i}">${s.nome}</option>`;
+    });
+  }
+
+  function salvarAgendamento() {
+    const clienteIndex = parseInt(document.getElementById("selectClienteAgendamento").value);
+    const profIndex = parseInt(document.getElementById("selectProfissionalAgendamento").value);
+    const servIndex = parseInt(document.getElementById("selectServicoAgendamento").value);
+    const data = document.getElementById("dataAgendamento").value;
+    const hora = document.getElementById("horaAgendamento").value;
+
+    if (isNaN(clienteIndex) || isNaN(profIndex) || isNaN(servIndex) || !data || !hora) {
+      return alert("Preencha todos os campos corretamente.");
+    }
+
+    const agendamento = {
+      clienteIndex,
+      profIndex,
+      servIndex,
+      data,
+      hora,
+      status: "Pendente"
+    };
+
+    agendamentos.push(agendamento);
+    localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
+    listarAgendamentos();
+    atualizarDashboard();
+    carregarFinanceiro();
+  }
+
+  function listarAgendamentos() {
+    const busca = document.getElementById("buscaAgendamento").value.toLowerCase();
+    const filtroPendentes = document.getElementById("filtroPendentes").checked;
+    const filtroData = document.getElementById("filtroData").value;
+
+    const lista = document.getElementById("listaAgendamentos");
+    lista.innerHTML = "";
+
+    agendamentos.forEach((a, i) => {
+      const clienteNome = clientes[a.clienteIndex]?.nome || "";
+      if (!clienteNome.toLowerCase().includes(busca)) return;
+
+      if (filtroPendentes && a.status !== "Pendente") return;
+      if (filtroData && a.data !== filtroData) return;
+
+      const profissional = profissionais[a.profIndex];
+      const servico = profissional?.servicos[a.servIndex];
+
+      lista.innerHTML += `
+      <div class="item">
+        <strong>${clienteNome}</strong> - ${a.data} ${a.hora} <br>
+        Profissional: ${profissional?.nome || "N/A"} (${profissional?.profissao || "-"})<br>
+        Serviço: ${servico?.nome || "N/A"}<br>
+        Status: ${a.status}
+        <button class="editar" onclick="editarAgendamento(${i})">Editar</button>
+        <button class="excluir" onclick="excluirAgendamento(${i})">Excluir</button>
+        <button onclick="alterarStatusAgendamento(${i})">${a.status === 'Pendente' ? 'Concluir' : 'Reabrir'}</button>
+      </div>`;
+    });
+  }
+
+  function editarAgendamento(i) {
+    const a = agendamentos[i];
+    document.getElementById("selectClienteAgendamento").value = a.clienteIndex;
+    document.getElementById("selectProfissionalAgendamento").value = a.profIndex;
+    atualizarServicosProfissional();
+    document.getElementById("selectServicoAgendamento").value = a.servIndex;
+    document.getElementById("dataAgendamento").value = a.data;
+    document.getElementById("horaAgendamento").value = a.hora;
+
+    // Remover o antigo e editar após salvar
+    agendamentos.splice(i, 1);
+    localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
+    listarAgendamentos();
+  }
+
+  function excluirAgendamento(i) {
+    if (confirm("Excluir agendamento?")) {
+      agendamentos.splice(i, 1);
+      localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
+      listarAgendamentos();
+      atualizarDashboard();
+      carregarFinanceiro();
+    }
+  }
+
+  function alterarStatusAgendamento(i) {
+    if (agendamentos[i].status === "Pendente") {
+      agendamentos[i].status = "Concluído";
+    } else {
+      agendamentos[i].status = "Pendente";
+    }
+    localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
+    listarAgendamentos();
+    carregarFinanceiro();
+    atualizarDashboard();
+  }
+
+  function limparFiltrosAgendamento() {
+    document.getElementById("buscaAgendamento").value = "";
+    document.getElementById("filtroPendentes").checked = true;
+    document.getElementById("filtroData").value = "";
+    listarAgendamentos();
+  }
+
+  // ================== FINANCEIRO ======================
+  function salvarCaixaInicial() {
+    const valor = parseFloat(document.getElementById("caixaInicial").value);
+    if (isNaN(valor) || valor < 0) return alert("Valor inválido.");
+    caixaInicial = valor;
+    localStorage.setItem("caixaInicial", caixaInicial);
+    alert("Caixa inicial salvo.");
+    atualizarDashboard();
+    carregarFinanceiro();
+  }
+
+  function carregarFinanceiro() {
+    // Ganhos = soma dos agendamentos concluídos
+    let ganhos = 0;
+    let ganhosHTML = "";
+    agendamentos.forEach(a => {
+      if (a.status === "Concluído") {
+        const prof = profissionais[a.profIndex];
+        const serv = prof?.servicos[a.servIndex];
+        if (serv) {
+          ganhos += 0 + 0 + serv.valor || 0; // Aqui não usamos valor, mas para manter caso tenha no futuro
+          const clienteNome = clientes[a.clienteIndex]?.nome || "N/A";
+          ganhosHTML += `<div>${clienteNome} - Serviço: ${serv.nome}</div>`;
+        }
+      }
+    });
+    document.getElementById("listaGanhos").innerHTML = ganhosHTML;
+
+    // Gastos
+    let gastosTotal = 0;
+    let gastosHTML = "";
+    gastos.forEach(g => {
+      gastosTotal += g.valor;
+      gastosHTML += `<div>${g.data} - ${g.descricao} - R$ ${g.valor.toFixed(2)}</div>`;
+    });
+    document.getElementById("listaGastos").innerHTML = gastosHTML;
+
+    document.getElementById("caixaAtual").textContent = caixaInicial.toFixed(2);
+    document.getElementById("ganhosTotais").textContent = ganhos.toFixed(2);
+    document.getElementById("gastosTotais").textContent = gastosTotal.toFixed(2);
+    document.getElementById("lucroTotal").textContent = (caixaInicial + ganhos - gastosTotal).toFixed(2);
+  }
+
+  function salvarGasto() {
+    const descricao = document.getElementById("descricaoGasto").value.trim();
+    const valor = parseFloat(document.getElementById("valorGasto").value);
+    const data = document.getElementById("dataGasto").value;
+
+    if (!descricao || isNaN(valor) || valor <= 0 || !data) {
+      alert("Preencha todos os campos corretamente.");
+      return;
+    }
+
+    gastos.push({ descricao, valor, data });
+    localStorage.setItem("gastos", JSON.stringify(gastos));
+
+    document.getElementById("descricaoGasto").value = "";
+    document.getElementById("valorGasto").value = "";
+    document.getElementById("dataGasto").value = "";
+
+    carregarFinanceiro();
+    atualizarDashboard();
+  }
+
+  // ================== DASHBOARD ======================
+  function atualizarDashboard() {
+    document.getElementById("dashTotalClientes").textContent = clientes.length;
+    document.getElementById("dashTotalProfissionais").textContent = profissionais.length;
+    document.getElementById("dashTotalProdutos").textContent = produtos.reduce((acc, p) => acc + p.quantidade, 0);
+    document.getElementById("dashTotalAgendamentos").textContent = agendamentos.filter(a => a.status === "Pendente").length;
+    const ganhos = agendamentos.reduce((acc, a) => {
+      if (a.status === "Concluído") {
+        const prof = profissionais[a.profIndex];
+        const serv = prof?.servicos[a.servIndex];
+        return acc + (serv?.valor || 0);
+      }
+      return acc;
+    }, 0);
+    const gastosTotal = gastos.reduce((acc, g) => acc + g.valor, 0);
+    const caixaAtual = caixaInicial + ganhos - gastosTotal;
+    document.getElementById("dashCaixaAtual").textContent = caixaAtual.toFixed(2);
+  }
+
+  function desenharGraficoFinanceiro() {
+    const ctx = document.getElementById('graficoFinanceiro').getContext('2d');
+
+    // Preparar dados mensais
+    const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+    const ganhosMensais = new Array(12).fill(0);
+    const gastosMensais = new Array(12).fill(0);
+
+    const hoje = new Date();
+    const anoAtual = hoje.getFullYear();
+
+    agendamentos.forEach(a => {
+      if (a.status === "Concluído") {
+        const data = new Date(a.data);
+        if (data.getFullYear() === anoAtual) {
+          ganhosMensais[data.getMonth()] += 1; // contagem simples, não valor pois serviço não tem valor
+        }
+      }
+    });
+
+    gastos.forEach(g => {
+      const data = new Date(g.data);
+      if (data.getFullYear() === anoAtual) {
+        gastosMensais[data.getMonth()] += g.valor;
+      }
+    });
+
+    if(window.grafico) {
+      window.grafico.destroy();
+    }
+
+    window.grafico = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: meses,
+        datasets: [
+          {
+            label: 'Ganhos (Qtd serviços concluídos)',
+            backgroundColor: 'rgba(123,31,162,0.7)',
+            data: ganhosMensais,
+          },
+          {
+            label: 'Gastos (R$)',
+            backgroundColor: 'rgba(186,104,200,0.7)',
+            data: gastosMensais,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  }
+
+  // ================== BACKUP / RESTAURAÇÃO ======================
+  function exportarDados() {
+    const dados = {
+      clientes, profissionais, produtos, agendamentos, gastos, caixaInicial
+    };
+    const json = JSON.stringify(dados, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "backup_espaco_tai_botelho.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function importarDados(event) {
+    const arquivo = event.target.files[0];
+    if (!arquivo) return;
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const dados = JSON.parse(e.target.result);
+        if (dados.clientes && dados.profissionais && dados.produtos && dados.agendamentos && dados.gastos !== undefined) {
+          clientes = dados.clientes;
+          profissionais = dados.profissionais;
+          produtos = dados.produtos;
+          agendamentos = dados.agendamentos;
+          gastos = dados.gastos;
+          caixaInicial = dados.caixaInicial || 0;
+
+          localStorage.setItem("clientes", JSON.stringify(clientes));
+          localStorage.setItem("profissionais", JSON.stringify(profissionais));
+          localStorage.setItem("produtos", JSON.stringify(produtos));
+          localStorage.setItem("agendamentos", JSON.stringify(agendamentos));
+          localStorage.setItem("gastos", JSON.stringify(gastos));
+          localStorage.setItem("caixaInicial", caixaInicial);
+
+          alert("Dados importados com sucesso!");
+          abrirSecao("dashboardSection");
+        } else {
+          alert("Arquivo inválido ou corrompido.");
+        }
+      } catch {
+        alert("Erro ao ler o arquivo.");
+      }
+    };
+    reader.readAsText(arquivo);
+  }
+</script>
+
+</body>
+</html>
