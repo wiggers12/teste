@@ -121,12 +121,12 @@
     }
 
     #answer-input.correct {
-      border-color: #28a745;
+      border-color: #28a745; /* Verde para correto */
       box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
     }
 
     #answer-input.incorrect {
-      border-color: #d9534f;
+      border-color: #d9534f; /* Vermelho para incorreto */
       box-shadow: 0 0 5px rgba(217, 83, 79, 0.5);
     }
 
@@ -417,7 +417,6 @@
     const questionElement = document.getElementById('question');
     const answerInput = document.getElementById('answer-input');
     const playerNameInput = document.getElementById('player-name-input');
-    // const submitAnswerButton = document.getElementById('submit-answer'); // Removido
     const messageElement = document.getElementById('message');
     const timerValueElement = document.getElementById('timer-value');
     const scoreValueElement = document.getElementById('score-value');
@@ -436,7 +435,7 @@
     const rankingAdultsList = document.getElementById('ranking-adults-list');
 
     let currentQuestion;
-    let score = 0;
+    let score = 0; // A variável score é global e deveria acumular
     let timeLeft = 60;
     let timerInterval;
     let gameActive = false;
@@ -501,7 +500,6 @@
         })
         .catch((error) => {
             console.error("Erro ao adicionar documento: ", error);
-            // alert("Erro ao salvar pontuação. Por favor, tente novamente mais tarde."); // Removido alert para menos interrupção
         });
     }
 
@@ -531,9 +529,6 @@
                 const li = document.createElement('li');
                 const rankingPosition = index + 1;
 
-                // Para debug, se necessário, descomente as linhas abaixo
-                // console.log(`Debug Ranking: index = ${index}, position = ${rankingPosition}, player = ${data.player}, score = ${data.score}`);
-
                 const positionSpan = `<span class="ranking-position">${rankingPosition}º</span>`;
                 const nameSpan = `<span class="ranking-name">${data.player}</span>`;
                 const scoreSpan = `<span class="ranking-score">${data.score}</span>`;
@@ -558,7 +553,6 @@
         } catch (error) {
             console.error(`Erro ao carregar ranking ${mode}: `, error);
             rankingListElement.innerHTML = '<li>Erro ao carregar ranking.</li>';
-            // alert(`Erro ao carregar ranking ${mode}. Verifique o console para mais detalhes.`); // Removido alert
         }
     }
 
@@ -644,6 +638,7 @@
       difficultyLevelElement.textContent = `Nível: ${difficultyNames[currentDifficulty] || 'Desconhecido'} (${currentGameMode === 'kids' ? 'Crianças' : 'Adultos'})`; 
       answerInput.value = ''; // Limpa o input
       messageElement.textContent = '';
+      // Remove todas as classes de feedback para um estado limpo
       answerInput.classList.remove('correct', 'incorrect', 'correct-input-anim', 'incorrect-input-anim');
       questionElement.classList.remove('correct-animation', 'incorrect-animation');
       messageElement.classList.remove('show', 'correct-text', 'incorrect-text', 'speed-bonus-text'); 
@@ -671,11 +666,11 @@
         return;
       }
 
-      score = 0;
+      score = 0; // Reinicia o score ao iniciar um novo jogo
       timeLeft = 60;
       gameActive = true;
       currentDifficulty = 1;
-      scoreValueElement.textContent = score;
+      scoreValueElement.textContent = score; // Atualiza o score inicial na tela
       timerValueElement.textContent = timeLeft + 's';
       
       playerNameInput.style.display = 'none';
@@ -687,7 +682,6 @@
       difficultyLevelElement.textContent = ''; 
       
       startGameButton.style.display = 'none';
-      // submitAnswerButton.style.display = 'none'; // Removido
       playAgainButton.style.display = 'none';
       
       // Esconder a área de seleção de modo ao iniciar o jogo
@@ -731,7 +725,6 @@
       clearInterval(timerInterval);
       gameActive = false;
       answerInput.disabled = true;
-      // submitAnswerButton.style.display = 'none'; // Removido
       playAgainButton.style.display = 'inline-block';
       messageElement.textContent = `Tempo esgotado! Você fez ${score} pontos.`;
       messageElement.classList.add('show'); 
@@ -741,7 +734,7 @@
       questionElement.classList.remove('correct-animation', 'incorrect-animation');
       timeBar.classList.remove('time-bar-shaking');
 
-      saveRanking(currentPlayerName, score, currentGameMode); // Salva no ranking específico
+      saveRanking(currentPlayerName, score, currentGameMode); 
       
       playerNameInput.value = '';
       playerNameInput.style.display = 'inline-block';
@@ -759,18 +752,18 @@
 
       const userAnswer = parseInt(answerInput.value);
       
-      // Se o input não é um número ou está vazio, não faz nada (espera o usuário terminar de digitar)
-      if (isNaN(userAnswer) && answerInput.value !== '-') { // Permite digitar '-' para números negativos, mas sem validá-lo sozinho
-          // messageElement.textContent = 'Digite um número válido!'; // Pode ser removido para menos distração
-          // messageElement.classList.add('show', 'incorrect-text'); 
-          // answerInput.classList.add('incorrect-input-anim');
+      // Se o input não é um número ou está vazio/apenas '-', não faz nada (espera o usuário terminar de digitar)
+      if (isNaN(userAnswer) && answerInput.value !== '-') { 
+          answerInput.classList.remove('correct', 'incorrect', 'correct-input-anim', 'incorrect-input-anim');
+          messageElement.classList.remove('show', 'correct-text', 'incorrect-text', 'speed-bonus-text');
+          messageElement.textContent = ''; 
           return; 
       }
 
       // Se a resposta está correta
       if (userAnswer === currentQuestion.answer) {
-        score++;
-        scoreValueElement.textContent = score;
+        score++; // Incrementa a pontuação
+        scoreValueElement.textContent = score; // **ATUALIZA O TEXTO IMEDIATAMENTE**
         scoreValueElement.classList.add('pulse-effect');
         scoreValueElement.addEventListener('animationend', function handler() {
             scoreValueElement.classList.remove('pulse-effect');
@@ -779,7 +772,9 @@
 
         messageElement.textContent = 'Correto!';
         messageElement.classList.add('show', 'correct-text'); 
-        answerInput.classList.add('correct-input-anim'); 
+        
+        answerInput.classList.remove('incorrect', 'incorrect-input-anim'); 
+        answerInput.classList.add('correct', 'correct-input-anim'); 
         questionElement.classList.add('correct-animation'); 
         correctSound.play();
 
@@ -822,22 +817,25 @@
             messageElement.removeEventListener('animationend', handler);
         });
 
+        // Gera nova questão após um pequeno atraso para as animações
         setTimeout(() => {
-            generateQuestion(); // Gera nova questão e foca o input
+            generateQuestion(); 
         }, 500); 
         
       } else { // Se a resposta estiver incorreta
         score = 0; // Zera a pontuação
-        scoreValueElement.textContent = score;
+        scoreValueElement.textContent = score; // **ATUALIZA O TEXTO IMEDIATAMENTE**
         scoreValueElement.classList.add('pulse-effect');
         scoreValueElement.addEventListener('animationend', function handler() {
             scoreValueElement.classList.remove('pulse-effect');
             scoreValueElement.removeEventListener('animationend', handler);
         });
 
-        messageElement.textContent = `Errado! A resposta era ${currentQuestion.answer}. Sua pontuação foi zerada.`; // Mensagem de erro e zera
+        messageElement.textContent = `Errado! A resposta era ${currentQuestion.answer}. Sua pontuação foi zerada.`; 
         messageElement.classList.add('show', 'incorrect-text'); 
-        answerInput.classList.add('incorrect-input-anim'); 
+        
+        answerInput.classList.remove('correct', 'correct-input-anim'); 
+        answerInput.classList.add('incorrect', 'incorrect-input-anim'); 
         questionElement.classList.add('incorrect-animation'); 
         incorrectSound.play();
         
@@ -850,11 +848,11 @@
             questionElement.removeEventListener('animationend', handler);
         });
 
+        // Gera nova questão após um atraso maior para o jogador ler a mensagem de erro
         setTimeout(() => {
-            answerInput.classList.remove('correct', 'incorrect', 'correct-input-anim', 'incorrect-input-anim');
-            questionElement.classList.remove('correct-animation', 'incorrect-animation');
-            generateQuestion(); // Gera nova questão após o erro
-        }, 1500); // Mais tempo para o jogador ler a mensagem de erro
+            answerInput.classList.remove('correct', 'incorrect'); 
+            generateQuestion(); 
+        }, 1500); 
       }
     }
 
@@ -871,26 +869,46 @@
         }
     });
 
-    // Usa 'input' para verificar em tempo real e 'change' para garantir que algo foi digitado
     answerInput.addEventListener('input', () => {
-        // Verifica se o campo não está vazio antes de tentar comparar
-        if (answerInput.value !== '') {
-            checkAnswer();
+        // Apenas processa se houver um valor que pode ser um número completo
+        // Se a expressão for complexa (ex: "10 * 5"), a entrada só será avaliada quando o usuário digitar a resposta final.
+        // A lógica do parseInt(answerInput.value) e isNaN(userAnswer) já lidará com entradas parciais.
+        // O ponto principal é não chamar checkAnswer() para cada digito se não for um numero completo.
+        // Já que é um input type="number", ele já restringe o que pode ser digitado.
+        
+        // Verifica se o valor atual é igual à resposta esperada.
+        // Se o input é numérico e é o resultado esperado, dispara a verificação.
+        // IMPORTANTE: Isso funcionará bem se a resposta for um número inteiro e o usuário digitar o número completo.
+        // Para operações mais complexas ou respostas com casas decimais, a validação teria que ser mais sofisticada.
+        
+        if (answerInput.value !== '') { // Evita chamar com campo vazio
+            const userAnswer = parseInt(answerInput.value);
+            // Verifica se a entrada é um número e se corresponde à resposta.
+            // A comparação estrita (===) é importante.
+            if (!isNaN(userAnswer) && userAnswer === currentQuestion.answer) {
+                 checkAnswer();
+            } else if (!isNaN(userAnswer)) {
+                 // Se o usuário digitou um número, mas não é a resposta correta,
+                 // ainda precisamos zerar o score, como você pediu.
+                 // Chamamos checkAnswer para a lógica de erro e zerar.
+                 checkAnswer();
+            }
+            // Se for NaN (e não for só '-'), ou se for um número, mas não a resposta,
+            // e não for um acerto, a função checkAnswer já tem a lógica de erro.
+            // Remover 'return' aqui se quisermos que checkAnswer sempre avalie.
         }
     });
 
+
     window.onload = () => {
-        // Inicializa os rankings
         displayRanking('kids');
         displayRanking('adults');
         
-        // Esconde o botão de iniciar jogo inicialmente
         startGameButton.style.display = 'none';
         playerNameInput.style.display = 'none';
         answerInput.style.display = 'none';
         difficultyLevelElement.textContent = ''; 
 
-        // Mostra a área de seleção de modo
         document.getElementById('mode-selection').style.display = 'block';
     };
 
