@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TraderPro</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+    }
+
+    input {
+      background: #fff;
+      color: #000;
+    }
+
+    button {
+      background: #0ea5e9;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0284c7;
+    }
+
+    #acoes div {
+      margin-bottom: 20px;
+      background: #334155;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="telaLogin">
+    <h1>TraderPro</h1>
+    <input type="text" id="nome" placeholder="Nome (cadastro)">
+    <input type="text" id="pix" placeholder="Chave Pix (cadastro)">
+    <input type="email" id="email" placeholder="E-mail">
+    <input type="password" id="senha" placeholder="Senha">
+    <div id="erro"></div>
+    <button onclick="login()">Entrar</button>
+    <button onclick="cadastro()">Cadastrar</button>
+  </div>
+
+  <div class="container" id="telaDashboard" style="display: none;">
+    <h2>Bem-vindo, <span id="userNome">...</span></h2>
+    <p>Saldo: R$ <span id="saldo">...</span></p>
+    <button onclick="mostrarSimulador()">Iniciar Simulação</button>
+    <button onclick="mostrarPix()">Depositar via Pix</button>
+    <button onclick="mostrarRanking()">Ver Ranking</button>
+    <button onclick="logout()">Sair</button>
+  </div>
+
+  <div class="container" id="telaJogo" style="display: none;">
+    <h2>Simulação de Investimentos</h2>
+    <p>Tempo restante: <span id="timer">180</span> segundos</p>
+    <div id="acoes"></div>
+    <button onclick="sairParaDashboard()">Sair</button>
+  </div>
+
+  <div class="container" id="telaPix" style="display: none;">
+    <h2>Depósito via Pix</h2>
+    <p>Chave Pix: <strong>SEU_PIX_AQUI</strong></p>
+    <p>Após o pagamento, envie o comprovante abaixo:</p>
+    <input type="file" id="comprovante" />
+    <button onclick="enviarComprovante()">Enviar Comprovante</button>
+    <br/><br/>
+    <button onclick="voltar()">Voltar</button>
+  </div>
+
+  <div class="container" id="telaRanking" style="display: none;">
+    <h2>Ranking Semanal</h2>
+    <ol id="rankingList"></ol>
+    <button onclick="voltar()">Voltar</button>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+
+  <script>
+    // CONFIGURE SEU FIREBASE AQUI
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY",
+      authDomain: "SEU_PROJETO.firebaseapp.com",
+      projectId: "SEU_PROJETO",
+      storageBucket: "SEU_PROJETO.appspot.com",
+      messagingSenderId: "0000000000",
+      appId: "APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    // FUNCIONALIDADES
+
+    let usuario = null;
+
+    function login() {
+      const email = document.getElementById("email").value;
+      const senha = document.getElementById("senha").value;
+
+      auth.signInWithEmailAndPassword(email, senha)
+        .then(res => {
+          usuario = res.user;
+          carregarDashboard();
+        })
+        .catch(() => {
+          document.getElementById("erro").innerText = "Login inválido.";
+        });
+    }
+
+    function cadastro() {
+      const email = document.getElementById("email").value;
+      const senha = document.getElementById("senha").value;
+      const nome = document.getElementById("nome").value;
+      const pix = document.getElementById("pix").value;
+
+      auth.createUserWithEmailAndPassword(email, senha)
+        .then(res => {
+          usuario = res.user;
+          return db.collection("usuarios").doc(usuario.uid).set({
+            nome, pix, saldo: 1000, pontos: 0
+          });
+        })
+        .then(carregarDashboard);
+    }
+
+    function carregarDashboard() {
+      db.collection("usuarios").doc(auth.currentUser.uid).get().then(doc => {
+        const data = doc.data();
+        document.getElementById("userNome").innerText = data.nome;
+        document.getElementById("saldo").innerText = data.saldo;
+        mostrarTela("telaDashboard");
+      });
+    }
+
+    function logout() {
+      auth.signOut().then(() => mostrarTela("telaLogin"));
+    }
+
+    function mostrarTela(id) {
+      const telas = ["telaLogin", "telaDashboard", "telaJogo", "telaPix", "telaRanking"];
+      telas.forEach(t => document.getElementById(t).style.display = "none");
+      document.getElementById(id).style.display = "block";
+    }
+
+    function mostrarSimulador() {
+      iniciarJogo();
+      mostrarTela("telaJogo");
+    }
+
+    function mostrarPix() {
+      mostrarTela("telaPix");
+    }
+
+    function mostrarRanking() {
+      carregarRanking();
+      mostrarTela("telaRanking");
+    }
+
+    function voltar() {
+      mostrarTela("telaDashboard");
+    }
+
+    function sairParaDashboard() {
+      mostrarTela("telaDashboard");
+    }
+
+    function iniciarJogo() {
+      const acoes = [
+        { nome: "TechCorp", preco: 100 },
+        { nome: "AgroX", preco: 80 },
+        { nome: "StartBank", preco: 120 }
+      ];
+      let tempo = 180;
+      let intervalo = setInterval(() => {
+        document.getElementById("timer").innerText = tempo;
+        if (tempo <= 0) clearInterval(intervalo);
+        else tempo--;
+      }, 1000);
+
+      const div = document.getElementById("acoes");
+      div.innerHTML = "";
+      acoes.forEach(acao => {
+        const el = document.createElement("div");
+        el.innerHTML = `<strong>${acao.nome}</strong><br>Preço: R$ ${acao.preco}`;
+        div.appendChild(el);
+      });
+    }
+
+    function carregarRanking() {
+      db.collection("usuarios")
+        .orderBy("pontos", "desc")
+        .limit(10)
+        .get()
+        .then(snapshot => {
+          const list = document.getElementById("rankingList");
+          list.innerHTML = "";
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const item = document.createElement("li");
+            item.innerText = `${data.nome} - R$ ${data.pontos}`;
+            list.appendChild(item);
+          });
+        });
+    }
+
+    function enviarComprovante() {
+      const file = document.getElementById("comprovante").files[0];
+      if (!file || !auth.currentUser) return;
+
+      const ref = storage.ref().child("comprovantes/" + auth.currentUser.uid + "_" + Date.now());
+      ref.put(file).then(() => {
+        alert("Comprovante enviado com sucesso!");
+        voltar();
+      });
+    }
+
+    // AUTO LOGIN
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        usuario = user;
+        carregarDashboard();
+      }
+    });
+  </script>
+</body>
+</html>
