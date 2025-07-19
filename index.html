@@ -1,256 +1,120 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TraderPro</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sua Promoção Incrível!</title>
+    
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
 
-    .container {
-      background: #1e293b;
-      padding: 30px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 400px;
-    }
+        .container {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            box-sizing: border-box;
+        }
 
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 5px;
-    }
+        header h1 {
+            color: #FF69B4; /* Rosa vibrante */
+            font-size: 2.2em;
+            margin-bottom: 15px;
+        }
 
-    input {
-      background: #fff;
-      color: #000;
-    }
+        main h2 {
+            color: #8A2BE2; /* Roxo */
+            font-size: 1.8em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
 
-    button {
-      background: #0ea5e9;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
+        .preco-antigo {
+            font-size: 1.2em;
+            color: #888;
+            text-decoration: line-through;
+            margin-bottom: 5px;
+        }
 
-    button:hover {
-      background: #0284c7;
-    }
+        .preco-novo {
+            font-size: 2.5em;
+            color: #008000; /* Verde */
+            font-weight: bold;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
 
-    #acoes div {
-      margin-bottom: 20px;
-      background: #334155;
-      padding: 10px;
-      border-radius: 5px;
-    }
-  </style>
-</head>
+        .botao {
+            display: inline-block;
+            background-color: #FF69B4; /* Rosa vibrante */
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .botao:hover {
+            background-color: #E05BA2; /* Tom de rosa mais escuro no hover */
+        }
+
+        .disclaimer {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 25px;
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 0.8em;
+            color: #999;
+        }
+    </style>
+    <meta property="og:title" content="Promoção Imperdível para seu Cabelo!">
+    <meta property="og:description" content="Lavar + Secar + Escovar de R$60 por apenas R$40! Agende já!">
+    <meta property="og:image" content="https://seusite.com.br/imagem-da-promocao.jpg"> <meta property="og:url" content="https://seuusuario.github.io/seurepositorio/"> </head>
 <body>
-  <div class="container" id="telaLogin">
-    <h1>TraderPro</h1>
-    <input type="text" id="nome" placeholder="Nome (cadastro)">
-    <input type="text" id="pix" placeholder="Chave Pix (cadastro)">
-    <input type="email" id="email" placeholder="E-mail">
-    <input type="password" id="senha" placeholder="Senha">
-    <div id="erro"></div>
-    <button onclick="login()">Entrar</button>
-    <button onclick="cadastro()">Cadastrar</button>
-  </div>
+    <div class="container">
+        <header>
+            <h1 id="titulo-promocao">🌟 Promoção Arrasadora! 🌟</h1>
+        </header>
 
-  <div class="container" id="telaDashboard" style="display: none;">
-    <h2>Bem-vindo, <span id="userNome">...</span></h2>
-    <p>Saldo: R$ <span id="saldo">...</span></p>
-    <button onclick="mostrarSimulador()">Iniciar Simulação</button>
-    <button onclick="mostrarPix()">Depositar via Pix</button>
-    <button onclick="mostrarRanking()">Ver Ranking</button>
-    <button onclick="logout()">Sair</button>
-  </div>
+        <main>
+            <p id="empresa-nome">No Salão [Nome do Salão Aqui]</p>
+            <h2 id="servico-nome">Lavar, Secar e Escovar</h2>
+            <p class="preco-antigo">De: <s id="preco-antigo">R$ 60,00</s></p>
+            <p class="preco-novo">Por APENAS: <span id="preco-novo">R$ 40,00</span></p>
 
-  <div class="container" id="telaJogo" style="display: none;">
-    <h2>Simulação de Investimentos</h2>
-    <p>Tempo restante: <span id="timer">180</span> segundos</p>
-    <div id="acoes"></div>
-    <button onclick="sairParaDashboard()">Sair</button>
-  </div>
+            <p id="texto-extra">Seu cabelo merece esse carinho, e sua carteira vai agradecer! 😉</p>
 
-  <div class="container" id="telaPix" style="display: none;">
-    <h2>Depósito via Pix</h2>
-    <p>Chave Pix: <strong>SEU_PIX_AQUI</strong></p>
-    <p>Após o pagamento, envie o comprovante abaixo:</p>
-    <input type="file" id="comprovante" />
-    <button onclick="enviarComprovante()">Enviar Comprovante</button>
-    <br/><br/>
-    <button onclick="voltar()">Voltar</button>
-  </div>
+            <a id="botao-cta" href="[LINK_DO_WHATSAPP_OU_INSTAGRAM_DO_SALAO]" target="_blank" class="botao">
+                Quero Agendar Meu Horário! ✨
+            </a>
 
-  <div class="container" id="telaRanking" style="display: none;">
-    <h2>Ranking Semanal</h2>
-    <ol id="rankingList"></ol>
-    <button onclick="voltar()">Voltar</button>
-  </div>
+            <p class="disclaimer" id="condicoes-promocao">Promoção válida por tempo limitado. Consulte condições no salão.</p>
+        </main>
 
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
-
-  <script>
-    // CONFIGURE SEU FIREBASE AQUI
-    const firebaseConfig = {
-      apiKey: "SUA_API_KEY",
-      authDomain: "SEU_PROJETO.firebaseapp.com",
-      projectId: "SEU_PROJETO",
-      storageBucket: "SEU_PROJETO.appspot.com",
-      messagingSenderId: "0000000000",
-      appId: "APP_ID"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    const storage = firebase.storage();
-
-    // FUNCIONALIDADES
-
-    let usuario = null;
-
-    function login() {
-      const email = document.getElementById("email").value;
-      const senha = document.getElementById("senha").value;
-
-      auth.signInWithEmailAndPassword(email, senha)
-        .then(res => {
-          usuario = res.user;
-          carregarDashboard();
-        })
-        .catch(() => {
-          document.getElementById("erro").innerText = "Login inválido.";
-        });
-    }
-
-    function cadastro() {
-      const email = document.getElementById("email").value;
-      const senha = document.getElementById("senha").value;
-      const nome = document.getElementById("nome").value;
-      const pix = document.getElementById("pix").value;
-
-      auth.createUserWithEmailAndPassword(email, senha)
-        .then(res => {
-          usuario = res.user;
-          return db.collection("usuarios").doc(usuario.uid).set({
-            nome, pix, saldo: 1000, pontos: 0
-          });
-        })
-        .then(carregarDashboard);
-    }
-
-    function carregarDashboard() {
-      db.collection("usuarios").doc(auth.currentUser.uid).get().then(doc => {
-        const data = doc.data();
-        document.getElementById("userNome").innerText = data.nome;
-        document.getElementById("saldo").innerText = data.saldo;
-        mostrarTela("telaDashboard");
-      });
-    }
-
-    function logout() {
-      auth.signOut().then(() => mostrarTela("telaLogin"));
-    }
-
-    function mostrarTela(id) {
-      const telas = ["telaLogin", "telaDashboard", "telaJogo", "telaPix", "telaRanking"];
-      telas.forEach(t => document.getElementById(t).style.display = "none");
-      document.getElementById(id).style.display = "block";
-    }
-
-    function mostrarSimulador() {
-      iniciarJogo();
-      mostrarTela("telaJogo");
-    }
-
-    function mostrarPix() {
-      mostrarTela("telaPix");
-    }
-
-    function mostrarRanking() {
-      carregarRanking();
-      mostrarTela("telaRanking");
-    }
-
-    function voltar() {
-      mostrarTela("telaDashboard");
-    }
-
-    function sairParaDashboard() {
-      mostrarTela("telaDashboard");
-    }
-
-    function iniciarJogo() {
-      const acoes = [
-        { nome: "TechCorp", preco: 100 },
-        { nome: "AgroX", preco: 80 },
-        { nome: "StartBank", preco: 120 }
-      ];
-      let tempo = 180;
-      let intervalo = setInterval(() => {
-        document.getElementById("timer").innerText = tempo;
-        if (tempo <= 0) clearInterval(intervalo);
-        else tempo--;
-      }, 1000);
-
-      const div = document.getElementById("acoes");
-      div.innerHTML = "";
-      acoes.forEach(acao => {
-        const el = document.createElement("div");
-        el.innerHTML = `<strong>${acao.nome}</strong><br>Preço: R$ ${acao.preco}`;
-        div.appendChild(el);
-      });
-    }
-
-    function carregarRanking() {
-      db.collection("usuarios")
-        .orderBy("pontos", "desc")
-        .limit(10)
-        .get()
-        .then(snapshot => {
-          const list = document.getElementById("rankingList");
-          list.innerHTML = "";
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            const item = document.createElement("li");
-            item.innerText = `${data.nome} - R$ ${data.pontos}`;
-            list.appendChild(item);
-          });
-        });
-    }
-
-    function enviarComprovante() {
-      const file = document.getElementById("comprovante").files[0];
-      if (!file || !auth.currentUser) return;
-
-      const ref = storage.ref().child("comprovantes/" + auth.currentUser.uid + "_" + Date.now());
-      ref.put(file).then(() => {
-        alert("Comprovante enviado com sucesso!");
-        voltar();
-      });
-    }
-
-    // AUTO LOGIN
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        usuario = user;
-        carregarDashboard();
-      }
-    });
-  </script>
+        <footer>
+            <p>&copy; [Ano Atual] Sua Propaganda Digital. Todos os direitos reservados.</p>
+        </footer>
+    </div>
 </body>
 </html>
