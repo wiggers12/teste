@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anuncie no Canal da Oportunidade - Dê Visibilidade ao seu Negócio!</title>
+    <title>Anuncie Conosco - Canal da Oportunidade | Dê Visibilidade ao Seu Negócio!</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
@@ -13,9 +13,10 @@
             --cor-secundaria: #0056b3; /* Azul mais escuro */
             --cor-texto: #333333;
             --cor-fundo: #F0F2F5;
-            --cor-botao: #28A745; /* Verde para ação de contato */
-            --cor-botao-hover: #218838;
+            --cor-botao: #4CAF50; /* Verde para ação de contato (crescimento) */
+            --cor-botao-hover: #43A047;
             --cor-borda-card: #E0E0E0;
+            --cor-destaque: #FFD700; /* Ouro para destaque */
         }
 
         body {
@@ -35,10 +36,10 @@
         .container {
             background-color: #FFFFFF;
             border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Sombra mais proeminente */
+            padding: 35px; /* Mais espaço interno */
             text-align: center;
-            max-width: 600px; /* Um pouco mais largo para conteúdo de negócio */
+            max-width: 650px; /* Mais largo para mais conteúdo */
             width: 100%;
             box-sizing: border-box;
             border: 1px solid var(--cor-borda-card);
@@ -46,64 +47,70 @@
 
         header h1 {
             color: var(--cor-primaria);
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            font-size: 2.8em; /* Título maior */
+            margin-bottom: 15px; /* Mais espaço */
             font-weight: 700;
-            line-height: 1.2;
+            line-height: 1.1;
         }
 
         header p {
-            font-size: 1.1em;
-            color: #666;
-            margin-bottom: 25px;
+            font-size: 1.2em; /* Texto maior */
+            color: #555; /* Cor mais suave */
+            margin-bottom: 30px; /* Mais espaço */
         }
 
         .secao {
-            margin-bottom: 30px;
-            padding: 15px;
-            border-radius: 10px;
-            background-color: #f9f9f9;
-            border: 1px solid #eee;
+            margin-bottom: 35px; /* Mais espaço entre seções */
+            padding: 20px;
+            border-radius: 12px; /* Cantos um pouco mais arredondados */
+            background-color: #fcfcfc; /* Fundo mais claro */
+            border: 1px solid #e9e9e9;
         }
 
         .secao h3 {
             color: var(--cor-secundaria);
-            font-size: 1.6em;
-            margin-bottom: 15px;
+            font-size: 1.8em; /* Título de seção maior */
+            margin-bottom: 18px; /* Mais espaço */
             font-weight: 600;
         }
 
+        .secao p {
+            font-size: 1.05em; /* Texto um pouco maior */
+            margin-bottom: 15px;
+        }
+
         .secao ul {
-            list-style: none; /* Remove bolinhas */
+            list-style: none;
             padding: 0;
             margin: 0;
             text-align: left;
         }
 
         .secao ul li {
-            margin-bottom: 10px;
-            font-size: 1em;
+            margin-bottom: 12px; /* Mais espaço entre itens da lista */
+            font-size: 1.1em; /* Texto da lista maior */
             color: var(--cor-texto);
             position: relative;
-            padding-left: 25px; /* Espaço para o ícone */
+            padding-left: 30px; /* Mais espaço para o ícone */
         }
 
         .secao ul li:before {
-            content: '✅'; /* Ícone de check */
+            content: '✨'; /* Ícone de brilho */
             position: absolute;
             left: 0;
-            color: var(--cor-desconto); /* Verde do check */
-            font-size: 1.2em;
+            color: var(--cor-destaque); /* Cor de destaque para o brilho */
+            font-size: 1.3em;
+            top: -2px; /* Ajuste vertical do ícone */
         }
         
         .cta-contato {
-            margin-top: 40px;
+            margin-top: 50px; /* Mais espaço antes do CTA */
         }
 
         .cta-contato p {
-            font-size: 1.2em;
+            font-size: 1.3em; /* Texto do CTA maior */
             color: var(--cor-texto);
-            margin-bottom: 20px;
+            margin-bottom: 25px; /* Mais espaço */
             font-weight: 600;
         }
 
@@ -111,39 +118,52 @@
             display: inline-block;
             background-color: var(--cor-botao);
             color: white;
-            padding: 15px 30px;
+            padding: 18px 40px; /* Botão maior */
             border-radius: 50px;
             text-decoration: none;
             font-weight: 700;
-            font-size: 1.1em;
+            font-size: 1.2em; /* Fonte maior no botão */
             transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Sombra mais forte no botão */
         }
 
         .botao-contato:hover {
             background-color: var(--cor-botao-hover);
-            transform: translateY(-3px);
+            transform: translateY(-4px); /* Efeito de elevação maior */
         }
 
         footer {
-            margin-top: 40px;
-            font-size: 0.75em;
-            color: #AAAAAA;
+            margin-top: 50px; /* Mais espaço no rodapé */
+            font-size: 0.8em;
+            color: #999999;
         }
 
         /* Responsividade básica */
         @media (max-width: 480px) {
             .container {
-                padding: 20px;
+                padding: 25px;
             }
             header h1 {
-                font-size: 2em;
+                font-size: 2.2em;
+            }
+            header p {
+                font-size: 1em;
             }
             .secao h3 {
-                font-size: 1.4em;
+                font-size: 1.5em;
+            }
+            .secao ul li {
+                font-size: 1em;
+                padding-left: 20px;
+            }
+            .secao ul li:before {
+                font-size: 1.1em;
+            }
+            .cta-contato p {
+                font-size: 1.1em;
             }
             .botao-contato {
-                padding: 12px 25px;
+                padding: 15px 30px;
                 font-size: 1em;
             }
         }
@@ -152,30 +172,40 @@
 <body>
     <div class="container">
         <header>
-            <h1>Anuncie no Canal da Oportunidade!</h1>
-            <p>Conecte-se com um público engajado e ávido por crescimento.</p>
+            <h1>Anuncie Conosco no Canal da Oportunidade!</h1>
+            <p>Alcance um público engajado e qualificado, ávido por soluções e crescimento.</p>
         </header>
 
         <main>
             <div class="secao">
-                <h3>Por que anunciar conosco?</h3>
+                <h3>Por que anunciar aqui?</h3>
                 <ul>
-                    <li>Alcance um público focado em desenvolvimento pessoal e profissional.</li>
-                    <li>Ganhe visibilidade para sua marca, produto ou serviço.</li>
-                    <li>Gere leads qualificados e aumente suas vendas.</li>
-                    <li>Apoie um canal que inspira e informa.</li>
+                    <li>✨ **Público Segmentado:** Conecte-se diretamente com empreendedores, profissionais e estudantes em busca de novos caminhos.</li>
+                    <li>✨ **Credibilidade:** Associe sua marca a um canal de conteúdo de valor e relevância.</li>
+                    <li>✨ **Visibilidade Genuína:** Sua mensagem chegará a quem realmente importa, gerando leads e resultados reais.</li>
+                    <li>✨ **Impacto Direto:** Ajude nosso público a descobrir soluções e recursos que impulsionem seu sucesso.</li>
                 </ul>
             </div>
 
             <div class="secao">
-                <h3>Nosso Público</h3>
-                <p>Nossos seguidores são empreendedores, profissionais buscando recolocação, estudantes e indivíduos motivados a encontrar e aproveitar as melhores oportunidades para suas vidas e carreiras.</p>
+                <h3>O que é o Canal da Oportunidade?</h3>
+                <p>Somos uma plataforma dedicada a inspirar, informar e conectar pessoas às melhores oportunidades de desenvolvimento pessoal, profissional e financeiro. Nosso objetivo é capacitar indivíduos a transformar suas vidas através do conhecimento e das conexões certas.</p>
+            </div>
+            
+            <div class="secao">
+                <h3>Formatos de Anúncio (personalizáveis):</h3>
+                <ul>
+                    <li>✨ **Destaque em Posts/Reels:** Seu produto/serviço integrado ao nosso conteúdo.</li>
+                    <li>✨ **Mencão em Stories:** Alcance rápido e direto com nossa audiência diária.</li>
+                    <li>✨ **Parcerias Estratégicas:** Colaborações em Lives, Workshops ou Webinars.</li>
+                    <li>✨ **Link em Destaque:** Seu link exclusivo na nossa Bio ou em artigos.</li>
+                </ul>
             </div>
 
             <div class="cta-contato">
-                <p>Interessado em saber como podemos impulsionar seu negócio?</p>
+                <p>Pronto para expandir seu alcance e impulsionar seu negócio?</p>
                 <a href="https://wa.me/SEUNUMERODOWHATSAPPCOMDDD" target="_blank" class="botao-contato">
-                    Solicite nosso Mídia Kit via WhatsApp! 🚀
+                    Converse Conosco e Receba a Proposta! 🚀
                 </a>
             </div>
         </main>
