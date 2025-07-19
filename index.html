@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anuncie Conosco - Canal da Oportunidade | Dê Visibilidade ao Seu Negócio!</title>
+    <title>Simulador de Post - Canal da Oportunidade</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --cor-primaria: #007BFF; /* Azul mais profissional */
-            --cor-secundaria: #0056b3; /* Azul mais escuro */
+            --cor-primaria: #007BFF; /* Azul */
+            --cor-secundaria: #0056b3; /* Azul escuro */
             --cor-texto: #333333;
             --cor-fundo: #F0F2F5;
-            --cor-botao: #4CAF50; /* Verde para ação de contato (crescimento) */
-            --cor-botao-hover: #43A047;
+            --cor-card: #FFFFFF;
             --cor-borda-card: #E0E0E0;
-            --cor-destaque: #FFD700; /* Ouro para destaque */
+            --cor-input-borda: #CCCCCC;
+            --cor-input-focus: #007BFF;
         }
 
         body {
@@ -24,6 +24,7 @@
             background-color: var(--cor-fundo);
             color: var(--cor-texto);
             display: flex;
+            flex-direction: column; /* Para empilhar o header e o conteúdo principal */
             justify-content: center;
             align-items: center;
             min-height: 100vh;
@@ -33,186 +34,280 @@
             line-height: 1.6;
         }
 
-        .container {
-            background-color: #FFFFFF;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Sombra mais proeminente */
-            padding: 35px; /* Mais espaço interno */
+        header {
             text-align: center;
-            max-width: 650px; /* Mais largo para mais conteúdo */
+            margin-bottom: 30px;
+            max-width: 800px;
             width: 100%;
-            box-sizing: border-box;
-            border: 1px solid var(--cor-borda-card);
         }
 
         header h1 {
             color: var(--cor-primaria);
-            font-size: 2.8em; /* Título maior */
-            margin-bottom: 15px; /* Mais espaço */
+            font-size: 2.5em;
+            margin-bottom: 10px;
             font-weight: 700;
-            line-height: 1.1;
         }
 
         header p {
-            font-size: 1.2em; /* Texto maior */
-            color: #555; /* Cor mais suave */
-            margin-bottom: 30px; /* Mais espaço */
+            font-size: 1.1em;
+            color: #666;
         }
 
-        .secao {
-            margin-bottom: 35px; /* Mais espaço entre seções */
-            padding: 20px;
-            border-radius: 12px; /* Cantos um pouco mais arredondados */
-            background-color: #fcfcfc; /* Fundo mais claro */
-            border: 1px solid #e9e9e9;
+        .main-content {
+            display: flex;
+            flex-wrap: wrap; /* Permite que os blocos quebrem linha */
+            gap: 30px; /* Espaço entre os blocos */
+            max-width: 1000px; /* Largura máxima para o conteúdo principal */
+            width: 100%;
+            justify-content: center; /* Centraliza os blocos */
         }
 
-        .secao h3 {
+        .editor-panel, .preview-panel {
+            background-color: var(--cor-card);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border: 1px solid var(--cor-borda-card);
+            flex: 1; /* Faz com que cada painel ocupe o máximo de espaço disponível */
+            min-width: 300px; /* Largura mínima para cada painel */
+            max-width: 450px; /* Largura máxima para cada painel */
+            box-sizing: border-box;
+        }
+
+        .editor-panel h2, .preview-panel h2 {
             color: var(--cor-secundaria);
-            font-size: 1.8em; /* Título de seção maior */
-            margin-bottom: 18px; /* Mais espaço */
+            font-size: 1.8em;
+            margin-bottom: 20px;
             font-weight: 600;
+            text-align: center;
         }
 
-        .secao p {
-            font-size: 1.05em; /* Texto um pouco maior */
-            margin-bottom: 15px;
-        }
-
-        .secao ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        .form-group {
+            margin-bottom: 20px;
             text-align: left;
         }
 
-        .secao ul li {
-            margin-bottom: 12px; /* Mais espaço entre itens da lista */
-            font-size: 1.1em; /* Texto da lista maior */
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
             color: var(--cor-texto);
-            position: relative;
-            padding-left: 30px; /* Mais espaço para o ícone */
         }
 
-        .secao ul li:before {
-            content: '✨'; /* Ícone de brilho */
-            position: absolute;
-            left: 0;
-            color: var(--cor-destaque); /* Cor de destaque para o brilho */
-            font-size: 1.3em;
-            top: -2px; /* Ajuste vertical do ícone */
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--cor-input-borda);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group textarea {
+            resize: vertical; /* Permite redimensionar verticalmente */
+            min-height: 80px;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--cor-input-focus);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
+        /* Estilos do Preview do Post (Simulação de Instagram) */
+        .post-preview {
+            border: 1px solid var(--cor-borda-card);
+            border-radius: 10px;
+            background-color: #FFF;
+            overflow: hidden;
+            max-width: 350px; /* Tamanho típico de um post no feed */
+            margin: 0 auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #eee; /* Placeholder */
+            margin-right: 10px;
+            object-fit: cover;
+        }
+
+        .username {
+            font-weight: 600;
+            color: var(--cor-texto);
+        }
+
+        .post-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            background-color: #f0f0f0; /* Placeholder */
+            min-height: 200px; /* Altura mínima para a imagem */
+            object-fit: contain; /* Para não cortar a imagem se for diferente */
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+
+        .post-caption {
+            padding: 15px;
+            font-size: 0.95em;
+            color: var(--cor-texto);
+            text-align: left;
+        }
+
+        .post-caption .post-title {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .post-caption .post-text {
+            display: block;
         }
         
-        .cta-contato {
-            margin-top: 50px; /* Mais espaço antes do CTA */
-        }
-
-        .cta-contato p {
-            font-size: 1.3em; /* Texto do CTA maior */
-            color: var(--cor-texto);
-            margin-bottom: 25px; /* Mais espaço */
-            font-weight: 600;
-        }
-
-        .botao-contato {
-            display: inline-block;
-            background-color: var(--cor-botao);
-            color: white;
-            padding: 18px 40px; /* Botão maior */
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.2em; /* Fonte maior no botão */
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Sombra mais forte no botão */
-        }
-
-        .botao-contato:hover {
-            background-color: var(--cor-botao-hover);
-            transform: translateY(-4px); /* Efeito de elevação maior */
+        .post-placeholder-text {
+            color: #999;
+            font-style: italic;
         }
 
         footer {
-            margin-top: 50px; /* Mais espaço no rodapé */
-            font-size: 0.8em;
-            color: #999999;
+            margin-top: 50px;
+            font-size: 0.75em;
+            color: #AAAAAA;
+            text-align: center;
+            width: 100%;
         }
 
-        /* Responsividade básica */
-        @media (max-width: 480px) {
-            .container {
-                padding: 25px;
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column; /* Empilha os painéis em telas menores */
+                align-items: center; /* Centraliza */
             }
-            header h1 {
-                font-size: 2.2em;
+            .editor-panel, .preview-panel {
+                max-width: 100%; /* Ocupa toda a largura disponível */
             }
-            header p {
-                font-size: 1em;
-            }
-            .secao h3 {
-                font-size: 1.5em;
-            }
-            .secao ul li {
-                font-size: 1em;
-                padding-left: 20px;
-            }
-            .secao ul li:before {
-                font-size: 1.1em;
-            }
-            .cta-contato p {
-                font-size: 1.1em;
-            }
-            .botao-contato {
-                padding: 15px 30px;
-                font-size: 1em;
+            .post-preview {
+                max-width: 100%; /* Ocupa toda a largura no mobile */
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Anuncie Conosco no Canal da Oportunidade!</h1>
-            <p>Alcance um público engajado e qualificado, ávido por soluções e crescimento.</p>
-        </header>
+    <header>
+        <h1>Simulador de Post para Anunciantes</h1>
+        <p>Veja como o seu anúncio pode aparecer no Canal da Oportunidade!</p>
+    </header>
 
-        <main>
-            <div class="secao">
-                <h3>Por que anunciar aqui?</h3>
-                <ul>
-                    <li>✨ **Público Segmentado:** Conecte-se diretamente com empreendedores, profissionais e estudantes em busca de novos caminhos.</li>
-                    <li>✨ **Credibilidade:** Associe sua marca a um canal de conteúdo de valor e relevância.</li>
-                    <li>✨ **Visibilidade Genuína:** Sua mensagem chegará a quem realmente importa, gerando leads e resultados reais.</li>
-                    <li>✨ **Impacto Direto:** Ajude nosso público a descobrir soluções e recursos que impulsionem seu sucesso.</li>
-                </ul>
+    <div class="main-content">
+        <div class="editor-panel">
+            <h2>Monte seu Post</h2>
+            <div class="form-group">
+                <label for="imageUrl">URL da Imagem:</label>
+                <input type="text" id="imageUrl" placeholder="Cole o link da sua imagem aqui (ex: link.com/imagem.jpg)">
             </div>
+            <div class="form-group">
+                <label for="postTitle">Título do Anúncio (destaque):</label>
+                <textarea id="postTitle" placeholder="Ex: Curso Gratuito de Marketing Digital!"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="postText">Texto do Anúncio (descrição):</label>
+                <textarea id="postText" placeholder="Descreva sua oportunidade, produto ou serviço aqui..."></textarea>
+            </div>
+        </div>
 
-            <div class="secao">
-                <h3>O que é o Canal da Oportunidade?</h3>
-                <p>Somos uma plataforma dedicada a inspirar, informar e conectar pessoas às melhores oportunidades de desenvolvimento pessoal, profissional e financeiro. Nosso objetivo é capacitar indivíduos a transformar suas vidas através do conhecimento e das conexões certas.</p>
+        <div class="preview-panel">
+            <h2>Pré-visualização (Feed do Instagram)</h2>
+            <div class="post-preview">
+                <div class="post-header">
+                    <img src="https://raw.githubusercontent.com/wiggers12/publicidade/main/logo-canal-oportunidade.png" alt="Perfil do Canal da Oportunidade" class="profile-pic" id="profilePicPreview">
+                    <span class="username">canal_da_oportunidade</span>
+                </div>
+                <img src="https://via.placeholder.com/400x400?text=Sua+Imagem+Aqui" alt="Imagem do Post" class="post-image" id="previewImage">
+                <div class="post-caption">
+                    <span class="post-title" id="previewTitle">
+                        <span class="post-placeholder-text">Título do Anúncio</span>
+                    </span>
+                    <span class="post-text" id="previewText">
+                        <span class="post-placeholder-text">Descrição do seu post aparecerá aqui.</span>
+                    </span>
+                </div>
             </div>
-            
-            <div class="secao">
-                <h3>Formatos de Anúncio (personalizáveis):</h3>
-                <ul>
-                    <li>✨ **Destaque em Posts/Reels:** Seu produto/serviço integrado ao nosso conteúdo.</li>
-                    <li>✨ **Mencão em Stories:** Alcance rápido e direto com nossa audiência diária.</li>
-                    <li>✨ **Parcerias Estratégicas:** Colaborações em Lives, Workshops ou Webinars.</li>
-                    <li>✨ **Link em Destaque:** Seu link exclusivo na nossa Bio ou em artigos.</li>
-                </ul>
-            </div>
-
-            <div class="cta-contato">
-                <p>Pronto para expandir seu alcance e impulsionar seu negócio?</p>
-                <a href="https://wa.me/SEUNUMERODOWHATSAPPCOMDDD" target="_blank" class="botao-contato">
-                    Converse Conosco e Receba a Proposta! 🚀
-                </a>
-            </div>
-        </main>
-
-        <footer>
-            <p>&copy; 2025 Canal da Oportunidade. Todos os direitos reservados.</p>
-        </footer>
+        </div>
     </div>
+
+    <footer>
+        <p>Simulador desenvolvido pelo Canal da Oportunidade. As pré-visualizações são apenas para fins ilustrativos.</p>
+    </footer>
+
+    <script>
+        // Elementos de entrada
+        const imageUrlInput = document.getElementById('imageUrl');
+        const postTitleInput = document.getElementById('postTitle');
+        const postTextInput = document.getElementById('postText');
+
+        // Elementos de pré-visualização
+        const previewImage = document.getElementById('previewImage');
+        const previewTitle = document.getElementById('previewTitle');
+        const previewText = document.getElementById('previewText');
+        const profilePicPreview = document.getElementById('profilePicPreview'); // Referência à imagem de perfil
+
+        // URL padrão da imagem de perfil (adapte se tiver uma logo do Canal da Oportunidade)
+        // Se você tiver uma logo específica do Canal da Oportunidade no seu repositório, use-a aqui.
+        // Por exemplo: 'https://wiggers12.github.io/publicidade/sua-logo-canal.png'
+        const defaultProfilePicUrl = 'https://raw.githubusercontent.com/wiggers12/publicidade/main/logo-canal-oportunidade.png'; // Exemplo de URL de logo
+
+        // Garante que a imagem de perfil seja carregada quando a página carrega
+        profilePicPreview.src = defaultProfilePicUrl;
+
+        // Função para atualizar a pré-visualização
+        function updatePreview() {
+            // Atualiza a imagem
+            if (imageUrlInput.value) {
+                previewImage.src = imageUrlInput.value;
+            } else {
+                // Placeholder se a URL estiver vazia
+                previewImage.src = "https://via.placeholder.com/400x400?text=Sua+Imagem+Aqui";
+            }
+
+            // Atualiza o título
+            if (postTitleInput.value) {
+                previewTitle.textContent = postTitleInput.value;
+                previewTitle.classList.remove('post-placeholder-text'); // Remove estilo de placeholder
+            } else {
+                previewTitle.textContent = 'Título do Anúncio';
+                previewTitle.classList.add('post-placeholder-text'); // Adiciona estilo de placeholder
+            }
+
+            // Atualiza o texto
+            if (postTextInput.value) {
+                previewText.textContent = postTextInput.value;
+                previewText.classList.remove('post-placeholder-text'); // Remove estilo de placeholder
+            } else {
+                previewText.textContent = 'Descrição do seu post aparecerá aqui.';
+                previewText.classList.add('post-placeholder-text'); // Adiciona estilo de placeholder
+            }
+        }
+
+        // Adiciona eventos para atualizar a pré-visualização em tempo real
+        imageUrlInput.addEventListener('input', updatePreview);
+        postTitleInput.addEventListener('input', updatePreview);
+        postTextInput.addEventListener('input', updatePreview);
+
+        // Chamada inicial para preencher com placeholders
+        updatePreview();
+    </script>
 </body>
 </html>
