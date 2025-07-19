@@ -3,13 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sua Promoção Incrível!</title>
+    <title>Anuncie no Canal da Oportunidade - Dê Visibilidade ao seu Negócio!</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
+        :root {
+            --cor-primaria: #007BFF; /* Azul mais profissional */
+            --cor-secundaria: #0056b3; /* Azul mais escuro */
+            --cor-texto: #333333;
+            --cor-fundo: #F0F2F5;
+            --cor-botao: #28A745; /* Verde para ação de contato */
+            --cor-botao-hover: #218838;
+            --cor-borda-card: #E0E0E0;
+        }
+
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,103 +29,159 @@
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
+            line-height: 1.6;
         }
 
         .container {
-            background-color: #fff;
+            background-color: #FFFFFF;
             border-radius: 15px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
             padding: 30px;
             text-align: center;
-            max-width: 500px;
+            max-width: 600px; /* Um pouco mais largo para conteúdo de negócio */
             width: 100%;
             box-sizing: border-box;
+            border: 1px solid var(--cor-borda-card);
         }
 
         header h1 {
-            color: #FF69B4; /* Rosa vibrante */
-            font-size: 2.2em;
-            margin-bottom: 15px;
-        }
-
-        main h2 {
-            color: #8A2BE2; /* Roxo */
-            font-size: 1.8em;
-            margin-top: 20px;
-            margin-bottom: 10px;
-        }
-
-        .preco-antigo {
-            font-size: 1.2em;
-            color: #888;
-            text-decoration: line-through;
-            margin-bottom: 5px;
-        }
-
-        .preco-novo {
+            color: var(--cor-primaria);
             font-size: 2.5em;
-            color: #008000; /* Verde */
-            font-weight: bold;
-            margin-top: 0;
+            margin-bottom: 10px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        header p {
+            font-size: 1.1em;
+            color: #666;
             margin-bottom: 25px;
         }
 
-        .botao {
+        .secao {
+            margin-bottom: 30px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+        }
+
+        .secao h3 {
+            color: var(--cor-secundaria);
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .secao ul {
+            list-style: none; /* Remove bolinhas */
+            padding: 0;
+            margin: 0;
+            text-align: left;
+        }
+
+        .secao ul li {
+            margin-bottom: 10px;
+            font-size: 1em;
+            color: var(--cor-texto);
+            position: relative;
+            padding-left: 25px; /* Espaço para o ícone */
+        }
+
+        .secao ul li:before {
+            content: '✅'; /* Ícone de check */
+            position: absolute;
+            left: 0;
+            color: var(--cor-desconto); /* Verde do check */
+            font-size: 1.2em;
+        }
+        
+        .cta-contato {
+            margin-top: 40px;
+        }
+
+        .cta-contato p {
+            font-size: 1.2em;
+            color: var(--cor-texto);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .botao-contato {
             display: inline-block;
-            background-color: #FF69B4; /* Rosa vibrante */
+            background-color: var(--cor-botao);
             color: white;
             padding: 15px 30px;
             border-radius: 50px;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 700;
             font-size: 1.1em;
-            transition: background-color 0.3s ease;
-            margin-top: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
         }
 
-        .botao:hover {
-            background-color: #E05BA2; /* Tom de rosa mais escuro no hover */
-        }
-
-        .disclaimer {
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 25px;
+        .botao-contato:hover {
+            background-color: var(--cor-botao-hover);
+            transform: translateY(-3px);
         }
 
         footer {
-            margin-top: 30px;
-            font-size: 0.8em;
-            color: #999;
+            margin-top: 40px;
+            font-size: 0.75em;
+            color: #AAAAAA;
+        }
+
+        /* Responsividade básica */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            header h1 {
+                font-size: 2em;
+            }
+            .secao h3 {
+                font-size: 1.4em;
+            }
+            .botao-contato {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
         }
     </style>
-    <meta property="og:title" content="Promoção Imperdível para seu Cabelo!">
-    <meta property="og:description" content="Lavar + Secar + Escovar de R$60 por apenas R$40! Agende já!">
-    <meta property="og:image" content="https://seusite.com.br/imagem-da-promocao.jpg"> <meta property="og:url" content="https://seuusuario.github.io/seurepositorio/"> </head>
+</head>
 <body>
     <div class="container">
         <header>
-            <h1 id="titulo-promocao">🌟 Promoção Arrasadora! 🌟</h1>
+            <h1>Anuncie no Canal da Oportunidade!</h1>
+            <p>Conecte-se com um público engajado e ávido por crescimento.</p>
         </header>
 
         <main>
-            <p id="empresa-nome">No Salão [Nome do Salão Aqui]</p>
-            <h2 id="servico-nome">Lavar, Secar e Escovar</h2>
-            <p class="preco-antigo">De: <s id="preco-antigo">R$ 60,00</s></p>
-            <p class="preco-novo">Por APENAS: <span id="preco-novo">R$ 40,00</span></p>
+            <div class="secao">
+                <h3>Por que anunciar conosco?</h3>
+                <ul>
+                    <li>Alcance um público focado em desenvolvimento pessoal e profissional.</li>
+                    <li>Ganhe visibilidade para sua marca, produto ou serviço.</li>
+                    <li>Gere leads qualificados e aumente suas vendas.</li>
+                    <li>Apoie um canal que inspira e informa.</li>
+                </ul>
+            </div>
 
-            <p id="texto-extra">Seu cabelo merece esse carinho, e sua carteira vai agradecer! 😉</p>
+            <div class="secao">
+                <h3>Nosso Público</h3>
+                <p>Nossos seguidores são empreendedores, profissionais buscando recolocação, estudantes e indivíduos motivados a encontrar e aproveitar as melhores oportunidades para suas vidas e carreiras.</p>
+            </div>
 
-            <a id="botao-cta" href="[LINK_DO_WHATSAPP_OU_INSTAGRAM_DO_SALAO]" target="_blank" class="botao">
-                Quero Agendar Meu Horário! ✨
-            </a>
-
-            <p class="disclaimer" id="condicoes-promocao">Promoção válida por tempo limitado. Consulte condições no salão.</p>
+            <div class="cta-contato">
+                <p>Interessado em saber como podemos impulsionar seu negócio?</p>
+                <a href="https://wa.me/SEUNUMERODOWHATSAPPCOMDDD" target="_blank" class="botao-contato">
+                    Solicite nosso Mídia Kit via WhatsApp! 🚀
+                </a>
+            </div>
         </main>
 
         <footer>
-            <p>&copy; [Ano Atual] Sua Propaganda Digital. Todos os direitos reservados.</p>
+            <p>&copy; 2025 Canal da Oportunidade. Todos os direitos reservados.</p>
         </footer>
     </div>
 </body>
