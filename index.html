@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>W.W | Desenvolvedor Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       margin: 0;
-      background: #f4f6f8;
+      background: #f8f9fa;
       color: #333;
+      overflow-x: hidden;
     }
     header {
-      background: #0d47a1;
+      background: linear-gradient(135deg, #0d47a1, #1976d2);
       color: white;
-      padding: 50px 20px 30px 20px;
+      padding: 60px 20px;
       text-align: center;
     }
     .logo {
-      font-size: 3em;
+      font-size: 3.2em;
       font-weight: bold;
       letter-spacing: 4px;
     }
@@ -27,23 +31,20 @@
       font-size: 1.2em;
       margin-top: -10px;
       font-weight: 300;
-      color: #cfd8dc;
-    }
-    header h1 {
-      margin-top: 30px;
-      font-size: 2.3em;
-    }
-    header p {
-      font-size: 1.1em;
-      margin-bottom: 0;
+      color: #e3f2fd;
     }
     section {
-      max-width: 900px;
+      max-width: 960px;
       margin: 40px auto;
       background: white;
-      border-radius: 8px;
+      border-radius: 10px;
       padding: 30px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease;
+      animation: fadeIn 0.8s ease;
+    }
+    section:hover {
+      transform: translateY(-4px);
     }
     section h2 {
       color: #0d47a1;
@@ -62,7 +63,7 @@
     .bloco {
       background: #e3f2fd;
       padding: 12px 18px;
-      margin: 12px 0;
+      margin: 15px 0;
       border-left: 5px solid #0d47a1;
       border-radius: 6px;
     }
@@ -76,8 +77,36 @@
       padding: 20px;
       background: #0d47a1;
       color: white;
-      margin-top: 40px;
     }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(10px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    .btn-float {
+      position: fixed;
+      width: 60px;
+      height: 60px;
+      bottom: 30px;
+      right: 30px;
+      background-color: #0d47a1;
+      color: white;
+      border-radius: 50%;
+      text-align: center;
+      font-size: 28px;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .btn-float.instagram {
+      bottom: 100px;
+      background: #e1306c;
+    }
+
     @media(max-width: 600px) {
       header h1 {
         font-size: 1.8em;
@@ -89,85 +118,78 @@
   </style>
 </head>
 <body>
-
 <header>
   <div class="logo">W.W</div>
   <div class="sublogo">Desenvolvedor Web</div>
   <h1>Dionatan Wiggers</h1>
-  <p>Desenvolvedor Web • Criador de Apps • Especialista em Gestão Digital</p>
+  <p>Sites, Apps, Análise de Dados e Gestão Digital</p>
 </header>
 
 <section>
   <h2>Quem sou eu?</h2>
   <div class="bloco">
-    Sou Dionatan Wiggers, desenvolvedor web com ampla experiência em criação de sites profissionais, aplicativos personalizados e gestão digital. Entrego soluções completas com foco em performance, estética e resultados.
+    Sou Dionatan Wiggers, desenvolvedor web com experiência em sites modernos, apps personalizados, gestão digital e análise de dados para crescimento de negócios.
   </div>
 </section>
 
 <section>
-  <h2><i class="fas fa-globe"></i> Criação e Manutenção de Sites</h2>
+  <h2><i class="fas fa-globe"></i> Criação de Sites</h2>
   <ul>
-    <li>📌 <strong>Registro de domínio:</strong> <span class="valor">R$50 a R$150/ano</span></li>
-    <li>🌐 <strong>Hospedagem:</strong> <span class="valor">R$20 a R$450/mês</span></li>
-    <li>💻 <strong>Desenvolvimento:</strong>
+    <li>Domínio: <span class="valor">R$50 a R$150/ano</span></li>
+    <li>Hospedagem: <span class="valor">R$20 a R$450/mês</span></li>
+    <li>Desenvolvimento:
       <ul>
-        <li>Site simples: <span class="valor">a partir de R$300</span></li>
-        <li>Com e-commerce/recursos avançados: <span class="valor">a partir de R$1000</span></li>
+        <li>Simples: <span class="valor">a partir de R$300</span></li>
+        <li>Avançado/E-commerce: <span class="valor">a partir de R$1000</span></li>
       </ul>
     </li>
-    <li>🔧 <strong>Manutenção:</strong> Correções e melhorias sob demanda</li>
+    <li>Manutenção: sob demanda</li>
   </ul>
 </section>
 
 <section>
-  <h2><i class="fab fa-instagram"></i> Gestão Profissional de Instagram</h2>
+  <h2><i class="fab fa-instagram"></i> Gestão de Instagram</h2>
   <ul>
-    <li>📱 Social Media Júnior: <span class="valor">R$500 a R$1000/mês</span></li>
-    <li>🚀 Social Media Pleno: <span class="valor">R$1000 a R$2500/mês</span></li>
-    <li>🏢 Agência completa: <span class="valor">R$3500 a R$6000/mês</span></li>
+    <li>Júnior: <span class="valor">R$500 a R$1000/mês</span></li>
+    <li>Pleno: <span class="valor">R$1000 a R$2500/mês</span></li>
+    <li>Agência: <span class="valor">R$3500 a R$6000/mês</span></li>
   </ul>
-  <div class="bloco">
-    Inclui: criação de conteúdo (feed, stories, reels), agendamento, interação com seguidores, análise de resultados e campanhas patrocinadas.
-  </div>
+  <div class="bloco">Inclui conteúdo, interação, análise de resultados e anúncios.</div>
 </section>
 
 <section>
-  <h2><i class="fas fa-mobile-alt"></i> Desenvolvimento de Aplicativos</h2>
+  <h2><i class="fas fa-mobile-alt"></i> Desenvolvimento de Apps</h2>
   <div class="bloco">
-    🎮 <strong>Apps de Jogos:</strong> Games educativos, competitivos, com monetização via anúncios ou Pix.
+    🎮 Jogos: educativos, desafiantes e com monetização (Ads/Pix)
   </div>
   <div class="bloco">
-    📊 <strong>Apps de Gestão Financeira:</strong> Controle de caixa, relatórios personalizados, gráficos e integração bancária.
+    📊 Gestão Financeira: controle de caixa, gráficos, relatórios
   </div>
 </section>
 
 <section>
   <h2><i class="fas fa-chart-line"></i> Análise de Dados</h2>
   <div class="bloco">
-    📈 Análise de desempenho contínuo de sites, apps e redes sociais para melhorias com base em dados reais.
+    Monitoramento de desempenho com relatórios personalizados para tomar decisões mais eficazes.
   </div>
 </section>
 
 <section>
-  <h2><i class="fas fa-coins"></i> Fatores que Influenciam nos Custos</h2>
-  <ul>
-    <li>🔍 Complexidade do projeto</li>
-    <li>🔁 Frequência de atualizações</li>
-    <li>🤖 Nível de automação exigido</li>
-    <li>⏱️ Tempo de execução e experiência técnica</li>
-  </ul>
+  <h2><i class="fas fa-address-card"></i> Contato</h2>
+  <p>Email: <a href="mailto:dionegalato1212@gmail.com">dionegalato1212@gmail.com</a></p>
+  <p>WhatsApp: <a href="https://wa.me/5551989378751">(51) 98937-8751</a></p>
+  <p>Instagram: <a href="https://instagram.com/wiggers_dionatan">@wiggers_dionatan</a></p>
 </section>
 
-<section class="contato">
-  <h2><i class="fas fa-address-card"></i> Contato</h2>
-  <p>📧 <strong>Email:</strong> <a href="mailto:dionegalato1212@gmail.com">dionegalato1212@gmail.com</a></p>
-  <p>📱 <strong>WhatsApp:</strong> <a href="https://wa.me/5551989378751" target="_blank">(51) 98937-8751</a></p>
-  <p>📸 <strong>Instagram:</strong> <a href="https://instagram.com/wiggers_dionatan" target="_blank">@wiggers_dionatan</a></p>
-</section>
+<a class="btn-float" href="https://wa.me/5551989378751" target="_blank" title="WhatsApp">
+  <i class="fab fa-whatsapp"></i>
+</a>
+<a class="btn-float instagram" href="https://instagram.com/wiggers_dionatan" target="_blank" title="Instagram">
+  <i class="fab fa-instagram"></i>
+</a>
 
 <footer>
   © 2025 Dionatan Wiggers – Todos os direitos reservados
 </footer>
-
 </body>
 </html>
