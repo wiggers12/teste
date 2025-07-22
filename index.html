@@ -1,166 +1,148 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>D’avila Móveis - Sob Medida em MDF</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>W.W | Desenvolvedor Web</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
     body {
-      background: #f8f8f8;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f4f6f8;
       color: #333;
     }
-
     header {
-      background: #2e2e2e;
-      color: #fff;
-      padding: 20px;
+      background: #0d47a1;
+      color: white;
+      padding: 50px 20px 30px 20px;
       text-align: center;
     }
-
-    header h1 {
-      font-size: 2em;
-    }
-
-    nav {
-      background: #444;
-      display: flex;
-      justify-content: center;
-      padding: 10px 0;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin: 0 15px;
+    .logo {
+      font-size: 3em;
       font-weight: bold;
-      transition: color 0.3s;
+      letter-spacing: 4px;
     }
-
-    nav a:hover {
-      color: #ffc107;
+    .sublogo {
+      font-size: 1.2em;
+      margin-top: -10px;
+      font-weight: 300;
+      color: #cfd8dc;
     }
-
-    .hero {
-      background: url('https://images.unsplash.com/photo-1598300051408-1037aa6e3d3a') center/cover no-repeat;
-      height: 300px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      text-shadow: 1px 1px 4px black;
-      text-align: center;
+    header h1 {
+      margin-top: 30px;
+      font-size: 2.3em;
     }
-
-    .hero h2 {
-      font-size: 2.5em;
+    header p {
+      font-size: 1.1em;
+      margin-bottom: 0;
     }
-
     section {
-      padding: 40px 20px;
       max-width: 900px;
-      margin: auto;
-    }
-
-    .about, .contact {
-      background: #fff;
-      margin-bottom: 20px;
-      padding: 20px;
+      margin: 40px auto;
+      background: white;
       border-radius: 8px;
+      padding: 30px;
       box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
-
-    footer {
-      background: #2e2e2e;
-      color: white;
-      text-align: center;
-      padding: 20px 10px;
+    section h2 {
+      color: #0d47a1;
+      margin-top: 0;
     }
-
-    .social a {
-      color: white;
-      margin: 0 10px;
+    ul {
+      padding-left: 20px;
+    }
+    .contato a {
       text-decoration: none;
-      font-size: 1.3em;
+      color: #0d47a1;
     }
-
-    .btn {
-      background-color: #ffc107;
-      border: none;
-      padding: 10px 20px;
-      margin-top: 10px;
-      color: #333;
-      font-weight: bold;
-      border-radius: 5px;
-      cursor: pointer;
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #0d47a1;
+      color: white;
+      margin-top: 40px;
     }
-
-    .btn:hover {
-      background-color: #e0a800;
-    }
-
-    @media (max-width: 600px) {
-      .hero h2 {
-        font-size: 1.5em;
+    @media(max-width: 600px) {
+      header h1 {
+        font-size: 1.8em;
       }
-
-      nav {
-        flex-direction: column;
-      }
-
-      nav a {
-        margin: 10px 0;
+      .logo {
+        font-size: 2em;
       }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>D’avila Móveis</h1>
-    <p>Especializados em móveis sob medida em MDF</p>
-  </header>
+<header>
+  <div class="logo">W.W</div>
+  <div class="sublogo">Desenvolvedor Web</div>
+  <h1>Dionatan Wiggers</h1>
+  <p>Desenvolvedor Web • Criador de Apps • Especialista em Gestão Digital</p>
+</header>
 
-  <nav>
-    <a href="#sobre">Sobre</a>
-    <a href="#contato">Contato</a>
-    <a href="https://www.instagram.com/davilamoveissobmedida" target="_blank">Instagram</a>
-  </nav>
+<section>
+  <h2>Quem sou eu?</h2>
+  <p>Sou Dionatan Wiggers, desenvolvedor web com ampla experiência em criação de sites profissionais, aplicativos personalizados e gestão digital. Entrego soluções completas para empresas e profissionais que desejam construir uma presença sólida na internet, com foco em performance, estética e resultados.</p>
+</section>
 
-  <div class="hero">
-    <h2>Transformamos MDF em sonhos sob medida</h2>
-  </div>
+<section>
+  <h2><i class="fas fa-globe"></i> Criação e Manutenção de Sites</h2>
+  <ul>
+    <li>Registro de domínio (.com.br): R$50 a R$150/ano</li>
+    <li>Hospedagem: R$20 a R$450/mês</li>
+    <li>Desenvolvimento:
+      <ul>
+        <li>Site simples: a partir de R$300</li>
+        <li>Site com e-commerce ou recursos avançados: a partir de R$1000</li>
+      </ul>
+    </li>
+    <li>Manutenção: Correções, melhorias e suporte técnico sob demanda</li>
+  </ul>
+</section>
 
-  <section id="sobre" class="about">
-    <h2>Sobre a D’avila Móveis</h2>
-    <p>Somos uma marcenaria especializada em móveis planejados em MDF. Cada projeto é feito com dedicação, precisão e qualidade, garantindo que cada detalhe se encaixe perfeitamente no seu espaço.</p>
-    <p>Comandada por <strong>Bruno</strong>, a D’avila Móveis atende com pontualidade e excelência de segunda a sábado.</p>
-  </section>
+<section>
+  <h2><i class="fab fa-instagram"></i> Gestão Profissional de Instagram</h2>
+  <ul>
+    <li>Social Media Júnior: R$500 a R$1000/mês</li>
+    <li>Social Media Pleno: R$1000 a R$2500/mês</li>
+    <li>Agência completa: R$3500 a R$6000/mês</li>
+  </ul>
+  <p><strong>Inclui:</strong> Criação de conteúdo, agendamento, interação com seguidores, análise de resultados e anúncios.</p>
+</section>
 
-  <section id="contato" class="contact">
-    <h2>Contato</h2>
-    <p><strong>📧 E-mail:</strong> <a href="mailto:davilamoveis@outlook.com">davilamoveis@outlook.com</a></p>
-    <p><strong>📞 WhatsApp:</strong> <a href="https://wa.me/55519985709778" target="_blank">51 99857-0978</a></p>
-    <p><strong>📍 Atendimento:</strong> Segunda a Sexta das 8h às 18h <br>Sábado das 8h às 12h</p>
-    <button class="btn" onclick="location.href='https://wa.me/55519985709778'">Fale agora pelo WhatsApp</button>
-  </section>
+<section>
+  <h2><i class="fas fa-mobile-alt"></i> Desenvolvimento de Aplicativos</h2>
+  <p><strong>Apps de Jogos:</strong> Criação de games educativos, interativos e com monetização.</p>
+  <p><strong>Apps de Gestão Financeira:</strong> Controle de caixa, relatórios, gráficos e integração com bancos.</p>
+</section>
 
-  <footer>
-    <p>&copy; 2025 D’avila Móveis - Todos os direitos reservados</p>
-    <div class="social">
-      <a href="https://www.instagram.com/davilamoveissobmedida" target="_blank">📷 Instagram</a>
-      <a href="mailto:davilamoveis@outlook.com">✉️ E-mail</a>
-    </div>
-  </footer>
+<section>
+  <h2><i class="fas fa-chart-line"></i> Análise de Dados</h2>
+  <p>Análise contínua do desempenho de sites, apps e redes sociais com foco em melhorias reais, baseadas em dados e métricas.</p>
+</section>
 
-  <script>
-    console.log("Site carregado para D’avila Móveis - by Bruno");
-  </script>
+<section>
+  <h2><i class="fas fa-coins"></i> Fatores que Influenciam nos Custos</h2>
+  <ul>
+    <li>Complexidade do projeto</li>
+    <li>Frequência de atualizações</li>
+    <li>Nível de automação exigido</li>
+    <li>Experiência e prazo</li>
+  </ul>
+</section>
+
+<section class="contato">
+  <h2><i class="fas fa-address-card"></i> Contato</h2>
+  <p><strong>Email:</strong> <a href="mailto:dionegalato1212@gmail.com">dionegalato1212@gmail.com</a></p>
+  <p><strong>WhatsApp:</strong> <a href="https://wa.me/5551989378751" target="_blank">(51) 98937-8751</a></p>
+  <p><strong>Instagram:</strong> <a href="https://instagram.com/wiggers_dionatan" target="_blank">@wiggers_dionatan</a></p>
+</section>
+
+<footer>
+  © 2025 Dionatan Wiggers – Todos os direitos reservados
+</footer>
+
 </body>
 </html>
