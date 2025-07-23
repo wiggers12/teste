@@ -20,10 +20,13 @@
       text-align: center;
     }
    .logo {
-  max-width: 220px;
+  max-width: 320px;
+  width: 100%;
   height: auto;
   display: block;
-  margin: 0 auto 15px auto;
+  margin: 0 auto 20px auto;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(29, 233, 182, 0.3);
 }
     .sublogo {
       font-size: 1.2em;
@@ -105,9 +108,10 @@
       background: #e1306c;
     }
     @media (max-width: 600px) {
-  header h1 {
-    font-size: 1.8em;
+  .logo {
+    max-width: 200px;
   }
+}
 
   .logo {
     max-width: 140px;
