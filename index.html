@@ -3,83 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dionatan Alexsander - Portfólio</title>
+    <title>Dionatan Wiggers - Portfólio</title>
     <!-- Tailwind CSS CDN para estilização rápida e responsiva -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Estilos globais para a fonte e cor de fundo */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6; /* Cor de fundo suave */
             color: #333;
         }
+        /* Container principal para centralizar o conteúdo e limitar a largura */
         .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 1rem;
+            max-width: 1000px; /* Largura máxima para desktops */
+            margin: 0 auto; /* Centraliza o container */
+            padding: 1.5rem; /* Espaçamento interno em todos os lados */
         }
+        /* Estilo para o cabeçalho da página */
         .header-bg {
             background-color: #1f2937; /* Cor escura para o cabeçalho */
-            color: #fff;
+            color: #fff; /* Texto branco */
         }
+        /* Estilo para os cards de projeto */
         .card {
-            background-color: #ffffff;
-            border-radius: 0.75rem; /* rounded-xl */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-md */
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            transition: transform 0.2s ease-in-out;
+            background-color: #ffffff; /* Fundo branco */
+            border-radius: 0.75rem; /* Cantos arredondados */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            padding: 2rem; /* Espaçamento interno maior */
+            margin-bottom: 2rem; /* Espaçamento entre os cards */
+            transition: transform 0.2s ease-in-out; /* Transição suave ao passar o mouse */
+            display: flex; /* Habilita Flexbox para alinhamento interno */
+            flex-direction: column; /* Organiza os itens em coluna */
+            justify-content: space-between; /* Distribui o espaço entre os itens, empurrando o botão para baixo */
         }
         .card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-5px); /* Efeito de levantar no hover */
         }
+        /* Estilo para os botões de link */
         .link-button {
-            display: inline-block;
+            display: inline-block; /* Permite aplicar padding e margin */
             background-color: #3b82f6; /* Cor azul para o botão */
-            color: #fff;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem; /* rounded-lg */
-            text-decoration: none;
-            font-weight: 600;
-            transition: background-color 0.2s ease-in-out;
+            color: #fff; /* Texto branco */
+            padding: 0.75rem 1.5rem; /* Espaçamento interno */
+            border-radius: 0.5rem; /* Cantos arredondados */
+            text-decoration: none; /* Remove sublinhado */
+            font-weight: 600; /* Texto semi-negrito */
+            transition: background-color 0.2s ease-in-out; /* Transição suave no hover */
+            align-self: flex-start; /* Alinha o botão à esquerda dentro do card Flexbox */
+            margin-top: 1rem; /* Espaçamento acima do botão */
         }
         .link-button:hover {
             background-color: #2563eb; /* Azul mais escuro no hover */
         }
+        /* Estilo para os títulos de seção */
         .section-title {
-            font-size: 1.875rem; /* text-3xl */
-            font-weight: 700; /* font-bold */
-            color: #1f2937;
-            margin-bottom: 1.5rem;
-            text-align: center;
+            font-size: 2.25rem; /* Tamanho da fonte maior */
+            font-weight: 700; /* Negrito */
+            color: #1f2937; /* Cor escura */
+            margin-bottom: 2rem; /* Espaçamento abaixo do título */
+            text-align: center; /* Centraliza o texto */
         }
+        /* Estilo para textos destacados */
         .highlight {
-            font-weight: 600; /* semi-bold */
+            font-weight: 600; /* Semi-negrito */
             color: #1d4ed8; /* Azul escuro para destaque */
+        }
+        /* Garante que o conteúdo de texto ocupe o espaço disponível antes do botão */
+        .text-content {
+            flex-grow: 1;
+        }
+        /* Estilo para a lista na seção Sobre Mim */
+        .about-list {
+            list-style: none; /* Remove os marcadores de lista padrão */
+            padding: 0;
+            margin: 0;
+            text-align: left; /* Alinha o texto da lista à esquerda */
+        }
+        .about-list li {
+            margin-bottom: 0.75rem; /* Espaçamento entre os itens da lista */
+            padding-left: 1.5rem; /* Espaço para o ícone customizado */
+            position: relative;
+        }
+        .about-list li::before {
+            content: '•'; /* Marcador de lista customizado (ponto) */
+            color: #3b82f6; /* Cor do marcador */
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1.5em; /* Ajusta a posição do marcador */
+            position: absolute;
         }
     </style>
 </head>
 <body class="antialiased">
-    <!-- Cabeçalho -->
+    <!-- Cabeçalho da página -->
     <header class="header-bg py-8">
         <div class="container text-center">
-            <h1 class="text-4xl font-bold mb-2">Dionatan Alexsander dos Santos Wiggers</h1>
+            <h1 class="text-4xl font-bold mb-2">Dionatan Wiggers</h1>
             <p class="text-lg">Analista de Projetos Digitais e Gestor de Negócios</p>
-            <div class="mt-4">
-                <a href="mailto:dionegalato1212@gmail.com" class="text-blue-300 hover:underline mx-2">dionegalato1212@gmail.com</a>
-                <span class="text-gray-400">|</span>
-                <span class="text-gray-400 mx-2">Porto Alegre, RS</span>
+            <!-- Ajustes para o alinhamento do contato -->
+            <div class="mt-4 flex flex-col sm:flex-row justify-center items-center text-center sm:space-x-4">
+                <a href="mailto:dionegalato1212@gmail.com" class="text-blue-300 hover:underline mb-2 sm:mb-0">dionegalato1212@gmail.com</a>
+                <span class="hidden sm:inline text-gray-400">|</span>
+                <span class="text-gray-400">Porto Alegre, RS</span>
             </div>
         </div>
     </header>
 
-    <!-- Seção Sobre Mim -->
+    <!-- Seção "Sobre Mim" -->
     <section class="py-12 bg-white">
         <div class="container">
             <h2 class="section-title">Sobre Mim</h2>
-            <p class="text-lg leading-relaxed text-gray-700 text-center">
-                Profissional proativo e autodidata, com sólida experiência no <span class="highlight">desenvolvimento e gestão de projetos digitais</span> (desde janeiro de 2023) e uma robusta trajetória de <span class="highlight">mais de 5 anos como CEO e Professor de academia de Jiu-Jitsu</span>. Possuo proficiência em <span class="highlight">Power BI e SQL</span>, além de forte habilidade em análise de desempenho, planejamento estratégico, liderança e resolução de problemas. Busco uma oportunidade como Analista para aplicar minha visão analítica, capacidade de inovação e experiência em gestão, contribuindo significativamente com os objetivos da equipe e da organização.
-            </p>
+            <ul class="about-list text-lg leading-relaxed text-gray-700 mx-auto max-w-2xl">
+                <li>Profissional proativo e autodidata, com sólida experiência no <span class="highlight">desenvolvimento e gestão de projetos digitais</span> (desde janeiro de 2023).</li>
+                <li>Possuo uma robusta trajetória de <span class="highlight">mais de 5 anos como CEO e Professor de academia de Jiu-Jitsu</span>, onde gerenciei equipes e analisei performance para resultados de excelência.</li>
+                <li>Proficiência em ferramentas essenciais como <span class="highlight">Power BI e SQL</span>, aplicadas na transformação de dados em insights acionáveis.</li>
+                <li>Forte habilidade em <span class="highlight">análise de desempenho, planejamento estratégico, liderança e resolução de problemas</span>.</li>
+                <li>Busco uma oportunidade como Analista para aplicar minha visão analítica, capacidade de inovação e experiência em gestão, contribuindo significativamente com os objetivos da equipe e da organização.</li>
+            </ul>
         </div>
     </section>
 
@@ -90,65 +132,71 @@
 
             <!-- Projeto 1: App de Vagas de Emprego -->
             <div class="card">
-                <h3 class="text-2xl font-semibold mb-3 text-gray-800">App de Vagas de Emprego</h3>
-                <p class="text-gray-700 mb-4">
-                    Desenvolvimento de uma aplicação web interativa para otimizar a busca e visualização de vagas de emprego, visando facilitar o acesso de usuários a oportunidades no mercado.
-                </p>
-                <p class="text-gray-700 mb-4">
-                    <span class="highlight">Meu Papel:</span> Realizei o <span class="font-semibold">levantamento de requisitos</span> para entender as necessidades dos usuários na busca por vagas. Conduzi <span class="font-semibold">análises de usabilidade</span> para otimizar a interface e a navegação, garantindo uma experiência fluida. Atuei na <span class="font-semibold">resolução de problemas</span> identificados durante o desenvolvimento e testes.
-                </p>
-                <p class="text-gray-700 mb-4">
-                    <span class="highlight">Tecnologias:</span> HTML, CSS, JavaScript.
-                </p>
-                <p class="text-gray-700 mb-6">
-                    <span class="highlight">Impacto:</span> O projeto resultou em uma ferramenta funcional que demonstra a capacidade de transformar requisitos em soluções práticas e eficientes para o usuário final.
-                </p>
+                <div class="text-content">
+                    <h3 class="text-2xl font-semibold mb-3 text-gray-800">App de Vagas de Emprego</h3>
+                    <p class="text-gray-700 mb-4">
+                        Desenvolvimento de uma aplicação web interativa para otimizar a busca e visualização de vagas de emprego, visando facilitar o acesso de usuários a oportunidades no mercado.
+                    </p>
+                    <p class="text-gray-700 mb-4">
+                        <span class="highlight">Meu Papel:</span> Realizei o <span class="font-semibold">levantamento de requisitos</span> para entender as necessidades dos usuários na busca por vagas. Conduzi <span class="font-semibold">análises de usabilidade</span> para otimizar a interface e a navegação, garantindo uma experiência fluida. Atuei na <span class="font-semibold">resolução de problemas</span> identificados durante o desenvolvimento e testes.
+                    </p>
+                    <p class="text-gray-700 mb-4">
+                        <span class="highlight">Tecnologias:</span> HTML, CSS, JavaScript.
+                    </p>
+                    <p class="text-gray-700 mb-6">
+                        <span class="highlight">Impacto:</span> O projeto resultou em uma ferramenta funcional que demonstra a capacidade de transformar requisitos em soluções práticas e eficientes para o usuário final.
+                    </p>
+                </div>
                 <a href="https://wiggers12.github.io/Vagas-de-emprego-app/" target="_blank" class="link-button">Ver Projeto</a>
             </div>
 
-            <!-- Projeto 2: Website "Doce Sabor" -->
+            <!-- Projeto 2: Desafio dos 60 Segundos -->
             <div class="card">
-                <h3 class="text-2xl font-semibold mb-3 text-gray-800">Website "Doce Sabor"</h3>
-                <p class="text-gray-700 mb-4">
-                    Criação de um site institucional para uma confeitaria, com o objetivo de apresentar produtos de forma atrativa e estabelecer uma presença online profissional para o negócio.
-                </p>
-                <p class="text-gray-700 mb-4">
-                    <span class="highlight">Meu Papel:</span> Atuei no <span class="font-semibold">entendimento das necessidades do cliente</span> (a confeitaria) para traduzir a identidade visual e os produtos em uma estrutura web eficaz. Realizei <span class="font-semibold">análises de design e experiência do usuário (UX)</span> para garantir que o site fosse intuitivo e visualmente agradável, facilitando a navegação e a visualização dos itens.
-                </p>
-                <p class="text-gray-700 mb-4">
-                    <span class="highlight">Tecnologias:</span> HTML, CSS, JavaScript.
-                </p>
-                <p class="text-gray-700 mb-6">
-                    <span class="highlight">Impacto:</span> Proporcionou ao cliente uma vitrine digital profissional, melhorando a visibilidade e a apresentação dos seus produtos online.
-                </p>
-                <a href="https://wiggers12.github.io/Doce-sabor/" target="_blank" class="link-button">Ver Projeto</a>
+                <div class="text-content">
+                    <h3 class="text-2xl font-semibold mb-3 text-gray-800">Desafio dos 60 Segundos</h3>
+                    <p class="text-gray-700 mb-4">
+                        Criação de um jogo web de raciocínio rápido, onde o objetivo é testar a agilidade e a capacidade de decisão do usuário em um curto período de tempo, com foco em interatividade e desafio.
+                    </p>
+                    <p class="text-gray-700 mb-4">
+                        <span class="highlight">Meu Papel:</span> Atuei na <span class="font-semibold">concepção da lógica do jogo</span>, garantindo um desafio equilibrado e envolvente para o usuário. Realizei <span class="font-semibold">análises de jogabilidade e experiência do usuário</span> para otimizar a fluidez das interações e a clareza das regras dentro do limite de tempo. Fui responsável pelo <span class="font-semibold">desenvolvimento completo</span>, desde a estrutura visual até a implementação das regras e do cronômetro.
+                    </p>
+                    <p class="text-gray-700 mb-4">
+                        <span class="highlight">Tecnologias:</span> HTML, CSS, JavaScript.
+                    </p>
+                    <p class="text-gray-700 mb-6">
+                        <span class="highlight">Impacto:</span> Demonstra minha habilidade em criar soluções interativas e dinâmicas, aplicando lógica de programação e foco na experiência do usuário para um desafio envolvente e funcional.
+                    </p>
+                </div>
+                <a href="https://wiggers12.github.io/" target="_blank" class="link-button">Ver Projeto</a>
             </div>
 
             <!-- Projeto 3: Website "Global Aquecedores" -->
             <div class="card">
-                <h3 class="text-2xl font-semibold mb-3 text-gray-800">Website "Global Aquecedores"</h3>
-                <p class="text-gray-700 mb-4">
-                    Desenvolvimento de um site institucional completo para a empresa Global Aquecedores, focado em fornecer informações detalhadas sobre produtos e serviços, e estabelecer um canal de comunicação eficaz com clientes.
-                </p>
-                <p class="text-gray-700 mb-4">
-                    <span class="highlight">Meu Papel:</span> Conduzi o <span class="font-semibold">levantamento de requisitos</span> junto à empresa para mapear as informações essenciais e a estrutura de navegação. Realizei <span class="font-semibold">análises de conteúdo e arquitetura da informação</span> para organizar os dados de forma lógica e acessível. Participei da <span class="font-semibold">otimização para motores de busca (SEO básico)</span> para melhorar a visibilidade online do site.
-                </p>
-                <p class="text-gray-700 mb-4">
-                    <span class="highlight">Tecnologias:</span> HTML, CSS, JavaScript.
-                </p>
-                <p class="text-gray-700 mb-6">
-                    <span class="highlight">Impacto:</span> Fortaleceu a presença digital da empresa, tornando-a mais acessível a potenciais clientes e fornecendo um recurso informativo completo.
-                </p>
+                <div class="text-content">
+                    <h3 class="text-2xl font-semibold mb-3 text-gray-800">Website "Global Aquecedores"</h3>
+                    <p class="text-gray-700 mb-4">
+                        Desenvolvimento de um site institucional completo para a empresa Global Aquecedores, focado em fornecer informações detalhadas sobre produtos e serviços, e estabelecer um canal de comunicação eficaz com clientes.
+                    </p>
+                    <p class="text-gray-700 mb-4">
+                        <span class="highlight">Meu Papel:</span> Conduzi o <span class="font-semibold">levantamento de requisitos</span> junto à empresa para mapear as informações essenciais e a estrutura de navegação. Realizei <span class="font-semibold">análises de conteúdo e arquitetura da informação</span> para organizar os dados de forma lógica e acessível. Participei da <span class="font-semibold">otimização para motores de busca (SEO básico)</span> para melhorar a visibilidade online do site.
+                    </p>
+                    <p class="text-gray-700 mb-4">
+                        <span class="highlight">Tecnologias:</span> HTML, CSS, JavaScript.
+                    </p>
+                    <p class="text-gray-700 mb-6">
+                        <span class="highlight">Impacto:</span> Fortaleceu a presença digital da empresa, tornando-a mais acessível a potenciais clientes e fornecendo um recurso informativo completo.
+                    </p>
+                </div>
                 <a href="https://globalaquecedores.agr.br/" target="_blank" class="link-button">Ver Projeto</a>
             </div>
-
+            
         </div>
     </section>
 
     <!-- Rodapé -->
     <footer class="bg-gray-800 text-white py-6 text-center">
         <div class="container">
-            <p>&copy; 2025 Dionatan Alexsander. Todos os direitos reservados.</p>
+            <p>&copy; 2025 Dionatan Wiggers. Todos os direitos reservados.</p>
         </div>
     </footer>
 </body>
