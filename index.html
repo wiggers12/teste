@@ -1,197 +1,155 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>W.W | </title>
-<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0K...CYII=">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-  font-family: 'Montserrat', sans-serif;
-  margin: 0;
-  background: #0e0e0e;
-  color: #ddd;
-    }
-    header {
-      background: #1a1a1a;
-      color: white;
-      padding: 50px 20px 30px 20px;
-      text-align: center;
-    }
-   .logo {
-  max-width: 320px;
-  width: 100%;
-  height: auto;
-  display: block;
-  margin: 0 auto 20px auto;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(29, 233, 182, 0.3);
-}
-    .sublogo {
-      font-size: 1.2em;
-      margin-top: -10px;
-      font-weight: 300;
-      color: #bbb;
-    }
-    header h1 {
-      margin-top: 30px;
-      font-size: 2.3em;
-      color: #1de9b6;
-    }
-    header p {
-      font-size: 1.1em;
-      margin-bottom: 0;
-      color: #aaa;
-    }
-    section {
-      max-width: 900px;
-      margin: 40px auto;
-      background: #1c1c1c;
-      border-radius: 8px;
-      padding: 30px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    }
-    section h2 {
-      color: #1de9b6;
-      margin-top: 0;
-    }
-    ul {
-      padding-left: 20px;
-    }
-    li {
-      margin-bottom: 10px;
-    }
-    strong.valor {
-      color: #00ffcc;
-      font-weight: bold;
-    }
-    .bloco {
-      background: #2c2c2c;
-      padding: 12px 18px;
-      margin: 15px 0;
-      border-left: 5px solid #1de9b6;
-      border-radius: 6px;
-    }
-    .contato a {
-      text-decoration: none;
-      color: #1de9b6;
-      font-weight: bold;
-    }
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: #1a1a1a;
-      color: white;
-      margin-top: 40px;
-    }
-    .btn-float {
-      position: fixed;
-      width: 55px;
-      height: 55px;
-      bottom: 25px;
-      right: 25px;
-      background-color: #1de9b6;
-      color: #000;
-      border-radius: 50%;
-      text-align: center;
-      font-size: 24px;
-      box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-    }
-    .btn-float.instagram {
-      bottom: 95px;
-      background: #e1306c;
-    }
-    @media (max-width: 600px) {
-  .logo {
-    max-width: 200px;
-  }
-}
-
-  .logo {
-    max-width: 140px;
-  }
-}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dionatan Alexsander - Portfólio</title>
+    <!-- Tailwind CSS CDN para estilização rápida e responsiva -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Cor de fundo suave */
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        .header-bg {
+            background-color: #1f2937; /* Cor escura para o cabeçalho */
+            color: #fff;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-md */
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .link-button {
+            display: inline-block;
+            background-color: #3b82f6; /* Cor azul para o botão */
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .link-button:hover {
+            background-color: #2563eb; /* Azul mais escuro no hover */
+        }
+        .section-title {
+            font-size: 1.875rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .highlight {
+            font-weight: 600; /* semi-bold */
+            color: #1d4ed8; /* Azul escuro para destaque */
+        }
+    </style>
 </head>
-<body>
+<body class="antialiased">
+    <!-- Cabeçalho -->
+    <header class="header-bg py-8">
+        <div class="container text-center">
+            <h1 class="text-4xl font-bold mb-2">Dionatan Alexsander dos Santos Wiggers</h1>
+            <p class="text-lg">Analista de Projetos Digitais e Gestor de Negócios</p>
+            <div class="mt-4">
+                <a href="mailto:dionegalato1212@gmail.com" class="text-blue-300 hover:underline mx-2">dionegalato1212@gmail.com</a>
+                <span class="text-gray-400">|</span>
+                <span class="text-gray-400 mx-2">Porto Alegre, RS</span>
+            </div>
+        </div>
+    </header>
 
-<header>
-  <img src="foto12.png" alt="Logo W.W" class="logo">
-  <div class="sublogo"></div>
-  <h1>Dionatan Wiggers</h1>
-</header>
+    <!-- Seção Sobre Mim -->
+    <section class="py-12 bg-white">
+        <div class="container">
+            <h2 class="section-title">Sobre Mim</h2>
+            <p class="text-lg leading-relaxed text-gray-700 text-center">
+                Profissional proativo e autodidata, com sólida experiência no <span class="highlight">desenvolvimento e gestão de projetos digitais</span> (desde janeiro de 2023) e uma robusta trajetória de <span class="highlight">mais de 5 anos como CEO e Professor de academia de Jiu-Jitsu</span>. Possuo proficiência em <span class="highlight">Power BI e SQL</span>, além de forte habilidade em análise de desempenho, planejamento estratégico, liderança e resolução de problemas. Busco uma oportunidade como Analista para aplicar minha visão analítica, capacidade de inovação e experiência em gestão, contribuindo significativamente com os objetivos da equipe e da organização.
+            </p>
+        </div>
+    </section>
 
-<section>
-  <h2>Quem sou eu?</h2>
-  <div class="bloco">
-    Sou Dionatan Wiggers, desenvolvedor web com ampla experiência em criação de sites profissionais, aplicativos personalizados e gestão digital. Entrego soluções completas com foco em performance, estética e resultados.
-  </div>
-</section>
+    <!-- Seção de Projetos -->
+    <section class="py-12 bg-gray-100">
+        <div class="container">
+            <h2 class="section-title">Meus Projetos</h2>
 
-<section>
-  <h2><i class="fas fa-globe"></i> Criação de Sites</h2>
-  <ul>
-    <li>Registro de domínio: <span class="valor">R$50 a R$150/ano</span></li>
-    <li>Hospedagem: <span class="valor">R$20 a R$450/mês</span></li>
-    <li>Site simples: <span class="valor">a partir de R$300</span></li>
-    <li>Com e-commerce: <span class="valor">a partir de R$1000</span></li>
-    <li>Manutenção: sob demanda</li>
-  </ul>
-</section>
+            <!-- Projeto 1: App de Vagas de Emprego -->
+            <div class="card">
+                <h3 class="text-2xl font-semibold mb-3 text-gray-800">App de Vagas de Emprego</h3>
+                <p class="text-gray-700 mb-4">
+                    Desenvolvimento de uma aplicação web interativa para otimizar a busca e visualização de vagas de emprego, visando facilitar o acesso de usuários a oportunidades no mercado.
+                </p>
+                <p class="text-gray-700 mb-4">
+                    <span class="highlight">Meu Papel:</span> Realizei o <span class="font-semibold">levantamento de requisitos</span> para entender as necessidades dos usuários na busca por vagas. Conduzi <span class="font-semibold">análises de usabilidade</span> para otimizar a interface e a navegação, garantindo uma experiência fluida. Atuei na <span class="font-semibold">resolução de problemas</span> identificados durante o desenvolvimento e testes.
+                </p>
+                <p class="text-gray-700 mb-4">
+                    <span class="highlight">Tecnologias:</span> HTML, CSS, JavaScript.
+                </p>
+                <p class="text-gray-700 mb-6">
+                    <span class="highlight">Impacto:</span> O projeto resultou em uma ferramenta funcional que demonstra a capacidade de transformar requisitos em soluções práticas e eficientes para o usuário final.
+                </p>
+                <a href="https://wiggers12.github.io/Vagas-de-emprego-app/" target="_blank" class="link-button">Ver Projeto</a>
+            </div>
 
-<section>
-  <h2><i class="fab fa-instagram"></i> Gestão de Instagram</h2>
-  <ul>
-    <li>Júnior: <span class="valor">R$500 a R$1000/mês</span></li>
-    <li>Pleno: <span class="valor">R$1000 a R$2500/mês</span></li>
-    <li>Agência: <span class="valor">R$3500 a R$6000/mês</span></li>
-  </ul>
-  <div class="bloco">
-    Inclui: conteúdo, agendamento, interação com seguidores, análise e anúncios.
-  </div>
-</section>
+            <!-- Projeto 2: Website "Doce Sabor" -->
+            <div class="card">
+                <h3 class="text-2xl font-semibold mb-3 text-gray-800">Website "Doce Sabor"</h3>
+                <p class="text-gray-700 mb-4">
+                    Criação de um site institucional para uma confeitaria, com o objetivo de apresentar produtos de forma atrativa e estabelecer uma presença online profissional para o negócio.
+                </p>
+                <p class="text-gray-700 mb-4">
+                    <span class="highlight">Meu Papel:</span> Atuei no <span class="font-semibold">entendimento das necessidades do cliente</span> (a confeitaria) para traduzir a identidade visual e os produtos em uma estrutura web eficaz. Realizei <span class="font-semibold">análises de design e experiência do usuário (UX)</span> para garantir que o site fosse intuitivo e visualmente agradável, facilitando a navegação e a visualização dos itens.
+                </p>
+                <p class="text-gray-700 mb-4">
+                    <span class="highlight">Tecnologias:</span> HTML, CSS, JavaScript.
+                </p>
+                <p class="text-gray-700 mb-6">
+                    <span class="highlight">Impacto:</span> Proporcionou ao cliente uma vitrine digital profissional, melhorando a visibilidade e a apresentação dos seus produtos online.
+                </p>
+                <a href="https://wiggers12.github.io/Doce-sabor/" target="_blank" class="link-button">Ver Projeto</a>
+            </div>
 
-<section>
-  <h2><i class="fas fa-mobile-alt"></i> Desenvolvimento de Apps</h2>
-  <div class="bloco">
-    🎮 Jogos: educativos, interativos e com monetização
-  </div>
-  <div class="bloco">
-    📊 Gestão Financeira: controle de caixa, relatórios e integração
-  </div>
-</section>
+            <!-- Projeto 3: Website "Global Aquecedores" -->
+            <div class="card">
+                <h3 class="text-2xl font-semibold mb-3 text-gray-800">Website "Global Aquecedores"</h3>
+                <p class="text-gray-700 mb-4">
+                    Desenvolvimento de um site institucional completo para a empresa Global Aquecedores, focado em fornecer informações detalhadas sobre produtos e serviços, e estabelecer um canal de comunicação eficaz com clientes.
+                </p>
+                <p class="text-gray-700 mb-4">
+                    <span class="highlight">Meu Papel:</span> Conduzi o <span class="font-semibold">levantamento de requisitos</span> junto à empresa para mapear as informações essenciais e a estrutura de navegação. Realizei <span class="font-semibold">análises de conteúdo e arquitetura da informação</span> para organizar os dados de forma lógica e acessível. Participei da <span class="font-semibold">otimização para motores de busca (SEO básico)</span> para melhorar a visibilidade online do site.
+                </p>
+                <p class="text-gray-700 mb-4">
+                    <span class="highlight">Tecnologias:</span> HTML, CSS, JavaScript.
+                </p>
+                <p class="text-gray-700 mb-6">
+                    <span class="highlight">Impacto:</span> Fortaleceu a presença digital da empresa, tornando-a mais acessível a potenciais clientes e fornecendo um recurso informativo completo.
+                </p>
+                <a href="https://globalaquecedores.agr.br/" target="_blank" class="link-button">Ver Projeto</a>
+            </div>
 
-<section>
-  <h2><i class="fas fa-chart-line"></i> Análise de Dados</h2>
-  <div class="bloco">
-    Monitoramento de desempenho com relatórios personalizados para tomadas de decisão estratégicas.
-  </div>
-</section>
+        </div>
+    </section>
 
-<section class="contato">
-  <h2><i class="fas fa-address-card"></i> Contato</h2>
-  <p>Email: <a href="mailto:dionegalato1212@gmail.com">dionegalato1212@gmail.com</a></p>
-  <p>WhatsApp: <a href="https://wa.me/5551989378751">(51) 98937-8751</a></p>
-  <p>Instagram: <a href="https://instagram.com/wiggers_dionatan">@wiggers_dionatan</a></p>
-</section>
-
-<a class="btn-float" href="https://wa.me/5551989378751" target="_blank" title="WhatsApp">
-  <i class="fab fa-whatsapp"></i>
-</a>
-<a class="btn-float instagram" href="https://instagram.com/wiggers_dionatan" target="_blank" title="Instagram">
-  <i class="fab fa-instagram"></i>
-</a>
-
-<footer>
-  © 2025 Dionatan Wiggers – Todos os direitos reservados
-</footer>
-
+    <!-- Rodapé -->
+    <footer class="bg-gray-800 text-white py-6 text-center">
+        <div class="container">
+            <p>&copy; 2025 Dionatan Alexsander. Todos os direitos reservados.</p>
+        </div>
+    </footer>
 </body>
 </html>
