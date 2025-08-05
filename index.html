@@ -6,6 +6,8 @@
     <title>Dionatan Wiggers - Portfólio</title>
     <!-- Tailwind CSS CDN para estilização rápida e responsiva -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome CDN para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         /* Estilos globais para a fonte e cor de fundo */
@@ -56,13 +58,21 @@
         .link-button:hover {
             background-color: #2563eb; /* Azul mais escuro no hover */
         }
-        /* Estilo para os títulos de seção */
+        /* Estilo para os títulos de seção com ícone */
         .section-title {
             font-size: 2.25rem; /* Tamanho da fonte maior */
             font-weight: 700; /* Negrito */
             color: #1f2937; /* Cor escura */
             margin-bottom: 2rem; /* Espaçamento abaixo do título */
             text-align: center; /* Centraliza o texto */
+            display: flex; /* Habilita Flexbox para alinhar texto e ícone */
+            justify-content: center; /* Centraliza o conteúdo (ícone + texto) */
+            align-items: center; /* Alinha verticalmente */
+            gap: 0.75rem; /* Espaçamento entre o ícone e o texto */
+        }
+        .section-title i {
+            color: #3b82f6; /* Cor do ícone */
+            font-size: 1.875rem; /* Tamanho do ícone ligeiramente menor que o texto */
         }
         /* Estilo para textos destacados */
         .highlight {
@@ -114,7 +124,7 @@
     <!-- Seção "Sobre Mim" -->
     <section class="py-12 bg-white">
         <div class="container">
-            <h2 class="section-title">Sobre Mim</h2>
+            <h2 class="section-title"><i class="fas fa-user-tie"></i> Sobre Mim</h2>
             <ul class="about-list text-lg leading-relaxed text-gray-700 mx-auto max-w-2xl">
                 <li>Profissional proativo e autodidata, com sólida experiência no <span class="highlight">desenvolvimento e gestão de projetos digitais</span> (desde janeiro de 2023).</li>
                 <li>Possuo uma robusta trajetória de <span class="highlight">mais de 5 anos como CEO e Professor de academia de Jiu-Jitsu</span>, onde gerenciei equipes e analisei performance para resultados de excelência.</li>
@@ -128,7 +138,7 @@
     <!-- Seção de Projetos -->
     <section class="py-12 bg-gray-100">
         <div class="container">
-            <h2 class="section-title">Meus Projetos</h2>
+            <h2 class="section-title"><i class="fas fa-laptop-code"></i> Meus Projetos</h2>
 
             <!-- Projeto 1: App de Vagas de Emprego -->
             <div class="card">
