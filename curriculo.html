@@ -4,86 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Currículo - Dionatan Wiggers</title>
-    <!-- Tailwind CSS CDN para estilização rápida e responsiva -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Fonte Inter do Google Fonts para um visual moderno e limpo -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Estilos globais para o corpo da página */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* Cor de fundo suave */
-            color: #333; /* Cor de texto padrão */
-            line-height: 1.6; /* Altura da linha para melhor legibilidade */
+            background-color: #f3f4f6;
+            color: #333;
+            line-height: 1.6;
         }
-        /* Container principal para centralizar o conteúdo e limitar a largura */
         .container {
-            max-width: 900px; /* Largura máxima para o conteúdo do currículo */
-            margin: 2rem auto; /* Centraliza e adiciona margem superior/inferior */
-            padding: 1.5rem; /* Espaçamento interno */
-            background-color: #ffffff; /* Fundo branco para o currículo */
-            border-radius: 0.75rem; /* Cantos arredondados */
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* Sombra suave para destacar */
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
         }
-        /* Estilo para títulos de seção */
         .section-title {
-            font-size: 1.875rem; /* text-3xl */
-            font-weight: 700; /* font-bold */
-            color: #1f2937; /* Cor escura para títulos */
-            margin-bottom: 1.5rem; /* Espaçamento abaixo do título */
-            padding-bottom: 0.5rem; /* Pequeno padding na parte inferior */
-            border-bottom: 2px solid #e5e7eb; /* Linha divisória */
-            text-align: left; /* Alinha o texto à esquerda */
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            text-align: left;
         }
-        /* Estilo para sub-títulos de experiência/formação */
         .subsection-title {
-            font-size: 1.25rem; /* text-xl */
-            font-weight: 600; /* font-semibold */
-            color: #374151; /* Cor um pouco mais clara que o título principal */
-            margin-bottom: 0.5rem; /* Espaçamento abaixo do sub-título */
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
         }
-        /* Estilo para textos destacados (habilidades, nomes de empresas) */
         .highlight {
-            font-weight: 600; /* semi-bold */
-            color: #1d4ed8; /* Azul escuro para destaque */
+            font-weight: 600;
+            color: #1d4ed8;
         }
-        /* Estilo para listas de itens (experiência, habilidades) */
         ul {
-            list-style: none; /* Remove marcadores padrão */
-            padding-left: 0; /* Remove padding padrão */
+            list-style: none;
+            padding-left: 0;
         }
         ul li {
-            margin-bottom: 0.5rem; /* Espaçamento entre itens da lista */
+            margin-bottom: 0.5rem;
             position: relative;
-            padding-left: 1.5rem; /* Espaço para marcador customizado */
+            padding-left: 1.5rem;
         }
         ul li::before {
-            content: '•'; /* Marcador de lista customizado (ponto) */
-            color: #3b82f6; /* Cor do marcador */
+            content: '•';
+            color: #3b82f6;
             font-weight: bold;
             display: inline-block;
             width: 1em;
-            margin-left: -1.5em; /* Ajusta a posição do marcador */
+            margin-left: -1.5em;
             position: absolute;
         }
-        /* Estilo específico para a lista de habilidades para alinhar melhor */
         .skills-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem; /* Espaçamento entre os grupos de habilidades */
+            gap: 1rem;
         }
         .skills-group {
-            flex: 1 1 45%; /* Permite que os grupos se ajustem em 2 colunas em telas maiores */
-            min-width: 280px; /* Largura mínima para evitar que fiquem muito estreitos */
+            flex: 1 1 45%;
+            min-width: 280px;
         }
-        /* Estilo para o rodapé */
         footer {
             margin-top: 2rem;
             padding-top: 1.5rem;
             border-top: 1px solid #e5e7eb;
             text-align: center;
             color: #6b7280;
-            font-size: 0.875rem; /* text-sm */
+            font-size: 0.875rem;
         }
     </style>
 </head>
@@ -92,7 +82,7 @@
         <!-- Cabeçalho com nome e informações de contato -->
         <header class="text-center mb-8">
             <h1 class="text-4xl font-bold text-gray-900 mb-2">Dionatan Wiggers</h1>
-            <p class="text-xl text-gray-700 mb-4">Analista de Dados, Analista de Processos e Desenvolvedor Web</p>
+            <p class="text-xl text-gray-700 mb-4">Analista de Dados & Engenheiro de Dados</p>
             <div class="flex flex-col sm:flex-row justify-center items-center text-gray-600 text-sm sm:space-x-4">
                 <a href="mailto:dionegalato1212@gmail.com" class="text-blue-600 hover:underline mb-1 sm:mb-0">dionegalato1212@gmail.com</a>
                 <span class="hidden sm:inline">|</span>
@@ -106,7 +96,7 @@
         <section class="mb-8">
             <h2 class="section-title">Resumo Profissional</h2>
             <p class="text-gray-700 leading-relaxed">
-                Profissional proativo e autodidata, com sólida experiência em **análise e engenharia de dados**, e na otimização de processos. Possuo também conhecimento em **marketing digital, SEO e análise de métricas**, o que me permite ter uma visão completa do desempenho de projetos e negócios. Minha robusta trajetória de <span class="highlight">mais de 5 anos como CEO e Professor de academia de Jiu-Jitsu</span>, onde gerenciei equipes e apliquei melhorias contínuas, é complementada por proficiência em ferramentas como **Power BI**, **SQL**, **Pentaho** e tecnologias **Azure Data**. Minha experiência como <span class="highlight">atleta profissional de Jiu-Jitsu, com múltiplas conquistas mundiais e internacionais</span>, reforça minha disciplina e foco em resultados. Busco uma oportunidade para aplicar minha visão analítica e experiência em gestão, contribuindo significativamente para a eficiência e o crescimento da organização. Possuo total disponibilidade de horário.
+                Profissional com sólida experiência em **engenharia e análise de dados**, com proficiência em tecnologias de pipeline de dados, ETL e Big Data. Minha experiência em <span class="highlight">construção de Data Lakes, manipulação de dados com Pentaho e SSIS e visualização com Power BI e SQL</span> me permite transformar dados brutos em insights estratégicos. Minha trajetória como gestor de negócios e atleta profissional reforça minhas habilidades de liderança e disciplina, essenciais para projetos complexos. Busco uma oportunidade para aplicar minha visão analítica e técnica para impulsionar a tomada de decisões baseada em dados.
             </p>
         </section>
 
@@ -118,12 +108,11 @@
                 <h3 class="subsection-title">Analista de Dados & Engenheiro de Dados (Freelancer/Consultor)</h3>
                 <p class="text-gray-600 mb-2">Janeiro de 2021 – Dezembro de 2023</p>
                 <ul class="text-gray-700">
-                    <li>**Pipeline de Fluxo de Dados:** Atuei na construção de pipelines de dados, coletando dados de diversas fontes e aplicando transformações para torná-los prontos para análise.</li>
-                    <li>**Ferramentas de ETL:** Utilizei ferramentas de Extração, Transformação e Carga (ETL) como <span class="highlight">Pentaho</span> e <span class="highlight">SSIS</span> para criar fluxos de dados eficientes e automatizados.</li>
-                    <li>**Tecnologias de Big Data e Nuvem:** Utilizei tecnologias de Big Data como <span class="highlight">Hadoop</span> e <span class="highlight">Spark</span> para processamento de grandes volumes de dados. Tenho experiência com as ferramentas de dados da Azure, incluindo <span class="highlight">Data Lake Storage, Azure Data Factory, Synapse Analytics e Azure Databricks</span>.</li>
-                    <li>**Data Lake:** Atuei na construção de um **Data Lake** do zero, organizando e armazenando dados brutos para análises futuras e tomada de decisões estratégicas.</li>
-                    <li>**Business Intelligence (BI):** Desenvolvi dashboards e relatórios interativos com <span class="highlight">Power BI</span> para visualizar os dados processados e extrair insights relevantes.</li>
-                    <li>**Controle de Versões:** Utilizei o <span class="highlight">Git</span> para controle de versões e gerenciamento de projetos.</li>
+                    <li>**Engenharia de Dados e Pipelines:** Atuação na construção de pipelines de dados, utilizando ferramentas de ETL como <span class="highlight">Pentaho</span> e <span class="highlight">SSIS</span> para coletar, transformar e carregar dados de diversas fontes, incluindo a criação de um <span class="highlight">Data Lake</span> do zero.</li>
+                    <li>**Análise de Big Data:** Aplicação de conhecimentos em tecnologias de Big Data, como <span class="highlight">Hadoop</span> e <span class="highlight">Spark</span>, para processar e estruturar grandes volumes de dados, tornando-os prontos para análise.</li>
+                    <li>**Business Intelligence (BI) e Visualização:** Desenvolvimento de dashboards e relatórios interativos com <span class="highlight">Power BI</span> para visualizar os dados processados e extrair insights relevantes, apoiando a tomada de decisões.</li>
+                    <li>**Tecnologias Azure:** Experiência com as ferramentas de dados da Azure, incluindo <span class="highlight">Data Lake Storage, Azure Data Factory, Synapse Analytics e Azure Databricks</span>.</li>
+                    <li>**Controle de Versões:** Utilização do <span class="highlight">Git</span> para controle de versões e gerenciamento de projetos.</li>
                 </ul>
             </div>
             
@@ -131,21 +120,16 @@
                 <h3 class="subsection-title">Desenvolvedor e Analista de Projetos Digitais (Autônomo)</h3>
                 <p class="text-gray-600 mb-2">Janeiro de 2023 – Atualmente</p>
                 <ul class="text-gray-700">
-                    <li>**Análise de Requisitos e Processos:** Atuei no **levantamento de requisitos** para os projetos de clientes, transformando suas necessidades em especificações técnicas e **mapeando os processos** para a implementação das soluções.</li>
-                    <li>**Otimização e Análise de Desempenho:** Realizei **análises de desempenho** de aplicações e websites, identificando gargalos e oportunidades de melhoria para **otimizar fluxos e performance**.</li>
-                    <li>**Gestão de Projetos:** Gerenciei o ciclo de vida completo dos projetos, desde a concepção e implementação até a entrega e suporte, garantindo a qualidade e a satisfação do cliente.</li>
-                    <li>**Tecnologias Utilizadas:** HTML, CSS, JavaScript.</li>
+                    <li>**Desenvolvimento Web:** Criei e lancei projetos funcionais como o **App de Vagas de Emprego** e sites para clientes, utilizando HTML, CSS e JavaScript.</li>
+                    <li>**Análise de Métricas:** Apliquei conhecimentos em <span class="highlight">Google Analytics</span> e <span class="highlight">Search Console</span> para monitorar o desempenho de websites, identificando gargalos e oportunidades de otimização.</li>
                 </ul>
             </div>
-
+            
             <div>
                 <h3 class="subsection-title">CEO e Professor (Academia de Jiu-Jitsu)</h3>
                 <p class="text-gray-600 mb-2">Janeiro de 2020 – Fevereiro de 2025</p>
                 <ul class="text-gray-700">
-                    <li>**Otimização de Processos e Crescimento de Negócio:** Inicialmente com 10 alunos, implementei um programa de descontos para famílias e outras estratégias de crescimento que resultaram em um **aumento de 300% no número de alunos**, triplicando a base de clientes da academia.</li>
-                    <li>**Análise de Performance e Desenvolvimento de Talentos:** Desenvolvi um sistema de acompanhamento de atletas, o que me permitiu analisar a performance e o comportamento de cada aluno, transformando pessoas desacreditadas em uma **equipe completa de campeões** em diferentes níveis de competição.</li>
-                    <li>**Ferramenta de Gestão de Pagamentos:** Desenvolvi uma ferramenta interna para gestão de pagamentos que enviava avisos automáticos com antecedência sobre vencimentos, otimizando o fluxo de caixa e a comunicação com os clientes.</li>
-                    <li>**Liderança e Gestão de Equipe:** Lderei e gerenciei uma equipe de mais de 70 alunos e instrutores, promovendo um ambiente de alta performance.</li>
+                    <li>**Gestão de Performance:** Desenvolvi um sistema de acompanhamento de atletas que me permitiu analisar a performance e o comportamento de cada aluno, otimizando seus treinamentos e resultando em um <span class="highlight">aumento de 300% no número de alunos</span>.</li>
                 </ul>
             </div>
         </section>
@@ -165,32 +149,22 @@
             <h2 class="section-title">Habilidades</h2>
             <div class="skills-list">
                 <div class="skills-group">
-                    <h3 class="font-semibold text-gray-800 mb-2">Habilidades Técnicas:</h3>
+                    <h3 class="font-semibold text-gray-800 mb-2">Engenharia e Análise de Dados:</h3>
                     <ul class="text-gray-700">
-                        <li>**Análise de Dados e Business Intelligence (BI):** Proficiência em <span class="highlight">Power BI</span> para criação de dashboards e relatórios interativos.</li>
-                        <li>**Análise de Processos:** Experiência em mapeamento, documentação e otimização de fluxos de trabalho para aumentar a eficiência e produtividade.</li>
-                        <li>**Bancos de Dados:** Conhecimento em <span class="highlight">SQL</span> para consulta, manipulação e gestão de dados.</li>
-                        <li>**Pipeline de Fluxo de Dados (ETL):** Experiência na construção de pipelines de dados utilizando ferramentas como <span class="highlight">Pentaho</span> e <span class="highlight">SSIS</span>.</li>
-                        <li>**Tecnologias de Big Data:** Conhecimento em <span class="highlight">Hadoop e Spark</span>.</li>
-                        <li>**Tecnologias Azure:** Experiência com <span class="highlight">Data Lake Storage, Azure Data Factory, Synapse Analytics e Azure Databricks</span>.</li>
-                        <li>**Análise de Marketing Digital:** Conhecimento em <span class="highlight">Google Analytics, AdWords, Search Console e Google Trends</span>.</li>
-                        <li>**SEO e Otimização de Sites:** Experiência com estratégias de otimização on-page e off-page.</li>
-                        <li>**Métricas e KPIs:** Capacidade de definir, ler e monitorar métricas e KPIs de campanhas e projetos.</li>
-                        <li>**Controle de Versões:** Experiência com <span class="highlight">Git</span> para controle de versões e colaboração em projetos.</li>
-                        <li>**Ferramentas Office:** Pacote Microsoft Office (Word, Excel, PowerPoint, Outlook) – Avançado.</li>
+                        <li>**Análise de Dados e BI:** Power BI, SQL, Google Analytics.</li>
+                        <li>**Tecnologias de ETL:** Pentaho, SSIS, Azure Data Factory.</li>
+                        <li>**Big Data:** Hadoop, Spark, Azure Databricks.</li>
+                        <li>**Data Lake:** Azure Data Lake Storage.</li>
+                        <li>**Controle de Versões:** Git.</li>
                     </ul>
                 </div>
                 <div class="skills-group">
-                    <h3 class="font-semibold text-gray-800 mb-2">Habilidades Comportamentais (Soft Skills):</h3>
+                    <h3 class="font-semibold text-gray-800 mb-2">Habilidades de Gestão e Soft Skills:</h3>
                     <ul class="text-gray-700">
-                        <li>**Visão Estratégica:** Compreensão de estratégias off-line e como a tecnologia impulsiona o crescimento do negócio.</li>
-                        <li>**Capacidade de Entender de Pessoas:** Habilidade de compreender o comportamento de usuários e clientes, adquirida na gestão da academia e na análise de performance de projetos.</li>
-                        <li>**Liderança e Gestão de Equipes:** Comprovada experiência em liderar, motivar e desenvolver equipes para atingir objetivos de alta performance.</li>
-                        <li>**Raciocínio Lógico e Analítico:** Capacidade de identificar problemas complexos e propor soluções eficazes.</li>
-                        <li>**Comunicação Eficaz:** Habilidade para interagir com diferentes públicos e apresentar informações de forma clara.</li>
-                        <li>**Resolução de Problemas:** Abordagem estruturada e proativa para identificar e solucionar desafios.</li>
-                        <li>**Proatividade e Iniciativa:** Forte senso de responsabilidade e busca constante por melhorias.</li>
-                        <li>**Disciplina e Resiliência:** Forjado pela prática e ensino do Jiu-Jitsu.</li>
+                        <li>**Gestão de Projetos:** Trello, Jira, Scrum/Kanban.</li>
+                        <li>**Análise:** Raciocínio Lógico e Analítico, Resolução de Problemas.</li>
+                        <li>**Liderança e Comunicação:** Gestão de Equipes, Comunicação Eficaz.</li>
+                        <li>**Valores:** Disciplina, Resiliência, Foco em Resultados.</li>
                     </ul>
                 </div>
             </div>
@@ -200,23 +174,9 @@
         <section class="mb-8">
             <h2 class="section-title">Conquistas Esportivas</h2>
             <h3 class="subsection-title">Atleta Profissional de Jiu-Jitsu</h3>
-            <p class="text-gray-600 mb-2">2006 – 2021 (dos 16 aos 31 anos)</p>
+            <p class="text-gray-600 mb-2">2006 – 2021</p>
             <ul class="text-gray-700">
-                <li>**Bicampeão Mundial de Jiu-Jitsu:** Conquistas em duas edições do Campeonato Mundial na Califórnia.</li>
-                <li>**Campeão Mundial de Jiu-Jitsu:** Conquista em uma edição do Campeonato Mundial em Abu Dhabi.</li>
-                <li>**Bicampeão Europeu de Jiu-Jitsu:** Conquistas em duas edições do Campeonato Europeu em Portugal.</li>
-                <li>**Campeão Pan-Americano de Jiu-Jitsu:** Conquista em uma edição do Campeonato Pan-Americano na Califórnia.</li>
-                <li>**Campeão Brasileiro de Jiu-Jitsu:** Conquista em uma edição do Campeonato Brasileiro em São Paulo.</li>
-                <li>**Habilidades Desenvolvidas:** Disciplina rigorosa, resiliência sob pressão, foco inabalável em metas, planejamento estratégico de longo prazo, capacidade de adaptação e superação de desafios.</li>
-            </ul>
-        </section>
-
-        <!-- Seção de Idiomas -->
-        <section class="mb-8">
-            <h2 class="section-title">Idiomas</h2>
-            <ul class="text-gray-700">
-                <li>**Português:** Nativo</li>
-                <li>**Inglês:** Básico</li>
+                <li>Bicampeão Mundial, Bicampeão Europeu, Campeão Pan-Americano e Campeão Brasileiro.</li>
             </ul>
         </section>
 
@@ -225,7 +185,6 @@
             <h2 class="section-title">Informações Adicionais</h2>
             <ul class="text-gray-700">
                 <li>Disponibilidade total de horário (24h) e para viagens.</li>
-                <li>**Portfólio Online:** Disponível em <a href="https://wiggers12.github.io/teste/" target="_blank" class="text-blue-600 hover:underline">https://wiggers12.github.io/teste/</a></li>
                 <li>Faixa preta de Jiu-Jitsu.</li>
             </ul>
         </section>
