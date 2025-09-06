@@ -3,369 +3,11 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Field Control — Protótipo</title>
+<title>Field Control — Protótipo (sem Firebase)</title>
 
-<!-- Leaflet (mapa sem chave) -->
+<!-- Leaflet (mapa) -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<!-- Firebase v10 (modules) -->
-<script type="module">
-// ====== IMPORTS FIREBASE ======
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, serverTimestamp, onSnapshot, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
-
-// ====== CONFIGURE AQUI ======
-const firebaseConfig = {
-  apiKey: "SUA_API_KEY",
-  authDomain: "SEU_AUTH_DOMAIN",
-  projectId: "SEU_PROJECT_ID",
-  storageBucket: "SEU_BUCKET",
-  messagingSenderId: "SENDER_ID",
-  appId: "APP_ID"
-};
-// ====== /CONFIG ======
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
-
-// ====== STATE ======
-let user = null;
-let userProfile = null;
-let watchId = null;
-let map, marker, adminMap;
-let adminMarkers = {};
-let adminLayerGroup;
-
-// ====== HELPERS ======
-const $ = (sel) => document.querySelector(sel);
-const show = (el) => el.style.display = "";
-const hide = (el) => el.style.display = "none";
-const brl = (v) => (Number(v||0)).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-
-// ====== AUTH UI ======
-const loginForm = $("#loginForm");
-const signForm  = $("#signForm");
-const linkToSign = $("#linkToSign");
-const linkToLogin = $("#linkToLogin");
-const authBox = $("#authBox");
-const appBox = $("#app");
-const adminBox = $("#admin");
-
-// Alterna telas login/registro
-linkToSign.addEventListener("click", e => { e.preventDefault(); hide(loginForm); show(signForm); });
-linkToLogin.addEventListener("click", e => { e.preventDefault(); hide(signForm); show(loginForm); });
-
-// Registrar
-signForm.addEventListener("submit", async (e)=>{
-  e.preventDefault();
-  const name = $("#signName").value.trim();
-  const email = $("#signEmail").value.trim();
-  const pass = $("#signPass").value;
-
-  try{
-    const cred = await createUserWithEmailAndPassword(auth, email, pass);
-    await updateProfile(cred.user, { displayName: name || email.split("@")[0] });
-    // cria doc de perfil (worker por padrão)
-    await setDoc(doc(db, "users", cred.user.uid), {
-      name: name || cred.user.displayName || "Sem nome",
-      email,
-      role: "worker",
-      createdAt: serverTimestamp(),
-      activeTracking: false
-    });
-  }catch(err){
-    alert("Erro ao registrar: " + err.message);
-  }
-});
-
-// Login
-loginForm.addEventListener("submit", async (e)=>{
-  e.preventDefault();
-  const email = $("#loginEmail").value.trim();
-  const pass  = $("#loginPass").value;
-  try{
-    await signInWithEmailAndPassword(auth, email, pass);
-  }catch(err){
-    alert("Erro ao entrar: " + err.message);
-  }
-});
-
-// Sair
-$("#btnLogout").addEventListener("click", async ()=>{
-  if (watchId !== null) navigator.geolocation.clearWatch(watchId);
-  await signOut(auth);
-});
-
-// ====== AUTH STATE ======
-onAuthStateChanged(auth, async (u)=>{
-  user = u || null;
-  if(!user){
-    // não logado
-    show(authBox);
-    hide(appBox);
-    hide(adminBox);
-    return;
-  }
-  // buscar perfil
-  const snap = await getDoc(doc(db, "users", user.uid));
-  if(!snap.exists()){
-    // cria default (worker)
-    await setDoc(doc(db, "users", user.uid), {
-      name: user.displayName || "Sem nome",
-      email: user.email,
-      role: "worker",
-      createdAt: serverTimestamp(),
-      activeTracking: false
-    });
-    userProfile = { role: "worker" };
-  } else {
-    userProfile = snap.data();
-  }
-
-  hide(authBox);
-  if(userProfile.role === "admin"){
-    hide(appBox);
-    await initAdmin();
-    show(adminBox);
-  } else {
-    await initWorker();
-    show(appBox);
-    hide(adminBox);
-  }
-});
-
-// ====== WORKER (FUNCIONÁRIO) ======
-async function initWorker(){
-  $("#helloUser").textContent = userProfile?.name || user?.displayName || "Funcionário";
-  initMap("#map");
-
-  // toggle tracking
-  const btn = $("#btnToggleTrack");
-  const statusEl = $("#trackStatus");
-
-  // recuperar flag activeTracking
-  const usrRef = doc(db, "users", user.uid);
-  const usrSnap = await getDoc(usrRef);
-  const active = usrSnap.data()?.activeTracking || false;
-  setTrackUI(active);
-
-  btn.onclick = async ()=>{
-    const shouldStart = btn.dataset.state !== "on";
-    await updateDoc(usrRef, { activeTracking: shouldStart });
-    setTrackUI(shouldStart);
-    if(shouldStart){ startWatch(); } else { stopWatch(); }
-  };
-
-  if(active){ startWatch(); }
-  // formularios
-  setupExpenseForm();
-  setupMediaForm();
-}
-
-function setTrackUI(on){
-  const btn = $("#btnToggleTrack");
-  const statusEl = $("#trackStatus");
-  btn.dataset.state = on ? "on" : "off";
-  btn.textContent = on ? "Parar Compartilhar Localização" : "Compartilhar Localização (Iniciar)";
-  statusEl.textContent = on ? "Compartilhando em tempo real" : "Parado";
-  statusEl.className = on ? "chip on" : "chip off";
-}
-
-function startWatch(){
-  if(!navigator.geolocation){
-    alert("Geolocalização não suportada neste dispositivo.");
-    return;
-  }
-  watchId = navigator.geolocation.watchPosition(async (pos)=>{
-    const { latitude, longitude } = pos.coords;
-    // Firestore: locations/{uid}
-    await setDoc(doc(db,"locations", user.uid), {
-      uid: user.uid,
-      name: userProfile?.name || user?.displayName || "Funcionário",
-      lat: latitude,
-      lng: longitude,
-      updatedAt: serverTimestamp()
-    }, { merge: true });
-
-    // UI marker
-    updateMarker(latitude, longitude, map, (m)=> marker = m);
-  }, (err)=>{
-    console.warn(err);
-    alert("Erro de localização: " + err.message);
-  }, { enableHighAccuracy:true, maximumAge:3000, timeout:15000 });
-}
-
-function stopWatch(){
-  if(watchId !== null){ navigator.geolocation.clearWatch(watchId); watchId = null; }
-}
-
-// Map genérico
-function initMap(selector){
-  const el = document.querySelector(selector);
-  if(!el) return;
-  const defaultPos = [-30.0346, -51.2177]; // Porto Alegre
-  const m = L.map(el).setView(defaultPos, 12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-    maxZoom: 19, attribution: '&copy; OpenStreetMap'
-  }).addTo(m);
-  if(selector==="#map"){ map = m; }
-  else { adminMap = m; }
-}
-
-function updateMarker(lat,lng, inMap, assign){
-  if(!inMap) return;
-  const mk = assign === undefined ? null : (assign === null ? null : undefined);
-  if(assign && typeof assign === "function"){
-    // único marcador (worker)
-    if(marker){ inMap.removeLayer(marker); }
-    assign(L.marker([lat,lng]).addTo(inMap));
-    inMap.setView([lat,lng], 15);
-  }
-}
-
-// Form despesa (passagem)
-function setupExpenseForm(){
-  const form = $("#expenseForm");
-  form.addEventListener("submit", async (e)=>{
-    e.preventDefault();
-    const type = $("#expenseType").value;
-    const amount = Number($("#expenseAmount").value);
-    const note = $("#expenseNote").value.trim();
-    const file = $("#expenseFile").files[0];
-
-    if(!amount || amount<=0){ alert("Informe um valor válido."); return; }
-
-    let fileURL = null;
-    if(file){
-      const ext = file.name.split(".").pop();
-      const r = ref(storage, `expenses/${user.uid}/${Date.now()}.${ext}`);
-      await uploadBytes(r, file);
-      fileURL = await getDownloadURL(r);
-    }
-
-    await addDoc(collection(db,"expenses"), {
-      uid: user.uid,
-      userName: userProfile?.name || user?.displayName || "Funcionário",
-      type, amount, note,
-      fileURL: fileURL || null,
-      status: "pending",
-      createdAt: serverTimestamp()
-    });
-
-    form.reset();
-    alert("Despesa enviada para aprovação.");
-  });
-}
-
-// Form mídia (foto/vídeo do serviço)
-function setupMediaForm(){
-  const form = $("#mediaForm");
-  form.addEventListener("submit", async (e)=>{
-    e.preventDefault();
-    const desc = $("#mediaDesc").value.trim();
-    const file = $("#mediaFile").files[0];
-    if(!file){ alert("Selecione uma mídia."); return; }
-
-    const ext = file.name.split(".").pop();
-    const r = ref(storage, `work_media/${user.uid}/${Date.now()}.${ext}`);
-    await uploadBytes(r, file);
-    const url = await getDownloadURL(r);
-
-    await addDoc(collection(db,"work_media"), {
-      uid: user.uid,
-      userName: userProfile?.name || user?.displayName || "Funcionário",
-      desc, url,
-      mime: file.type,
-      createdAt: serverTimestamp()
-    });
-
-    form.reset();
-    alert("Mídia enviada.");
-  });
-}
-
-// ====== ADMIN ======
-async function initAdmin(){
-  $("#helloAdmin").textContent = userProfile?.name || user?.displayName || "Admin";
-  initMap("#adminMap");
-  adminLayerGroup = L.layerGroup().addTo(adminMap);
-
-  // Localizações ao vivo
-  onSnapshot(collection(db,"locations"), (snap)=>{
-    // limpar camadas
-    adminLayerGroup.clearLayers();
-    adminMarkers = {};
-    snap.forEach(docu=>{
-      const d = docu.data();
-      if(!d.lat || !d.lng) return;
-      const mk = L.marker([d.lat, d.lng]).bindPopup(`<b>${d.name||d.uid}</b><br/>Atualizado agora`);
-      mk.addTo(adminLayerGroup);
-      adminMarkers[d.uid] = mk;
-    });
-  });
-
-  // Despesas pendentes
-  const qExp = query(collection(db,"expenses"), where("status","==","pending"), orderBy("createdAt","desc"));
-  onSnapshot(qExp, (snap)=>{
-    const tbody = $("#tbodyExpenses");
-    tbody.innerHTML = "";
-    let total = 0;
-    snap.forEach(d=>{
-      const x = d.data();
-      total += Number(x.amount||0);
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${x.userName||x.uid}</td>
-        <td>${x.type}</td>
-        <td>${brl(x.amount)}</td>
-        <td>${x.note||"-"}</td>
-        <td>${x.fileURL?`<a href="${x.fileURL}" target="_blank">Comprovante</a>`:"-"}</td>
-        <td class="actions">
-           <button data-id="${d.id}" data-act="approve">Aprovar</button>
-           <button data-id="${d.id}" data-act="reject" class="danger">Reprovar</button>
-        </td>`;
-      tbody.appendChild(tr);
-    });
-    $("#pendingSum").textContent = brl(total);
-
-    // ações
-    tbody.querySelectorAll("button").forEach(btn=>{
-      btn.onclick = async ()=>{
-        const id = btn.dataset.id;
-        const act = btn.dataset.act;
-        await updateDoc(doc(db,"expenses", id), { status: act==="approve"?"approved":"rejected" });
-      };
-    });
-  });
-
-  // Feed de mídias
-  const qMed = query(collection(db,"work_media"), orderBy("createdAt","desc"), limit(12));
-  onSnapshot(qMed, (snap)=>{
-    const grid = $("#mediaGrid");
-    grid.innerHTML = "";
-    snap.forEach(d=>{
-      const x = d.data();
-      const isImg = (x.mime||"").startsWith("image/");
-      const card = document.createElement("div");
-      card.className = "mediaCard";
-      card.innerHTML = `
-        <div class="media">
-          ${isImg ? `<img src="${x.url}" alt="media"/>` : `<video src="${x.url}" controls></video>`}
-        </div>
-        <div class="meta">
-          <div><b>${x.userName||x.uid}</b></div>
-          <small>${x.desc||""}</small>
-        </div>`;
-      grid.appendChild(card);
-    });
-  });
-}
-</script>
 
 <style>
 :root{
@@ -390,8 +32,11 @@ input,select,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px
 label{font-size:13px;color:var(--muted)}
 .row{display:grid;grid-template-columns:1fr 1fr; gap:12px}
 .sep{height:1px;background:#2b3342;margin:14px 0}
-.center{text-align:center}
 small.muted{color:var(--muted)}
+.headerBar{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#0e1116,#0e1116ee 70%,transparent);padding:12px;border-bottom:1px solid #202534}
+.brand{display:flex;align-items:center;gap:10px}
+.brand b{font-size:18px}
+.right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 #map,#adminMap{width:100%;height:320px;border-radius:12px;border:1px solid #2b3342}
 .chip{display:inline-block;padding:6px 10px;border-radius:999px;background:var(--chip);color:#fff;font-size:12px}
 .chip.on{background:linear-gradient(90deg,#00c853,#43a047)}
@@ -406,53 +51,51 @@ small.muted{color:var(--muted)}
 .mediaCard img{max-width:100%;max-height:130px;display:block}
 .mediaCard video{width:100%;height:130px;object-fit:cover}
 .mediaCard .meta{padding:8px 10px}
-.headerBar{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#0e1116,#0e1116ee 70%,transparent);padding:12px;border-bottom:1px solid #202534}
-.brand{display:flex;align-items:center;gap:10px}
-.brand b{font-size:18px}
-.right{display:flex;align-items:center;gap:10px}
 .note{padding:10px;border-radius:10px;background:#0f131b;border:1px dashed #2b3342;color:#c7d1e0}
+footer{opacity:.7;font-size:12px;margin-top:10px}
+kbd{background:#222;border:1px solid #333;border-bottom-color:#111;padding:2px 6px;border-radius:6px}
 </style>
 </head>
 <body>
 
-<!-- ============ AUTH ============ -->
-<div id="authBox" class="container">
-  <div class="headerBar card">
-    <div class="brand"><span class="chip">MVP</span><b>Field Control</b><small class="muted">— protótipo</small></div>
+<!-- ============ HEADER ============ -->
+<div class="container headerBar card">
+  <div class="brand"><span class="chip">MVP</span><b>Field Control</b><small class="muted"> — protótipo local</small></div>
+  <div class="right">
+    <button id="btnReset" class="btn secondary" title="Apaga todos os dados do protótipo">Resetar protótipo</button>
+    <span class="chip">Sem Firebase</span>
   </div>
+</div>
 
+<!-- ============ IDENTIFICAÇÃO ============ -->
+<div id="identBox" class="container">
   <div class="grid grid-2">
     <div class="card" style="padding:18px;">
-      <div class="header"><h1>Entrar</h1></div>
-      <form id="loginForm">
-        <label>E-mail</label>
-        <input id="loginEmail" type="email" placeholder="email@empresa.com" required>
-        <label>Senha</label>
-        <input id="loginPass" type="password" placeholder="••••••••" required>
+      <div class="header"><h1>Entrar no protótipo</h1></div>
+      <form id="whoForm">
+        <label>Seu nome</label>
+        <input id="whoName" type="text" placeholder="Ex.: João Técnico" required>
+        <label>Perfil</label>
+        <select id="whoRole" required>
+          <option value="worker">Funcionário</option>
+          <option value="admin">Admin</option>
+        </select>
         <div class="sep"></div>
         <button class="btn" type="submit">Entrar</button>
-        <div class="sep"></div>
-        <small class="muted">Não tem conta? <a href="#" id="linkToSign">Criar agora</a></small>
       </form>
-    </div>
-
-    <div class="card" style="padding:18px;">
-      <div class="header"><h1>Criar conta</h1></div>
-      <form id="signForm" style="display:none">
-        <label>Nome</label>
-        <input id="signName" type="text" placeholder="Seu nome">
-        <label>E-mail</label>
-        <input id="signEmail" type="email" placeholder="email@empresa.com" required>
-        <label>Senha</label>
-        <input id="signPass" type="password" placeholder="mín. 6 caracteres" required>
-        <div class="sep"></div>
-        <button class="btn" type="submit">Cadastrar</button>
-        <div class="sep"></div>
-        <small class="muted">Já tem conta? <a href="#" id="linkToLogin">Entrar</a></small>
-      </form>
+      <div class="sep"></div>
       <div class="note">
-        <b>Perfis:</b> novos usuários nascem como <code>worker</code>. Para virar <code>admin</code>, edite o doc em <code>users/{uid}</code> no Firestore.
+        <b>Como funciona:</b> escolha “Funcionário” para testar envio de localização, despesas e mídias.
+        Escolha “Admin” para aprovar despesas e ver o mapa/galeria. Tudo fica somente neste navegador (localStorage).
       </div>
+    </div>
+    <div class="card" style="padding:18px;">
+      <div class="header"><h1>Dica rápida</h1></div>
+      <p>Para ver o mapa atualizando com sua posição:</p>
+      <ul>
+        <li>No celular, ative o GPS e permita a localização do site.</li>
+        <li>No desktop, rode um servidor simples (<kbd>python -m http.server 8000</kbd>) para liberar a permissão.</li>
+      </ul>
     </div>
   </div>
 </div>
@@ -464,7 +107,8 @@ small.muted{color:var(--muted)}
     <div class="right">
       <span id="trackStatus" class="chip off">Parado</span>
       <button id="btnToggleTrack" class="btn secondary">Compartilhar Localização (Iniciar)</button>
-      <button id="btnLogout" class="btn danger">Sair</button>
+      <button id="btnSwitchToAdmin" class="btn">Ver como Admin</button>
+      <button id="btnLeave" class="btn danger">Sair</button>
     </div>
   </div>
 
@@ -473,7 +117,7 @@ small.muted{color:var(--muted)}
       <div class="header"><h1>Onde estou</h1></div>
       <div id="map"></div>
       <div class="sep"></div>
-      <small class="muted">A localização é atualizada em tempo real enquanto o compartilhamento estiver ativo.</small>
+      <small class="muted">A localização atualiza enquanto o compartilhamento estiver ativo.</small>
     </div>
 
     <div class="card" style="padding:16px;">
@@ -496,11 +140,12 @@ small.muted{color:var(--muted)}
         </div>
         <label>Observação</label>
         <input id="expenseNote" type="text" placeholder="Trecho, motivo, etc."/>
-        <label>Comprovante (foto)</label>
+        <label>Comprovante (foto — teste)</label>
         <input id="expenseFile" type="file" accept="image/*"/>
         <div class="sep"></div>
         <button class="btn" type="submit">Enviar para aprovação</button>
       </form>
+      <footer>Arquivos são salvos em base64 no <em>localStorage</em> apenas para teste.</footer>
     </div>
 
     <div class="card" style="padding:16px;">
@@ -514,7 +159,7 @@ small.muted{color:var(--muted)}
         <button class="btn" type="submit">Enviar mídia</button>
       </form>
       <div class="sep"></div>
-      <small class="muted">Arquivos ficam visíveis no painel do administrador.</small>
+      <small class="muted">Use clipes curtos para não pesar o navegador.</small>
     </div>
   </div>
 </div>
@@ -524,7 +169,8 @@ small.muted{color:var(--muted)}
   <div class="headerBar card">
     <div class="brand"><span class="chip">Admin</span><b id="helloAdmin">Olá</b></div>
     <div class="right">
-      <button id="btnLogout" class="btn danger" onclick="null">Sair</button>
+      <button id="btnSwitchToWorker" class="btn">Ver como Funcionário</button>
+      <button id="btnLeaveAdmin" class="btn danger">Sair</button>
     </div>
   </div>
 
@@ -533,7 +179,7 @@ small.muted{color:var(--muted)}
       <div class="header"><h1>Funcionários no mapa</h1></div>
       <div id="adminMap"></div>
       <div class="sep"></div>
-      <small class="muted">Marcadores representam a última posição reportada por cada funcionário ativo.</small>
+      <small class="muted">Mostra as últimas posições salvas (neste navegador).</small>
     </div>
 
     <div class="card" style="padding:16px;">
@@ -547,7 +193,7 @@ small.muted{color:var(--muted)}
       <div class="sep"></div>
       <div class="header">
         <div><b>Total pendente:</b> <span id="pendingSum">R$ 0,00</span></div>
-        <small class="muted">Aprovar move a despesa para status <code>approved</code>; reprovar para <code>rejected</code>.</small>
+        <small class="muted">Aprovar muda para <code>approved</code>; reprovar para <code>rejected</code>.</small>
       </div>
     </div>
 
@@ -558,5 +204,323 @@ small.muted{color:var(--muted)}
   </div>
 </div>
 
+<script>
+/* ========= STATE & HELPERS ========= */
+const $ = s => document.querySelector(s);
+const brl = v => (Number(v||0)).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const sleep = (ms)=> new Promise(r=>setTimeout(r,ms));
+
+let who = null;            // {name, role}
+let map, marker, adminMap, adminLayer;
+let watchId = null;
+
+/* ========= STORAGE LAYER (localStorage) ========= */
+const KEYS = {
+  WHO: "fc_who",
+  LOCS: "fc_locations",   // array de {name, lat, lng, ts}
+  EXPS: "fc_expenses",    // array de {id, name, type, amount, note, fileDataURL, status, ts}
+  MEDS: "fc_media"        // array de {id, name, desc, dataURL, mime, ts}
+};
+const readLS  = (k,def)=> JSON.parse(localStorage.getItem(k) || JSON.stringify(def));
+const writeLS = (k,v)=> localStorage.setItem(k, JSON.stringify(v));
+
+/* ========= IDENTIFICAÇÃO ========= */
+$("#whoForm").addEventListener("submit", (e)=>{
+  e.preventDefault();
+  const name = $("#whoName").value.trim();
+  const role = $("#whoRole").value;
+  if(!name) return;
+  who = { name, role };
+  writeLS(KEYS.WHO, who);
+  enterRole(role);
+});
+
+$("#btnReset").onclick = ()=>{
+  if(confirm("Apagar todos os dados do protótipo (localStorage)?")){
+    Object.values(KEYS).forEach(k=> localStorage.removeItem(k));
+    location.reload();
+  }
+};
+
+function enterRole(role){
+  $("#identBox").style.display = "none";
+  if(role === "worker"){
+    initWorker();
+    $("#app").style.display = "";
+    $("#admin").style.display = "none";
+  } else {
+    initAdmin();
+    $("#admin").style.display = "";
+    $("#app").style.display = "none";
+  }
+}
+
+function leave(){
+  who = null;
+  localStorage.removeItem(KEYS.WHO);
+  if(watchId!==null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
+  $("#app").style.display = "none";
+  $("#admin").style.display = "none";
+  $("#identBox").style.display = "";
+}
+
+/* ========= WORKER ========= */
+async function initWorker(){
+  const saved = readLS(KEYS.WHO,null);
+  if(saved) who = saved;
+  $("#helloUser").textContent = who?.name || "Funcionário";
+  $("#btnLeave").onclick = leave;
+  $("#btnSwitchToAdmin").onclick = ()=> enterRole("admin");
+
+  // Mapa
+  initMap("#map");
+
+  // Tracking UI
+  const btn = $("#btnToggleTrack");
+  const statusEl = $("#trackStatus");
+  const isOn = btn.dataset.state === "on";
+  setTrackUI(isOn);
+
+  btn.onclick = ()=>{
+    const shouldStart = btn.dataset.state !== "on";
+    setTrackUI(shouldStart);
+    if(shouldStart) startWatch(); else stopWatch();
+  };
+
+  // Forms
+  setupExpenseForm();
+  setupMediaForm();
+}
+
+function setTrackUI(on){
+  const btn = $("#btnToggleTrack");
+  const statusEl = $("#trackStatus");
+  btn.dataset.state = on ? "on" : "off";
+  btn.textContent = on ? "Parar Compartilhar Localização" : "Compartilhar Localização (Iniciar)";
+  statusEl.textContent = on ? "Compartilhando em tempo real" : "Parado";
+  statusEl.className = on ? "chip on" : "chip off";
+}
+
+function initMap(selector){
+  const el = document.querySelector(selector);
+  const defaultPos = [-30.0346, -51.2177]; // Porto Alegre
+  const m = L.map(el).setView(defaultPos, 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    maxZoom:19, attribution:'&copy; OpenStreetMap'
+  }).addTo(m);
+  if(selector==="#map"){ map = m; } else { adminMap = m; adminLayer = L.layerGroup().addTo(adminMap); }
+}
+
+function startWatch(){
+  if(!navigator.geolocation){
+    alert("Geolocalização não suportada.");
+    return;
+  }
+  watchId = navigator.geolocation.watchPosition((pos)=>{
+    const { latitude, longitude } = pos.coords;
+    // Salva posição atual como o último ponto do usuário
+    const locs = readLS(KEYS.LOCS, []);
+    locs.push({ name: who?.name || "Funcionário", lat: latitude, lng: longitude, ts: Date.now() });
+    writeLS(KEYS.LOCS, locs);
+    // Atualiza UI
+    if(map){
+      if(marker) map.removeLayer(marker);
+      marker = L.marker([latitude, longitude]).addTo(map).bindPopup(`<b>${who?.name||"Funcionário"}</b>`);
+      map.setView([latitude, longitude], 15);
+    }
+  }, (err)=>{
+    console.warn(err);
+    alert("Erro de localização: " + err.message);
+  }, { enableHighAccuracy:true, maximumAge:3000, timeout:15000 });
+}
+
+function stopWatch(){
+  if(watchId!==null){ navigator.geolocation.clearWatch(watchId); watchId = null; }
+}
+
+/* ====== Despesas ====== */
+function setupExpenseForm(){
+  $("#expenseForm").addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const type = $("#expenseType").value;
+    const amount = Number($("#expenseAmount").value);
+    const note = $("#expenseNote").value.trim();
+    const file = $("#expenseFile").files[0];
+
+    if(!amount || amount<=0){ alert("Informe um valor válido."); return; }
+
+    // Converte imagem para base64 (opcional)
+    let fileDataURL = null;
+    if(file){
+      fileDataURL = await fileToDataURL(file);
+    }
+
+    const exps = readLS(KEYS.EXPS, []);
+    exps.unshift({
+      id: "exp_"+Date.now(),
+      name: who?.name || "Funcionário",
+      type, amount, note,
+      fileDataURL,
+      status: "pending",
+      ts: Date.now()
+    });
+    writeLS(KEYS.EXPS, exps);
+
+    e.target.reset();
+    alert("Despesa enviada (protótipo).");
+  });
+}
+
+/* ====== Mídia ====== */
+function setupMediaForm(){
+  $("#mediaForm").addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const desc = $("#mediaDesc").value.trim();
+    const file = $("#mediaFile").files[0];
+    if(!file){ alert("Selecione um arquivo."); return; }
+
+    const dataURL = await fileToDataURL(file); // cuidado com tamanhos grandes
+    const meds = readLS(KEYS.MEDS, []);
+    meds.unshift({
+      id: "med_"+Date.now(),
+      name: who?.name || "Funcionário",
+      desc, dataURL, mime: file.type,
+      ts: Date.now()
+    });
+    writeLS(KEYS.MEDS, meds);
+
+    e.target.reset();
+    alert("Mídia enviada (protótipo).");
+  });
+}
+
+/* ========= ADMIN ========= */
+function initAdmin(){
+  const saved = readLS(KEYS.WHO,null);
+  if(saved) who = saved;
+  $("#helloAdmin").textContent = who?.name || "Admin";
+  $("#btnLeaveAdmin").onclick = leave;
+  $("#btnSwitchToWorker").onclick = ()=> enterRole("worker");
+
+  // mapa
+  initMap("#adminMap");
+  renderAdminMap();
+  renderExpenses();
+  renderMedia();
+
+  // refresco simples sempre que voltar ao admin
+  window.addEventListener("focus", ()=>{
+    renderAdminMap();
+    renderExpenses();
+    renderMedia();
+  });
+}
+
+function renderAdminMap(){
+  if(!adminMap || !adminLayer) return;
+  adminLayer.clearLayers();
+  const locs = readLS(KEYS.LOCS, []);
+  // mostre somente os últimos pontos por funcionário (neste protótipo temos 1 nome)
+  const lastByName = {};
+  for(const l of locs){
+    lastByName[l.name] = l; // sobrescreve com o mais recente
+  }
+  const markers = Object.values(lastByName);
+  if(markers.length===0) return;
+
+  markers.forEach(d=>{
+    const mk = L.marker([d.lat, d.lng]).bindPopup(`<b>${d.name}</b><br>${new Date(d.ts).toLocaleString()}`);
+    mk.addTo(adminLayer);
+  });
+  const first = markers[0];
+  adminMap.setView([first.lat, first.lng], 14);
+}
+
+function renderExpenses(){
+  const tbody = $("#tbodyExpenses");
+  const exps = readLS(KEYS.EXPS, []);
+  const pend = exps.filter(e=> e.status==="pending");
+  tbody.innerHTML = "";
+  let total = 0;
+  for(const x of pend){
+    total += Number(x.amount||0);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${x.name}</td>
+      <td>${labelType(x.type)}</td>
+      <td>${brl(x.amount)}</td>
+      <td>${x.note||"-"}</td>
+      <td>${x.fileDataURL? `<a href="${x.fileDataURL}" target="_blank">Ver</a>` : "-"}</td>
+      <td class="actions">
+        <button data-id="${x.id}" data-act="approve">Aprovar</button>
+        <button data-id="${x.id}" data-act="reject" class="danger">Reprovar</button>
+      </td>`;
+    tbody.appendChild(tr);
+  }
+  $("#pendingSum").textContent = brl(total);
+
+  tbody.querySelectorAll("button").forEach(btn=>{
+    btn.onclick = ()=>{
+      const id = btn.dataset.id, act = btn.dataset.act;
+      const list = readLS(KEYS.EXPS, []);
+      const idx = list.findIndex(i=> i.id===id);
+      if(idx>-1){
+        list[idx].status = act==="approve" ? "approved" : "rejected";
+        writeLS(KEYS.EXPS, list);
+        renderExpenses();
+      }
+    };
+  });
+}
+
+function renderMedia(){
+  const grid = $("#mediaGrid");
+  const meds = readLS(KEYS.MEDS, []);
+  grid.innerHTML = "";
+  meds.slice(0,12).forEach(x=>{
+    const isImg = (x.mime||"").startsWith("image/");
+    const card = document.createElement("div");
+    card.className = "mediaCard";
+    card.innerHTML = `
+      <div class="media">
+        ${isImg ? `<img src="${x.dataURL}" alt="media"/>` : `<video src="${x.dataURL}" controls></video>`}
+      </div>
+      <div class="meta">
+        <div><b>${x.name}</b></div>
+        <small>${x.desc||""}</small>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+/* ========= Utils ========= */
+function labelType(t){
+  const map = {
+    passagem_onibus: "Passagem (Ônibus)",
+    passagem_metro: "Passagem (Metrô)",
+    uber_taxi: "Uber/Taxi",
+    outros: "Outros"
+  };
+  return map[t] || t;
+}
+
+function fileToDataURL(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = ()=> resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ========= BOOT ========= */
+(function boot(){
+  const saved = readLS(KEYS.WHO,null);
+  if(saved){
+    who = saved;
+    enterRole(who.role);
+  }
+})();
+</script>
 </body>
 </html>
