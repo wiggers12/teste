@@ -1,533 +1,562 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apresentação para [Nome do Cliente]</title>
-    <style>
-        /* --- Reset Básico e Fontes --- */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Field Control — Protótipo</title>
 
-        :root {
-            --cor-primaria: #0a2540;
-            --cor-secundaria: #42a5f5;
-            --cor-fundo: #f8f9fa;
-            --cor-texto: #333;
-            --cor-branca: #ffffff;
-            --sombra: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
+<!-- Leaflet (mapa sem chave) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            scroll-behavior: smooth;
-        }
+<!-- Firebase v10 (modules) -->
+<script type="module">
+// ====== IMPORTS FIREBASE ======
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, serverTimestamp, onSnapshot, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            line-height: 1.6;
-            background-color: var(--cor-fundo);
-            color: var(--cor-texto);
-        }
+// ====== CONFIGURE AQUI ======
+const firebaseConfig = {
+  apiKey: "SUA_API_KEY",
+  authDomain: "SEU_AUTH_DOMAIN",
+  projectId: "SEU_PROJECT_ID",
+  storageBucket: "SEU_BUCKET",
+  messagingSenderId: "SENDER_ID",
+  appId: "APP_ID"
+};
+// ====== /CONFIG ======
 
-        /* --- Estrutura e Layout --- */
-        .container {
-            max-width: 1100px;
-            margin: auto;
-            padding: 0 2rem;
-            overflow: hidden;
-        }
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
 
-        section {
-            padding: 5rem 0;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
+// ====== STATE ======
+let user = null;
+let userProfile = null;
+let watchId = null;
+let map, marker, adminMap;
+let adminMarkers = {};
+let adminLayerGroup;
 
-        section.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+// ====== HELPERS ======
+const $ = (sel) => document.querySelector(sel);
+const show = (el) => el.style.display = "";
+const hide = (el) => el.style.display = "none";
+const brl = (v) => (Number(v||0)).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 
-        /* --- Cabeçalho e Navegação --- */
-        header {
-            background: var(--cor-branca);
-            padding: 1rem 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-            box-shadow: var(--sombra);
-            transition: padding 0.3s ease;
-        }
+// ====== AUTH UI ======
+const loginForm = $("#loginForm");
+const signForm  = $("#signForm");
+const linkToSign = $("#linkToSign");
+const linkToLogin = $("#linkToLogin");
+const authBox = $("#authBox");
+const appBox = $("#app");
+const adminBox = $("#admin");
 
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+// Alterna telas login/registro
+linkToSign.addEventListener("click", e => { e.preventDefault(); hide(loginForm); show(signForm); });
+linkToLogin.addEventListener("click", e => { e.preventDefault(); hide(signForm); show(loginForm); });
 
-        .navbar .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--cor-primaria);
-            text-decoration: none;
-        }
+// Registrar
+signForm.addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const name = $("#signName").value.trim();
+  const email = $("#signEmail").value.trim();
+  const pass = $("#signPass").value;
 
-        .navbar ul {
-            list-style: none;
-            display: flex;
-        }
+  try{
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    await updateProfile(cred.user, { displayName: name || email.split("@")[0] });
+    // cria doc de perfil (worker por padrão)
+    await setDoc(doc(db, "users", cred.user.uid), {
+      name: name || cred.user.displayName || "Sem nome",
+      email,
+      role: "worker",
+      createdAt: serverTimestamp(),
+      activeTracking: false
+    });
+  }catch(err){
+    alert("Erro ao registrar: " + err.message);
+  }
+});
 
-        .navbar ul li {
-            margin-left: 1.5rem;
-        }
+// Login
+loginForm.addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const email = $("#loginEmail").value.trim();
+  const pass  = $("#loginPass").value;
+  try{
+    await signInWithEmailAndPassword(auth, email, pass);
+  }catch(err){
+    alert("Erro ao entrar: " + err.message);
+  }
+});
 
-        .navbar ul li a {
-            text-decoration: none;
-            color: var(--cor-texto);
-            font-weight: 600;
-            padding-bottom: 5px;
-            border-bottom: 2px solid transparent;
-            transition: color 0.3s, border-bottom 0.3s;
-        }
+// Sair
+$("#btnLogout").addEventListener("click", async ()=>{
+  if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+  await signOut(auth);
+});
 
-        .navbar ul li a:hover,
-        .navbar ul li a.active {
-            color: var(--cor-secundaria);
-            border-bottom: 2px solid var(--cor-secundaria);
-        }
+// ====== AUTH STATE ======
+onAuthStateChanged(auth, async (u)=>{
+  user = u || null;
+  if(!user){
+    // não logado
+    show(authBox);
+    hide(appBox);
+    hide(adminBox);
+    return;
+  }
+  // buscar perfil
+  const snap = await getDoc(doc(db, "users", user.uid));
+  if(!snap.exists()){
+    // cria default (worker)
+    await setDoc(doc(db, "users", user.uid), {
+      name: user.displayName || "Sem nome",
+      email: user.email,
+      role: "worker",
+      createdAt: serverTimestamp(),
+      activeTracking: false
+    });
+    userProfile = { role: "worker" };
+  } else {
+    userProfile = snap.data();
+  }
 
-        /* --- Seção Hero (Principal) --- */
-        #hero {
-            background: linear-gradient(rgba(10, 37, 64, 0.8), rgba(10, 37, 64, 0.8)), url('https://images.unsplash.com/photo-1556761175-b413da4baf72?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1374&q=80') no-repeat center center/cover;
-            height: 100vh;
-            color: var(--cor-branca);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            margin-top: 0;
-        }
+  hide(authBox);
+  if(userProfile.role === "admin"){
+    hide(appBox);
+    await initAdmin();
+    show(adminBox);
+  } else {
+    await initWorker();
+    show(appBox);
+    hide(adminBox);
+  }
+});
 
-        .hero-content {
-            max-width: 800px;
-        }
+// ====== WORKER (FUNCIONÁRIO) ======
+async function initWorker(){
+  $("#helloUser").textContent = userProfile?.name || user?.displayName || "Funcionário";
+  initMap("#map");
 
-        .hero-content h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-        }
+  // toggle tracking
+  const btn = $("#btnToggleTrack");
+  const statusEl = $("#trackStatus");
 
-        .hero-content .subtitle {
-            font-size: 1.5rem;
-            font-weight: 300;
-            margin-bottom: 2rem;
-        }
+  // recuperar flag activeTracking
+  const usrRef = doc(db, "users", user.uid);
+  const usrSnap = await getDoc(usrRef);
+  const active = usrSnap.data()?.activeTracking || false;
+  setTrackUI(active);
 
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 2rem;
-            background: var(--cor-secundaria);
-            color: var(--cor-branca);
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: background 0.3s ease, transform 0.3s ease;
-        }
+  btn.onclick = async ()=>{
+    const shouldStart = btn.dataset.state !== "on";
+    await updateDoc(usrRef, { activeTracking: shouldStart });
+    setTrackUI(shouldStart);
+    if(shouldStart){ startWatch(); } else { stopWatch(); }
+  };
 
-        .btn:hover {
-            background: #2196f3;
-            transform: translateY(-3px);
-        }
+  if(active){ startWatch(); }
+  // formularios
+  setupExpenseForm();
+  setupMediaForm();
+}
 
-        /* --- Títulos das Seções --- */
-        .section-title {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
+function setTrackUI(on){
+  const btn = $("#btnToggleTrack");
+  const statusEl = $("#trackStatus");
+  btn.dataset.state = on ? "on" : "off";
+  btn.textContent = on ? "Parar Compartilhar Localização" : "Compartilhar Localização (Iniciar)";
+  statusEl.textContent = on ? "Compartilhando em tempo real" : "Parado";
+  statusEl.className = on ? "chip on" : "chip off";
+}
 
-        .section-title h2 {
-            font-size: 2.5rem;
-            color: var(--cor-primaria);
-            margin-bottom: 0.5rem;
-        }
+function startWatch(){
+  if(!navigator.geolocation){
+    alert("Geolocalização não suportada neste dispositivo.");
+    return;
+  }
+  watchId = navigator.geolocation.watchPosition(async (pos)=>{
+    const { latitude, longitude } = pos.coords;
+    // Firestore: locations/{uid}
+    await setDoc(doc(db,"locations", user.uid), {
+      uid: user.uid,
+      name: userProfile?.name || user?.displayName || "Funcionário",
+      lat: latitude,
+      lng: longitude,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
 
-        .section-title p {
-            font-size: 1.1rem;
-            color: #6c757d;
-        }
+    // UI marker
+    updateMarker(latitude, longitude, map, (m)=> marker = m);
+  }, (err)=>{
+    console.warn(err);
+    alert("Erro de localização: " + err.message);
+  }, { enableHighAccuracy:true, maximumAge:3000, timeout:15000 });
+}
 
-        /* --- Cards e Grids --- */
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-        }
+function stopWatch(){
+  if(watchId !== null){ navigator.geolocation.clearWatch(watchId); watchId = null; }
+}
 
-        .card {
-            background: var(--cor-branca);
-            padding: 2.5rem;
-            border-radius: 10px;
-            box-shadow: var(--sombra);
-            text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+// Map genérico
+function initMap(selector){
+  const el = document.querySelector(selector);
+  if(!el) return;
+  const defaultPos = [-30.0346, -51.2177]; // Porto Alegre
+  const m = L.map(el).setView(defaultPos, 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    maxZoom: 19, attribution: '&copy; OpenStreetMap'
+  }).addTo(m);
+  if(selector==="#map"){ map = m; }
+  else { adminMap = m; }
+}
 
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-        
-        .card .icon {
-            font-size: 3rem;
-            color: var(--cor-secundaria);
-            margin-bottom: 1rem;
-        }
+function updateMarker(lat,lng, inMap, assign){
+  if(!inMap) return;
+  const mk = assign === undefined ? null : (assign === null ? null : undefined);
+  if(assign && typeof assign === "function"){
+    // único marcador (worker)
+    if(marker){ inMap.removeLayer(marker); }
+    assign(L.marker([lat,lng]).addTo(inMap));
+    inMap.setView([lat,lng], 15);
+  }
+}
 
-        .card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--cor-primaria);
-        }
+// Form despesa (passagem)
+function setupExpenseForm(){
+  const form = $("#expenseForm");
+  form.addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const type = $("#expenseType").value;
+    const amount = Number($("#expenseAmount").value);
+    const note = $("#expenseNote").value.trim();
+    const file = $("#expenseFile").files[0];
 
-        /* --- Seção Sobre Nós --- */
-        #sobre .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-        }
-        
-        #sobre img {
-            width: 100%;
-            border-radius: 10px;
-            box-shadow: var(--sombra);
-        }
+    if(!amount || amount<=0){ alert("Informe um valor válido."); return; }
 
-        /* --- Seção Portfólio --- */
-        #portfolio .portfolio-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
+    let fileURL = null;
+    if(file){
+      const ext = file.name.split(".").pop();
+      const r = ref(storage, `expenses/${user.uid}/${Date.now()}.${ext}`);
+      await uploadBytes(r, file);
+      fileURL = await getDownloadURL(r);
+    }
 
-        .portfolio-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 10px;
-            box-shadow: var(--sombra);
-        }
+    await addDoc(collection(db,"expenses"), {
+      uid: user.uid,
+      userName: userProfile?.name || user?.displayName || "Funcionário",
+      type, amount, note,
+      fileURL: fileURL || null,
+      status: "pending",
+      createdAt: serverTimestamp()
+    });
 
-        .portfolio-item img {
-            width: 100%;
-            display: block;
-            transition: transform 0.4s ease;
-        }
+    form.reset();
+    alert("Despesa enviada para aprovação.");
+  });
+}
 
-        .portfolio-item:hover img {
-            transform: scale(1.1);
-        }
+// Form mídia (foto/vídeo do serviço)
+function setupMediaForm(){
+  const form = $("#mediaForm");
+  form.addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const desc = $("#mediaDesc").value.trim();
+    const file = $("#mediaFile").files[0];
+    if(!file){ alert("Selecione uma mídia."); return; }
 
-        .portfolio-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 37, 64, 0.8);
-            color: var(--cor-branca);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-        
-        .portfolio-item:hover .portfolio-overlay {
-            opacity: 1;
-        }
+    const ext = file.name.split(".").pop();
+    const r = ref(storage, `work_media/${user.uid}/${Date.now()}.${ext}`);
+    await uploadBytes(r, file);
+    const url = await getDownloadURL(r);
 
-        .portfolio-overlay h4 {
-            font-size: 1.5rem;
-        }
+    await addDoc(collection(db,"work_media"), {
+      uid: user.uid,
+      userName: userProfile?.name || user?.displayName || "Funcionário",
+      desc, url,
+      mime: file.type,
+      createdAt: serverTimestamp()
+    });
 
-        /* --- Seção Depoimentos --- */
-        #depoimentos {
-            background-color: #e9ecef;
-        }
+    form.reset();
+    alert("Mídia enviada.");
+  });
+}
 
-        .testimonial {
-            background: var(--cor-branca);
-            padding: 2rem;
-            border-left: 5px solid var(--cor-secundaria);
-            border-radius: 5px;
-            box-shadow: var(--sombra);
-        }
+// ====== ADMIN ======
+async function initAdmin(){
+  $("#helloAdmin").textContent = userProfile?.name || user?.displayName || "Admin";
+  initMap("#adminMap");
+  adminLayerGroup = L.layerGroup().addTo(adminMap);
 
-        .testimonial p {
-            font-style: italic;
-            margin-bottom: 1rem;
-        }
+  // Localizações ao vivo
+  onSnapshot(collection(db,"locations"), (snap)=>{
+    // limpar camadas
+    adminLayerGroup.clearLayers();
+    adminMarkers = {};
+    snap.forEach(docu=>{
+      const d = docu.data();
+      if(!d.lat || !d.lng) return;
+      const mk = L.marker([d.lat, d.lng]).bindPopup(`<b>${d.name||d.uid}</b><br/>Atualizado agora`);
+      mk.addTo(adminLayerGroup);
+      adminMarkers[d.uid] = mk;
+    });
+  });
 
-        .testimonial footer {
-            font-weight: 600;
-            color: var(--cor-primaria);
-        }
+  // Despesas pendentes
+  const qExp = query(collection(db,"expenses"), where("status","==","pending"), orderBy("createdAt","desc"));
+  onSnapshot(qExp, (snap)=>{
+    const tbody = $("#tbodyExpenses");
+    tbody.innerHTML = "";
+    let total = 0;
+    snap.forEach(d=>{
+      const x = d.data();
+      total += Number(x.amount||0);
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${x.userName||x.uid}</td>
+        <td>${x.type}</td>
+        <td>${brl(x.amount)}</td>
+        <td>${x.note||"-"}</td>
+        <td>${x.fileURL?`<a href="${x.fileURL}" target="_blank">Comprovante</a>`:"-"}</td>
+        <td class="actions">
+           <button data-id="${d.id}" data-act="approve">Aprovar</button>
+           <button data-id="${d.id}" data-act="reject" class="danger">Reprovar</button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+    $("#pendingSum").textContent = brl(total);
 
-        /* --- Seção Contato --- */
-        #contato form {
-            max-width: 700px;
-            margin: auto;
-            display: grid;
-            gap: 1.5rem;
-        }
+    // ações
+    tbody.querySelectorAll("button").forEach(btn=>{
+      btn.onclick = async ()=>{
+        const id = btn.dataset.id;
+        const act = btn.dataset.act;
+        await updateDoc(doc(db,"expenses", id), { status: act==="approve"?"approved":"rejected" });
+      };
+    });
+  });
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
+  // Feed de mídias
+  const qMed = query(collection(db,"work_media"), orderBy("createdAt","desc"), limit(12));
+  onSnapshot(qMed, (snap)=>{
+    const grid = $("#mediaGrid");
+    grid.innerHTML = "";
+    snap.forEach(d=>{
+      const x = d.data();
+      const isImg = (x.mime||"").startsWith("image/");
+      const card = document.createElement("div");
+      card.className = "mediaCard";
+      card.innerHTML = `
+        <div class="media">
+          ${isImg ? `<img src="${x.url}" alt="media"/>` : `<video src="${x.url}" controls></video>`}
+        </div>
+        <div class="meta">
+          <div><b>${x.userName||x.uid}</b></div>
+          <small>${x.desc||""}</small>
+        </div>`;
+      grid.appendChild(card);
+    });
+  });
+}
+</script>
 
-        #contato input,
-        #contato textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-        }
-        
-        #contato textarea {
-            resize: vertical;
-        }
-        
-        #contato .btn {
-            border: none;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        /* --- Rodapé --- */
-        footer {
-            background: var(--cor-primaria);
-            color: var(--cor-branca);
-            text-align: center;
-            padding: 2rem 0;
-        }
-
-        /* --- Responsividade --- */
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-            }
-
-            .navbar .logo {
-                margin-bottom: 1rem;
-            }
-
-            .navbar ul {
-                padding-left: 0;
-            }
-
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero-content .subtitle {
-                font-size: 1.2rem;
-            }
-
-            .grid-3,
-            #sobre .about-content {
-                grid-template-columns: 1fr;
-            }
-
-            #sobre .about-content img {
-                margin-top: 2rem;
-            }
-        }
-    </style>
+<style>
+:root{
+  --bg:#0e1116; --panel:#161a22; --soft:#232a36; --txt:#e6edf3; --muted:#9da9bb;
+  --brand:#7c9cff; --ok:#2ecc71; --warn:#f1c40f; --danger:#ff6b6b; --chip:#2b3342;
+  --shadow: 0 10px 28px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--txt);font:500 16px/1.5 Inter,system-ui,Segoe UI,Roboto,Arial}
+a{color:var(--brand)}
+.container{max-width:1100px;margin:0 auto;padding:24px}
+.card{background:var(--panel);border:1px solid #222a; border-radius:14px; box-shadow:var(--shadow)}
+.header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+h1{font-size:22px;margin:0}
+.grid{display:grid;gap:16px}
+@media(min-width:900px){ .grid-2{grid-template-columns:1.1fr .9fr}}
+.btn{appearance:none;border:0;border-radius:10px;padding:10px 14px;background:var(--brand);color:#0b0e14;font-weight:700;cursor:pointer}
+.btn.secondary{background:var(--soft);color:var(--txt)}
+.btn.danger{background:var(--danger);color:#fff}
+input,select,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #2b3342;background:#0f131b;color:var(--txt);outline:none}
+label{font-size:13px;color:var(--muted)}
+.row{display:grid;grid-template-columns:1fr 1fr; gap:12px}
+.sep{height:1px;background:#2b3342;margin:14px 0}
+.center{text-align:center}
+small.muted{color:var(--muted)}
+#map,#adminMap{width:100%;height:320px;border-radius:12px;border:1px solid #2b3342}
+.chip{display:inline-block;padding:6px 10px;border-radius:999px;background:var(--chip);color:#fff;font-size:12px}
+.chip.on{background:linear-gradient(90deg,#00c853,#43a047)}
+.chip.off{background:linear-gradient(90deg,#8e24aa,#3949ab)}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{border-bottom:1px solid #2b3342;padding:10px;vertical-align:middle}
+.table th{text-align:left;color:var(--muted);font-size:13px}
+.actions button{margin-right:8px}
+.mediaGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px}
+.mediaCard{background:#0f131b;border:1px solid #263043;border-radius:12px;overflow:hidden}
+.mediaCard .media{width:100%;height:130px;background:#0b0e14;display:flex;align-items:center;justify-content:center}
+.mediaCard img{max-width:100%;max-height:130px;display:block}
+.mediaCard video{width:100%;height:130px;object-fit:cover}
+.mediaCard .meta{padding:8px 10px}
+.headerBar{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#0e1116,#0e1116ee 70%,transparent);padding:12px;border-bottom:1px solid #202534}
+.brand{display:flex;align-items:center;gap:10px}
+.brand b{font-size:18px}
+.right{display:flex;align-items:center;gap:10px}
+.note{padding:10px;border-radius:10px;background:#0f131b;border:1px dashed #2b3342;color:#c7d1e0}
+</style>
 </head>
 <body>
 
-    <header id="main-header">
-        <nav class="navbar container">
-            <a href="#" class="logo">[Sua Empresa]</a>
-            <ul>
-                <li><a href="#hero" class="nav-link active">Início</a></li>
-                <li><a href="#sobre" class="nav-link">Sobre Nós</a></li>
-                <li><a href="#servicos" class="nav-link">Serviços</a></li>
-                <li><a href="#portfolio" class="nav-link">Portfólio</a></li>
-                <li><a href="#depoimentos" class="nav-link">Depoimentos</a></li>
-                <li><a href="#contato" class="nav-link">Contato</a></li>
-            </ul>
-        </nav>
-    </header>
+<!-- ============ AUTH ============ -->
+<div id="authBox" class="container">
+  <div class="headerBar card">
+    <div class="brand"><span class="chip">MVP</span><b>Field Control</b><small class="muted">— protótipo</small></div>
+  </div>
 
-    <main>
-        <section id="hero">
-            <div class="hero-content">
-                <h1>Proposta de Parceria para [Nome do Cliente]</h1>
-                <p class="subtitle">Soluções inovadoras para impulsionar o crescimento do seu negócio.</p>
-                <a href="#sobre" class="btn">Descubra Como</a>
-            </div>
-        </section>
+  <div class="grid grid-2">
+    <div class="card" style="padding:18px;">
+      <div class="header"><h1>Entrar</h1></div>
+      <form id="loginForm">
+        <label>E-mail</label>
+        <input id="loginEmail" type="email" placeholder="email@empresa.com" required>
+        <label>Senha</label>
+        <input id="loginPass" type="password" placeholder="••••••••" required>
+        <div class="sep"></div>
+        <button class="btn" type="submit">Entrar</button>
+        <div class="sep"></div>
+        <small class="muted">Não tem conta? <a href="#" id="linkToSign">Criar agora</a></small>
+      </form>
+    </div>
 
-        <section id="sobre" class="container">
-            <div class="section-title">
-                <h2>Sobre Nossa Empresa</h2>
-                <p>Conheça quem somos e o que nos move.</p>
-            </div>
-            <div class="about-content">
-                <div>
-                    <h3>Nossa Missão</h3>
-                    <p>Nossa missão é fornecer soluções tecnológicas de alta qualidade que agreguem valor real aos nossos clientes. Acreditamos que a tecnologia é a chave para o sucesso no mercado atual e estamos aqui para ser o seu parceiro estratégico nessa jornada.</p>
-                    <p>Com uma equipe de especialistas apaixonados por inovação, estamos sempre buscando as melhores práticas e as tecnologias mais recentes para garantir que sua empresa esteja sempre à frente da concorrência.</p>
-                </div>
-                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80" alt="Nossa equipe colaborando">
-            </div>
-        </section>
+    <div class="card" style="padding:18px;">
+      <div class="header"><h1>Criar conta</h1></div>
+      <form id="signForm" style="display:none">
+        <label>Nome</label>
+        <input id="signName" type="text" placeholder="Seu nome">
+        <label>E-mail</label>
+        <input id="signEmail" type="email" placeholder="email@empresa.com" required>
+        <label>Senha</label>
+        <input id="signPass" type="password" placeholder="mín. 6 caracteres" required>
+        <div class="sep"></div>
+        <button class="btn" type="submit">Cadastrar</button>
+        <div class="sep"></div>
+        <small class="muted">Já tem conta? <a href="#" id="linkToLogin">Entrar</a></small>
+      </form>
+      <div class="note">
+        <b>Perfis:</b> novos usuários nascem como <code>worker</code>. Para virar <code>admin</code>, edite o doc em <code>users/{uid}</code> no Firestore.
+      </div>
+    </div>
+  </div>
+</div>
 
-        <section id="servicos" class="container">
-            <div class="section-title">
-                <h2>O Que Fazemos</h2>
-                <p>Oferecemos uma gama completa de serviços para atender às suas necessidades.</p>
-            </div>
-            <div class="grid-3">
-                <div class="card">
-                    <div class="icon">&#128187;</div> <h3>Desenvolvimento Web</h3>
-                    <p>Criamos websites e sistemas web modernos, responsivos e otimizados para performance e conversão.</p>
-                </div>
-                <div class="card">
-                    <div class="icon">&#128241;</div> <h3>Aplicações Móveis</h3>
-                    <p>Desenvolvemos aplicativos nativos e híbridos para iOS e Android, focados em usabilidade e experiência do usuário.</p>
-                </div>
-                <div class="card">
-                    <div class="icon">&#128202;</div> <h3>Marketing Digital</h3>
-                    <p>Estratégias de SEO, gestão de mídias sociais e campanhas de tráfego pago para aumentar sua visibilidade online.</p>
-                </div>
-            </div>
-        </section>
+<!-- ============ WORKER APP ============ -->
+<div id="app" class="container" style="display:none">
+  <div class="headerBar card">
+    <div class="brand"><span class="chip">Funcionário</span><b id="helloUser">Olá</b></div>
+    <div class="right">
+      <span id="trackStatus" class="chip off">Parado</span>
+      <button id="btnToggleTrack" class="btn secondary">Compartilhar Localização (Iniciar)</button>
+      <button id="btnLogout" class="btn danger">Sair</button>
+    </div>
+  </div>
 
-        <section id="portfolio" class="container">
-            <div class="section-title">
-                <h2>Nosso Trabalho</h2>
-                <p>Confira alguns dos projetos que nos orgulhamos de ter entregado.</p>
-            </div>
-            <div class="portfolio-grid">
-                <div class="portfolio-item">
-                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80" alt="Projeto 1">
-                    <div class="portfolio-overlay"><h4>Dashboard Analítico</h4><p>Cliente Corporativo</p></div>
-                </div>
-                <div class="portfolio-item">
-                    <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80" alt="Projeto 2">
-                    <div class="portfolio-overlay"><h4>App de Viagens</h4><p>Startup de Turismo</p></div>
-                </div>
-                <div class="portfolio-item">
-                    <img src="https://images.unsplash.com/photo-1559028012-215268c63747?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1374&q=80" alt="Projeto 3">
-                    <div class="portfolio-overlay"><h4>E-commerce de Moda</h4><p>Varejo de Luxo</p></div>
-                </div>
-            </div>
-        </section>
+  <div class="grid grid-2">
+    <div class="card" style="padding:16px;">
+      <div class="header"><h1>Onde estou</h1></div>
+      <div id="map"></div>
+      <div class="sep"></div>
+      <small class="muted">A localização é atualizada em tempo real enquanto o compartilhamento estiver ativo.</small>
+    </div>
 
-        <section id="depoimentos">
-            <div class="container">
-                <div class="section-title">
-                    <h2>O Que Nossos Clientes Dizem</h2>
-                    <p>A satisfação de quem confia em nosso trabalho é nossa maior recompensa.</p>
-                </div>
-                <div class="grid-3">
-                     <div class="testimonial">
-                        <p>"Trabalhar com a [Sua Empresa] transformou nosso negócio. A equipe é profissional, dedicada e entregou resultados acima do esperado."</p>
-                        <footer>- João da Silva, CEO da Empresa X</footer>
-                    </div>
-                    <div class="testimonial">
-                        <p>"O novo site que eles desenvolveram é incrível! Nossas vendas online aumentaram 200% em apenas três meses."</p>
-                        <footer>- Maria Oliveira, Diretora da Empresa Y</footer>
-                    </div>
-                    <div class="testimonial">
-                        <p>"Profissionalismo exemplar e suporte técnico impecável. Recomendo a todos que buscam qualidade e compromisso."</p>
-                        <footer>- Carlos Pereira, Gerente da Empresa Z</footer>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <section id="contato" class="container">
-            <div class="section-title">
-                <h2>Vamos Conversar?</h2>
-                <p>Estamos prontos para entender seu desafio e construir algo incrível juntos.</p>
-            </div>
-            <form>
-                <div class="form-group">
-                    <label for="name">Nome</label>
-                    <input type="text" id="name" placeholder="Seu nome completo" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="seuemail@dominio.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="message">Mensagem</label>
-                    <textarea id="message" rows="5" placeholder="Conte-nos um pouco sobre seu projeto..." required></textarea>
-                </div>
-                <button type="submit" class="btn">Enviar Mensagem</button>
-            </form>
-        </section>
-
-    </main>
-    
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 [Sua Empresa]. Todos os direitos reservados.</p>
+    <div class="card" style="padding:16px;">
+      <div class="header"><h1>Despesa de passagem</h1></div>
+      <form id="expenseForm">
+        <div class="row">
+          <div>
+            <label>Tipo</label>
+            <select id="expenseType" required>
+              <option value="passagem_onibus">Passagem (Ônibus)</option>
+              <option value="passagem_metro">Passagem (Metrô)</option>
+              <option value="uber_taxi">Uber/Taxi</option>
+              <option value="outros">Outros</option>
+            </select>
+          </div>
+          <div>
+            <label>Valor (R$)</label>
+            <input id="expenseAmount" type="number" step="0.01" min="0" placeholder="0,00" required/>
+          </div>
         </div>
-    </footer>
+        <label>Observação</label>
+        <input id="expenseNote" type="text" placeholder="Trecho, motivo, etc."/>
+        <label>Comprovante (foto)</label>
+        <input id="expenseFile" type="file" accept="image/*"/>
+        <div class="sep"></div>
+        <button class="btn" type="submit">Enviar para aprovação</button>
+      </form>
+    </div>
 
-    <script>
-        // --- Efeito de Fade-in nas Seções ao Rolar ---
-        const sections = document.querySelectorAll('section');
+    <div class="card" style="padding:16px;">
+      <div class="header"><h1>Foto/Vídeo do serviço</h1></div>
+      <form id="mediaForm">
+        <label>Descrição</label>
+        <input id="mediaDesc" type="text" placeholder="Ex.: instalação concluída, antes/depois, etc."/>
+        <label>Arquivo</label>
+        <input id="mediaFile" type="file" accept="image/*,video/*" required/>
+        <div class="sep"></div>
+        <button class="btn" type="submit">Enviar mídia</button>
+      </form>
+      <div class="sep"></div>
+      <small class="muted">Arquivos ficam visíveis no painel do administrador.</small>
+    </div>
+  </div>
+</div>
 
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, {
-            threshold: 0.1
-        });
+<!-- ============ ADMIN ============ -->
+<div id="admin" class="container" style="display:none">
+  <div class="headerBar card">
+    <div class="brand"><span class="chip">Admin</span><b id="helloAdmin">Olá</b></div>
+    <div class="right">
+      <button id="btnLogout" class="btn danger" onclick="null">Sair</button>
+    </div>
+  </div>
 
-        sections.forEach(section => {
-            observer.observe(section);
-        });
+  <div class="grid grid-2">
+    <div class="card" style="padding:16px;">
+      <div class="header"><h1>Funcionários no mapa</h1></div>
+      <div id="adminMap"></div>
+      <div class="sep"></div>
+      <small class="muted">Marcadores representam a última posição reportada por cada funcionário ativo.</small>
+    </div>
 
-        // --- Ativar Link do Menu de Acordo com a Seção Visível ---
-        const navLinks = document.querySelectorAll('.nav-link');
+    <div class="card" style="padding:16px;">
+      <div class="header"><h1>Despesas pendentes</h1></div>
+      <table class="table">
+        <thead><tr>
+          <th>Funcionário</th><th>Tipo</th><th>Valor</th><th>Obs</th><th>Comprovante</th><th>Ações</th>
+        </tr></thead>
+        <tbody id="tbodyExpenses"></tbody>
+      </table>
+      <div class="sep"></div>
+      <div class="header">
+        <div><b>Total pendente:</b> <span id="pendingSum">R$ 0,00</span></div>
+        <small class="muted">Aprovar move a despesa para status <code>approved</code>; reprovar para <code>rejected</code>.</small>
+      </div>
+    </div>
 
-        const onScroll = () => {
-            let currentSection = "";
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (pageYOffset >= sectionTop - 150) {
-                    currentSection = section.getAttribute('id');
-                }
-            });
+    <div class="card" style="padding:16px;">
+      <div class="header"><h1>Mídias recentes</h1></div>
+      <div id="mediaGrid" class="mediaGrid"></div>
+    </div>
+  </div>
+</div>
 
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').includes(currentSection)) {
-                    link.classList.add('active');
-                }
-            });
-        };
-
-        window.addEventListener('scroll', onScroll);
-
-    </script>
 </body>
 </html>
