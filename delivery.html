@@ -1,526 +1,128 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Field Control — Protótipo (sem Firebase)</title>
-
-<!-- Leaflet (mapa) -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<style>
-:root{
-  --bg:#0e1116; --panel:#161a22; --soft:#232a36; --txt:#e6edf3; --muted:#9da9bb;
-  --brand:#7c9cff; --ok:#2ecc71; --warn:#f1c40f; --danger:#ff6b6b; --chip:#2b3342;
-  --shadow: 0 10px 28px rgba(0,0,0,.35);
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--txt);font:500 16px/1.5 Inter,system-ui,Segoe UI,Roboto,Arial}
-a{color:var(--brand)}
-.container{max-width:1100px;margin:0 auto;padding:24px}
-.card{background:var(--panel);border:1px solid #222a; border-radius:14px; box-shadow:var(--shadow)}
-.header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
-h1{font-size:22px;margin:0}
-.grid{display:grid;gap:16px}
-@media(min-width:900px){ .grid-2{grid-template-columns:1.1fr .9fr}}
-.btn{appearance:none;border:0;border-radius:10px;padding:10px 14px;background:var(--brand);color:#0b0e14;font-weight:700;cursor:pointer}
-.btn.secondary{background:var(--soft);color:var(--txt)}
-.btn.danger{background:var(--danger);color:#fff}
-input,select,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #2b3342;background:#0f131b;color:var(--txt);outline:none}
-label{font-size:13px;color:var(--muted)}
-.row{display:grid;grid-template-columns:1fr 1fr; gap:12px}
-.sep{height:1px;background:#2b3342;margin:14px 0}
-small.muted{color:var(--muted)}
-.headerBar{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#0e1116,#0e1116ee 70%,transparent);padding:12px;border-bottom:1px solid #202534}
-.brand{display:flex;align-items:center;gap:10px}
-.brand b{font-size:18px}
-.right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-#map,#adminMap{width:100%;height:320px;border-radius:12px;border:1px solid #2b3342}
-.chip{display:inline-block;padding:6px 10px;border-radius:999px;background:var(--chip);color:#fff;font-size:12px}
-.chip.on{background:linear-gradient(90deg,#00c853,#43a047)}
-.chip.off{background:linear-gradient(90deg,#8e24aa,#3949ab)}
-.table{width:100%;border-collapse:collapse}
-.table th,.table td{border-bottom:1px solid #2b3342;padding:10px;vertical-align:middle}
-.table th{text-align:left;color:var(--muted);font-size:13px}
-.actions button{margin-right:8px}
-.mediaGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px}
-.mediaCard{background:#0f131b;border:1px solid #263043;border-radius:12px;overflow:hidden}
-.mediaCard .media{width:100%;height:130px;background:#0b0e14;display:flex;align-items:center;justify-content:center}
-.mediaCard img{max-width:100%;max-height:130px;display:block}
-.mediaCard video{width:100%;height:130px;object-fit:cover}
-.mediaCard .meta{padding:8px 10px}
-.note{padding:10px;border-radius:10px;background:#0f131b;border:1px dashed #2b3342;color:#c7d1e0}
-footer{opacity:.7;font-size:12px;margin-top:10px}
-kbd{background:#222;border:1px solid #333;border-bottom-color:#111;padding:2px 6px;border-radius:6px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatório de Transporte - Protótipo</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
+    h1, h2 { text-align: center; }
+    form { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+    label { display: block; margin-top: 10px; }
+    input { width: 100%; padding: 6px; margin-top: 5px; }
+    button { margin-top: 15px; padding: 10px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background: #2980b9; }
+    .dashboard { background: white; padding: 20px; border-radius: 8px; }
+    canvas { margin-top: 20px; }
+  </style>
 </head>
 <body>
 
-<!-- ============ HEADER ============ -->
-<div class="container headerBar card">
-  <div class="brand"><span class="chip">MVP</span><b>Field Control</b><small class="muted"> — protótipo local</small></div>
-  <div class="right">
-    <button id="btnReset" class="btn secondary" title="Apaga todos os dados do protótipo">Resetar protótipo</button>
-    <span class="chip">Sem Firebase</span>
-  </div>
-</div>
+  <h1>📋 Relatório de Transporte</h1>
 
-<!-- ============ IDENTIFICAÇÃO ============ -->
-<div id="identBox" class="container">
-  <div class="grid grid-2">
-    <div class="card" style="padding:18px;">
-      <div class="header"><h1>Entrar no protótipo</h1></div>
-      <form id="whoForm">
-        <label>Seu nome</label>
-        <input id="whoName" type="text" placeholder="Ex.: João Técnico" required>
-        <label>Perfil</label>
-        <select id="whoRole" required>
-          <option value="worker">Funcionário</option>
-          <option value="admin">Admin</option>
-        </select>
-        <div class="sep"></div>
-        <button class="btn" type="submit">Entrar</button>
-      </form>
-      <div class="sep"></div>
-      <div class="note">
-        <b>Como funciona:</b> escolha “Funcionário” para testar envio de localização, despesas e mídias.
-        Escolha “Admin” para aprovar despesas e ver o mapa/galeria. Tudo fica somente neste navegador (localStorage).
-      </div>
-    </div>
-    <div class="card" style="padding:18px;">
-      <div class="header"><h1>Dica rápida</h1></div>
-      <p>Para ver o mapa atualizando com sua posição:</p>
-      <ul>
-        <li>No celular, ative o GPS e permita a localização do site.</li>
-        <li>No desktop, rode um servidor simples (<kbd>python -m http.server 8000</kbd>) para liberar a permissão.</li>
-      </ul>
-    </div>
-  </div>
-</div>
+  <!-- Formulário de preenchimento -->
+  <form id="relatorioForm">
+    <label>Funcionário:</label>
+    <input type="text" id="funcionario" required>
+    
+    <label>Data:</label>
+    <input type="date" id="data" required>
+    
+    <label>Refeição (R$):</label>
+    <input type="number" id="refeicao" required>
+    
+    <label>Condução (R$):</label>
+    <input type="number" id="conducao" required>
+    
+    <label>Retorno Casa (R$):</label>
+    <input type="number" id="retorno" required>
+    
+    <button type="submit">Enviar Relatório</button>
+  </form>
 
-<!-- ============ WORKER APP ============ -->
-<div id="app" class="container" style="display:none">
-  <div class="headerBar card">
-    <div class="brand"><span class="chip">Funcionário</span><b id="helloUser">Olá</b></div>
-    <div class="right">
-      <span id="trackStatus" class="chip off">Parado</span>
-      <button id="btnToggleTrack" class="btn secondary">Compartilhar Localização (Iniciar)</button>
-      <button id="btnSwitchToAdmin" class="btn">Ver como Admin</button>
-      <button id="btnLeave" class="btn danger">Sair</button>
-    </div>
+  <!-- Dashboard -->
+  <div class="dashboard">
+    <h2>📊 Dashboard do Dono</h2>
+    <canvas id="barChart"></canvas>
+    <canvas id="pieChart"></canvas>
+    <canvas id="lineChart"></canvas>
   </div>
 
-  <div class="grid grid-2">
-    <div class="card" style="padding:16px;">
-      <div class="header"><h1>Onde estou</h1></div>
-      <div id="map"></div>
-      <div class="sep"></div>
-      <small class="muted">A localização atualiza enquanto o compartilhamento estiver ativo.</small>
-    </div>
+  <script>
+    let registros = [];
+    const form = document.getElementById("relatorioForm");
 
-    <div class="card" style="padding:16px;">
-      <div class="header"><h1>Despesa de passagem</h1></div>
-      <form id="expenseForm">
-        <div class="row">
-          <div>
-            <label>Tipo</label>
-            <select id="expenseType" required>
-              <option value="passagem_onibus">Passagem (Ônibus)</option>
-              <option value="passagem_metro">Passagem (Metrô)</option>
-              <option value="uber_taxi">Uber/Taxi</option>
-              <option value="outros">Outros</option>
-            </select>
-          </div>
-          <div>
-            <label>Valor (R$)</label>
-            <input id="expenseAmount" type="number" step="0.01" min="0" placeholder="0,00" required/>
-          </div>
-        </div>
-        <label>Observação</label>
-        <input id="expenseNote" type="text" placeholder="Trecho, motivo, etc."/>
-        <label>Comprovante (foto — teste)</label>
-        <input id="expenseFile" type="file" accept="image/*"/>
-        <div class="sep"></div>
-        <button class="btn" type="submit">Enviar para aprovação</button>
-      </form>
-      <footer>Arquivos são salvos em base64 no <em>localStorage</em> apenas para teste.</footer>
-    </div>
+    // Configuração dos gráficos
+    const barCtx = document.getElementById("barChart").getContext("2d");
+    const pieCtx = document.getElementById("pieChart").getContext("2d");
+    const lineCtx = document.getElementById("lineChart").getContext("2d");
 
-    <div class="card" style="padding:16px;">
-      <div class="header"><h1>Foto/Vídeo do serviço</h1></div>
-      <form id="mediaForm">
-        <label>Descrição</label>
-        <input id="mediaDesc" type="text" placeholder="Ex.: instalação concluída, antes/depois, etc."/>
-        <label>Arquivo</label>
-        <input id="mediaFile" type="file" accept="image/*,video/*" required/>
-        <div class="sep"></div>
-        <button class="btn" type="submit">Enviar mídia</button>
-      </form>
-      <div class="sep"></div>
-      <small class="muted">Use clipes curtos para não pesar o navegador.</small>
-    </div>
-  </div>
-</div>
+    let barChart = new Chart(barCtx, {
+      type: "bar",
+      data: { labels: [], datasets: [] }
+    });
 
-<!-- ============ ADMIN ============ -->
-<div id="admin" class="container" style="display:none">
-  <div class="headerBar card">
-    <div class="brand"><span class="chip">Admin</span><b id="helloAdmin">Olá</b></div>
-    <div class="right">
-      <button id="btnSwitchToWorker" class="btn">Ver como Funcionário</button>
-      <button id="btnLeaveAdmin" class="btn danger">Sair</button>
-    </div>
-  </div>
+    let pieChart = new Chart(pieCtx, {
+      type: "pie",
+      data: { labels: ["Refeição", "Condução", "Retorno"], datasets: [{ data: [0,0,0], backgroundColor: ["#3498db","#2ecc71","#e74c3c"] }] }
+    });
 
-  <div class="grid grid-2">
-    <div class="card" style="padding:16px;">
-      <div class="header"><h1>Funcionários no mapa</h1></div>
-      <div id="adminMap"></div>
-      <div class="sep"></div>
-      <small class="muted">Mostra as últimas posições salvas (neste navegador).</small>
-    </div>
+    let lineChart = new Chart(lineCtx, {
+      type: "line",
+      data: { labels: [], datasets: [{ label: "Total Diário", data: [], borderColor: "#9b59b6", fill: false }] }
+    });
 
-    <div class="card" style="padding:16px;">
-      <div class="header"><h1>Despesas pendentes</h1></div>
-      <table class="table">
-        <thead><tr>
-          <th>Funcionário</th><th>Tipo</th><th>Valor</th><th>Obs</th><th>Comprovante</th><th>Ações</th>
-        </tr></thead>
-        <tbody id="tbodyExpenses"></tbody>
-      </table>
-      <div class="sep"></div>
-      <div class="header">
-        <div><b>Total pendente:</b> <span id="pendingSum">R$ 0,00</span></div>
-        <small class="muted">Aprovar muda para <code>approved</code>; reprovar para <code>rejected</code>.</small>
-      </div>
-    </div>
+    // Atualiza os gráficos
+    function atualizarDashboard() {
+      // Dados agrupados por funcionário
+      const funcionarios = [...new Set(registros.map(r => r.funcionario))];
+      const refeicoes = funcionarios.map(f => registros.filter(r => r.funcionario===f).reduce((s,r)=>s+r.refeicao,0));
+      const conducoes = funcionarios.map(f => registros.filter(r => r.funcionario===f).reduce((s,r)=>s+r.conducao,0));
+      const retornos = funcionarios.map(f => registros.filter(r => r.funcionario===f).reduce((s,r)=>s+r.retorno,0));
 
-    <div class="card" style="padding:16px;">
-      <div class="header"><h1>Mídias recentes</h1></div>
-      <div id="mediaGrid" class="mediaGrid"></div>
-    </div>
-  </div>
-</div>
+      barChart.data = {
+        labels: funcionarios,
+        datasets: [
+          { label: "Refeição", data: refeicoes, backgroundColor: "#3498db" },
+          { label: "Condução", data: conducoes, backgroundColor: "#2ecc71" },
+          { label: "Retorno", data: retornos, backgroundColor: "#e74c3c" }
+        ]
+      };
+      barChart.update();
 
-<script>
-/* ========= STATE & HELPERS ========= */
-const $ = s => document.querySelector(s);
-const brl = v => (Number(v||0)).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-const sleep = (ms)=> new Promise(r=>setTimeout(r,ms));
+      // Atualiza Pizza
+      const totalRefeicao = registros.reduce((s,r)=>s+r.refeicao,0);
+      const totalConducao = registros.reduce((s,r)=>s+r.conducao,0);
+      const totalRetorno = registros.reduce((s,r)=>s+r.retorno,0);
 
-let who = null;            // {name, role}
-let map, marker, adminMap, adminLayer;
-let watchId = null;
+      pieChart.data.datasets[0].data = [totalRefeicao, totalConducao, totalRetorno];
+      pieChart.update();
 
-/* ========= STORAGE LAYER (localStorage) ========= */
-const KEYS = {
-  WHO: "fc_who",
-  LOCS: "fc_locations",   // array de {name, lat, lng, ts}
-  EXPS: "fc_expenses",    // array de {id, name, type, amount, note, fileDataURL, status, ts}
-  MEDS: "fc_media"        // array de {id, name, desc, dataURL, mime, ts}
-};
-const readLS  = (k,def)=> JSON.parse(localStorage.getItem(k) || JSON.stringify(def));
-const writeLS = (k,v)=> localStorage.setItem(k, JSON.stringify(v));
+      // Atualiza Linha (por data)
+      const datas = [...new Set(registros.map(r=>r.data))].sort();
+      const totais = datas.map(d => registros.filter(r=>r.data===d).reduce((s,r)=>s+r.total,0));
 
-/* ========= IDENTIFICAÇÃO ========= */
-$("#whoForm").addEventListener("submit", (e)=>{
-  e.preventDefault();
-  const name = $("#whoName").value.trim();
-  const role = $("#whoRole").value;
-  if(!name) return;
-  who = { name, role };
-  writeLS(KEYS.WHO, who);
-  enterRole(role);
-});
-
-$("#btnReset").onclick = ()=>{
-  if(confirm("Apagar todos os dados do protótipo (localStorage)?")){
-    Object.values(KEYS).forEach(k=> localStorage.removeItem(k));
-    location.reload();
-  }
-};
-
-function enterRole(role){
-  $("#identBox").style.display = "none";
-  if(role === "worker"){
-    initWorker();
-    $("#app").style.display = "";
-    $("#admin").style.display = "none";
-  } else {
-    initAdmin();
-    $("#admin").style.display = "";
-    $("#app").style.display = "none";
-  }
-}
-
-function leave(){
-  who = null;
-  localStorage.removeItem(KEYS.WHO);
-  if(watchId!==null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
-  $("#app").style.display = "none";
-  $("#admin").style.display = "none";
-  $("#identBox").style.display = "";
-}
-
-/* ========= WORKER ========= */
-async function initWorker(){
-  const saved = readLS(KEYS.WHO,null);
-  if(saved) who = saved;
-  $("#helloUser").textContent = who?.name || "Funcionário";
-  $("#btnLeave").onclick = leave;
-  $("#btnSwitchToAdmin").onclick = ()=> enterRole("admin");
-
-  // Mapa
-  initMap("#map");
-
-  // Tracking UI
-  const btn = $("#btnToggleTrack");
-  const statusEl = $("#trackStatus");
-  const isOn = btn.dataset.state === "on";
-  setTrackUI(isOn);
-
-  btn.onclick = ()=>{
-    const shouldStart = btn.dataset.state !== "on";
-    setTrackUI(shouldStart);
-    if(shouldStart) startWatch(); else stopWatch();
-  };
-
-  // Forms
-  setupExpenseForm();
-  setupMediaForm();
-}
-
-function setTrackUI(on){
-  const btn = $("#btnToggleTrack");
-  const statusEl = $("#trackStatus");
-  btn.dataset.state = on ? "on" : "off";
-  btn.textContent = on ? "Parar Compartilhar Localização" : "Compartilhar Localização (Iniciar)";
-  statusEl.textContent = on ? "Compartilhando em tempo real" : "Parado";
-  statusEl.className = on ? "chip on" : "chip off";
-}
-
-function initMap(selector){
-  const el = document.querySelector(selector);
-  const defaultPos = [-30.0346, -51.2177]; // Porto Alegre
-  const m = L.map(el).setView(defaultPos, 12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-    maxZoom:19, attribution:'&copy; OpenStreetMap'
-  }).addTo(m);
-  if(selector==="#map"){ map = m; } else { adminMap = m; adminLayer = L.layerGroup().addTo(adminMap); }
-}
-
-function startWatch(){
-  if(!navigator.geolocation){
-    alert("Geolocalização não suportada.");
-    return;
-  }
-  watchId = navigator.geolocation.watchPosition((pos)=>{
-    const { latitude, longitude } = pos.coords;
-    // Salva posição atual como o último ponto do usuário
-    const locs = readLS(KEYS.LOCS, []);
-    locs.push({ name: who?.name || "Funcionário", lat: latitude, lng: longitude, ts: Date.now() });
-    writeLS(KEYS.LOCS, locs);
-    // Atualiza UI
-    if(map){
-      if(marker) map.removeLayer(marker);
-      marker = L.marker([latitude, longitude]).addTo(map).bindPopup(`<b>${who?.name||"Funcionário"}</b>`);
-      map.setView([latitude, longitude], 15);
-    }
-  }, (err)=>{
-    console.warn(err);
-    alert("Erro de localização: " + err.message);
-  }, { enableHighAccuracy:true, maximumAge:3000, timeout:15000 });
-}
-
-function stopWatch(){
-  if(watchId!==null){ navigator.geolocation.clearWatch(watchId); watchId = null; }
-}
-
-/* ====== Despesas ====== */
-function setupExpenseForm(){
-  $("#expenseForm").addEventListener("submit", async (e)=>{
-    e.preventDefault();
-    const type = $("#expenseType").value;
-    const amount = Number($("#expenseAmount").value);
-    const note = $("#expenseNote").value.trim();
-    const file = $("#expenseFile").files[0];
-
-    if(!amount || amount<=0){ alert("Informe um valor válido."); return; }
-
-    // Converte imagem para base64 (opcional)
-    let fileDataURL = null;
-    if(file){
-      fileDataURL = await fileToDataURL(file);
+      lineChart.data.labels = datas;
+      lineChart.data.datasets[0].data = totais;
+      lineChart.update();
     }
 
-    const exps = readLS(KEYS.EXPS, []);
-    exps.unshift({
-      id: "exp_"+Date.now(),
-      name: who?.name || "Funcionário",
-      type, amount, note,
-      fileDataURL,
-      status: "pending",
-      ts: Date.now()
+    // Submissão do formulário
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const funcionario = document.getElementById("funcionario").value;
+      const data = document.getElementById("data").value;
+      const refeicao = parseFloat(document.getElementById("refeicao").value);
+      const conducao = parseFloat(document.getElementById("conducao").value);
+      const retorno = parseFloat(document.getElementById("retorno").value);
+      const total = refeicao + conducao + retorno;
+
+      registros.push({ funcionario, data, refeicao, conducao, retorno, total });
+      atualizarDashboard();
+      form.reset();
     });
-    writeLS(KEYS.EXPS, exps);
+  </script>
 
-    e.target.reset();
-    alert("Despesa enviada (protótipo).");
-  });
-}
-
-/* ====== Mídia ====== */
-function setupMediaForm(){
-  $("#mediaForm").addEventListener("submit", async (e)=>{
-    e.preventDefault();
-    const desc = $("#mediaDesc").value.trim();
-    const file = $("#mediaFile").files[0];
-    if(!file){ alert("Selecione um arquivo."); return; }
-
-    const dataURL = await fileToDataURL(file); // cuidado com tamanhos grandes
-    const meds = readLS(KEYS.MEDS, []);
-    meds.unshift({
-      id: "med_"+Date.now(),
-      name: who?.name || "Funcionário",
-      desc, dataURL, mime: file.type,
-      ts: Date.now()
-    });
-    writeLS(KEYS.MEDS, meds);
-
-    e.target.reset();
-    alert("Mídia enviada (protótipo).");
-  });
-}
-
-/* ========= ADMIN ========= */
-function initAdmin(){
-  const saved = readLS(KEYS.WHO,null);
-  if(saved) who = saved;
-  $("#helloAdmin").textContent = who?.name || "Admin";
-  $("#btnLeaveAdmin").onclick = leave;
-  $("#btnSwitchToWorker").onclick = ()=> enterRole("worker");
-
-  // mapa
-  initMap("#adminMap");
-  renderAdminMap();
-  renderExpenses();
-  renderMedia();
-
-  // refresco simples sempre que voltar ao admin
-  window.addEventListener("focus", ()=>{
-    renderAdminMap();
-    renderExpenses();
-    renderMedia();
-  });
-}
-
-function renderAdminMap(){
-  if(!adminMap || !adminLayer) return;
-  adminLayer.clearLayers();
-  const locs = readLS(KEYS.LOCS, []);
-  // mostre somente os últimos pontos por funcionário (neste protótipo temos 1 nome)
-  const lastByName = {};
-  for(const l of locs){
-    lastByName[l.name] = l; // sobrescreve com o mais recente
-  }
-  const markers = Object.values(lastByName);
-  if(markers.length===0) return;
-
-  markers.forEach(d=>{
-    const mk = L.marker([d.lat, d.lng]).bindPopup(`<b>${d.name}</b><br>${new Date(d.ts).toLocaleString()}`);
-    mk.addTo(adminLayer);
-  });
-  const first = markers[0];
-  adminMap.setView([first.lat, first.lng], 14);
-}
-
-function renderExpenses(){
-  const tbody = $("#tbodyExpenses");
-  const exps = readLS(KEYS.EXPS, []);
-  const pend = exps.filter(e=> e.status==="pending");
-  tbody.innerHTML = "";
-  let total = 0;
-  for(const x of pend){
-    total += Number(x.amount||0);
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${x.name}</td>
-      <td>${labelType(x.type)}</td>
-      <td>${brl(x.amount)}</td>
-      <td>${x.note||"-"}</td>
-      <td>${x.fileDataURL? `<a href="${x.fileDataURL}" target="_blank">Ver</a>` : "-"}</td>
-      <td class="actions">
-        <button data-id="${x.id}" data-act="approve">Aprovar</button>
-        <button data-id="${x.id}" data-act="reject" class="danger">Reprovar</button>
-      </td>`;
-    tbody.appendChild(tr);
-  }
-  $("#pendingSum").textContent = brl(total);
-
-  tbody.querySelectorAll("button").forEach(btn=>{
-    btn.onclick = ()=>{
-      const id = btn.dataset.id, act = btn.dataset.act;
-      const list = readLS(KEYS.EXPS, []);
-      const idx = list.findIndex(i=> i.id===id);
-      if(idx>-1){
-        list[idx].status = act==="approve" ? "approved" : "rejected";
-        writeLS(KEYS.EXPS, list);
-        renderExpenses();
-      }
-    };
-  });
-}
-
-function renderMedia(){
-  const grid = $("#mediaGrid");
-  const meds = readLS(KEYS.MEDS, []);
-  grid.innerHTML = "";
-  meds.slice(0,12).forEach(x=>{
-    const isImg = (x.mime||"").startsWith("image/");
-    const card = document.createElement("div");
-    card.className = "mediaCard";
-    card.innerHTML = `
-      <div class="media">
-        ${isImg ? `<img src="${x.dataURL}" alt="media"/>` : `<video src="${x.dataURL}" controls></video>`}
-      </div>
-      <div class="meta">
-        <div><b>${x.name}</b></div>
-        <small>${x.desc||""}</small>
-      </div>`;
-    grid.appendChild(card);
-  });
-}
-
-/* ========= Utils ========= */
-function labelType(t){
-  const map = {
-    passagem_onibus: "Passagem (Ônibus)",
-    passagem_metro: "Passagem (Metrô)",
-    uber_taxi: "Uber/Taxi",
-    outros: "Outros"
-  };
-  return map[t] || t;
-}
-
-function fileToDataURL(file){
-  return new Promise((resolve,reject)=>{
-    const reader = new FileReader();
-    reader.onload = ()=> resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-/* ========= BOOT ========= */
-(function boot(){
-  const saved = readLS(KEYS.WHO,null);
-  if(saved){
-    who = saved;
-    enterRole(who.role);
-  }
-})();
-</script>
 </body>
 </html>
