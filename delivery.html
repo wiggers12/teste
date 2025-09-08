@@ -3,17 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Relatório de Transporte - Premium</title>
+  <title>Relatório de Transporte - Premium 3D</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-    /* ==== Global ==== */
     body {
       font-family: 'Poppins', sans-serif;
       margin: 0; padding: 0;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      background: linear-gradient(135deg, #141e30, #243b55);
       color: #fff;
     }
     h1, h2 { text-align: center; margin-bottom: 15px; }
@@ -23,8 +20,9 @@
       border-radius: 15px;
       padding: 20px;
       margin: 20px 0;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      backdrop-filter: blur(15px);
+      transform: perspective(1000px) rotateX(2deg);
     }
     label { display: block; margin-top: 10px; font-weight: bold; }
     input, button {
@@ -34,235 +32,251 @@
     }
     input { background: rgba(255,255,255,0.1); color: #fff; }
     button {
-      background: linear-gradient(90deg, #3498db, #2ecc71);
+      background: linear-gradient(90deg, #3498db, #9b59b6);
       color: white; cursor: pointer; font-weight: bold;
       transition: transform .2s ease, box-shadow .2s;
     }
     button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
     }
-
-    /* ==== Tabs ==== */
     .tabs {
       display: flex; justify-content: space-around;
       position: fixed; bottom: 0; left: 0; width: 100%;
-      background: rgba(0,0,0,0.85); padding: 10px 0;
+      background: rgba(0,0,0,0.9); padding: 10px 0;
       border-top: 1px solid rgba(255,255,255,0.1);
     }
     .tab-btn {
-      flex: 1; text-align: center;
-      color: #fff; background: none; border: none;
-      font-size: 16px; cursor: pointer;
+      flex: 1; text-align: center; color: #fff;
+      background: none; border: none; font-size: 16px; cursor: pointer;
     }
-    .tab-btn.active { color: #2ecc71; }
-    .tab-content { display: none; padding-bottom: 60px; }
+    .tab-btn.active { color: #00ffcc; text-shadow: 0 0 10px #00ffcc; }
+    .tab-content { display: none; padding-bottom: 70px; }
     .tab-content.active { display: block; animation: fadeIn .5s; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-    /* ==== Dashboard ==== */
     .kpi-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 15px; margin-bottom: 20px;
     }
     .kpi {
-      background: rgba(255,255,255,0.1);
-      padding: 15px; border-radius: 12px;
-      text-align: center;
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      padding: 15px; border-radius: 12px; text-align: center;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.6), 0 6px 15px rgba(0,0,0,0.4);
+      transform: perspective(600px) rotateY(3deg);
     }
-    .kpi h3 { margin: 0; font-size: 22px; }
-    .kpi p { margin: 5px 0 0; font-size: 14px; }
-
-    /* ==== Preview ==== */
+    .kpi h3 { margin: 0; font-size: 22px; color: #00ffcc; text-shadow: 0 0 6px #00ffcc; }
     .preview { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
-    .preview img, .preview video {
-      max-width: 120px; border-radius: 10px;
-      border: 2px solid #3498db; cursor: pointer;
+    #assinaturaCanvas {
+      border: 2px dashed #00ffcc; border-radius: 10px;
+      width: 100%; height: 200px; background: #fff; cursor: crosshair;
     }
-    .modal {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center;
+    .checkin-list { list-style: none; padding: 0; }
+    .checkin-list li {
+      padding: 8px; margin: 5px 0;
+      border-radius: 8px;
+      background: rgba(0,255,204,0.15);
+      box-shadow: inset 0 0 8px rgba(0,255,204,0.3);
     }
-    .modal.active { display: flex; }
-    .modal img, .modal video { max-width: 90%; max-height: 90%; border-radius: 10px; }
-
-    /* ==== Map ==== */
-    #map { height: 350px; border-radius: 15px; margin-top: 15px; }
-    
-    /* ==== Responsivo ==== */
-    @media (max-width: 768px) {
-      .kpi-cards { grid-template-columns: 1fr 1fr; }
+    /* Impressão */
+    @media print {
+      body { background: #fff; color: #000; }
+      .tabs, button { display: none !important; }
+      .card { box-shadow: none; background: #fff; color: #000; }
+      #assinaturaCanvas { border: 1px solid #000; }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>📋 Relatório de Transporte - Premium</h1>
+<div class="container">
+  <h1>📋 Relatório de Transporte - Premium 3D</h1>
 
-    <!-- Formulário -->
-    <div id="form" class="tab-content active card">
-      <h2>📝 Preenchimento</h2>
-      <form id="relatorioForm">
-        <label><i class="fa fa-user"></i> Funcionário:</label>
-        <input type="text" id="funcionario" required>
-        <label><i class="fa fa-calendar"></i> Data:</label>
-        <input type="date" id="data" required>
-        <label><i class="fa fa-utensils"></i> Refeição (R$):</label>
-        <input type="number" id="refeicao" required>
-        <label><i class="fa fa-bus"></i> Condução (R$):</label>
-        <input type="number" id="conducao" required>
-        <label><i class="fa fa-home"></i> Retorno Casa (R$):</label>
-        <input type="number" id="retorno" required>
-        <label><i class="fa fa-camera"></i> Foto do Trabalho:</label>
-        <input type="file" id="foto" accept="image/*">
-        <label><i class="fa fa-video"></i> Vídeo do Trabalho:</label>
-        <input type="file" id="video" accept="video/*">
-        <div class="preview" id="preview"></div>
-        <button type="submit">Enviar Relatório</button>
-      </form>
-    </div>
-
-    <!-- Dashboard -->
-    <div id="dashboard" class="tab-content card">
-      <h2>📊 Dashboard</h2>
-      <div class="kpi-cards">
-        <div class="kpi"><h3 id="kpiTotal">R$0</h3><p>Total Geral</p></div>
-        <div class="kpi"><h3 id="kpiRefeicao">R$0</h3><p>Total Refeições</p></div>
-        <div class="kpi"><h3 id="kpiConducao">R$0</h3><p>Total Conduções</p></div>
-        <div class="kpi"><h3 id="kpiRetorno">R$0</h3><p>Total Retornos</p></div>
-      </div>
-      <canvas id="barChart"></canvas>
-      <canvas id="pieChart"></canvas>
-      <canvas id="lineChart"></canvas>
-    </div>
-
-    <!-- Mapa -->
-    <div id="mapa" class="tab-content card">
-      <h2>📍 Rastreamento em Tempo Real</h2>
-      <div id="map"></div>
-    </div>
+  <!-- Formulário -->
+  <div id="form" class="tab-content active card">
+    <h2>📝 Preenchimento</h2>
+    <form id="relatorioForm">
+      <label><i class="fa fa-user"></i> Funcionário:</label>
+      <input type="text" id="funcionario" required>
+      <label><i class="fa fa-calendar"></i> Data:</label>
+      <input type="date" id="data" required>
+      <label><i class="fa fa-utensils"></i> Refeição (R$):</label>
+      <input type="number" id="refeicao" required>
+      <label><i class="fa fa-bus"></i> Condução (R$):</label>
+      <input type="number" id="conducao" required>
+      <label><i class="fa fa-home"></i> Retorno Casa (R$):</label>
+      <input type="number" id="retorno" required>
+      <label><i class="fa fa-map-marker-alt"></i> Adicionar Ponto de Check-in:</label>
+      <input type="text" id="ponto" placeholder="Ex: Cliente A">
+      <button type="button" onclick="adicionarCheckin()">Adicionar Check-in</button>
+      <ul id="listaCheckin" class="checkin-list"></ul>
+      <label><i class="fa fa-signature"></i> Assinatura Digital:</label>
+      <canvas id="assinaturaCanvas"></canvas>
+      <button type="button" onclick="limparAssinatura()">🧹 Limpar Assinatura</button>
+      <button type="submit">Salvar Relatório</button>
+      <button type="button" onclick="imprimirRelatorio()">🖨️ Imprimir Relatório</button>
+    </form>
   </div>
 
-  <!-- Menu -->
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="form"><i class="fa fa-clipboard"></i><br>Relatório</button>
-    <button class="tab-btn" data-tab="dashboard"><i class="fa fa-chart-line"></i><br>Dashboard</button>
-    <button class="tab-btn" data-tab="mapa"><i class="fa fa-map"></i><br>Mapa</button>
+  <!-- Dashboard -->
+  <div id="dashboard" class="tab-content card">
+    <h2>📊 Dashboard 3D</h2>
+    <div class="kpi-cards">
+      <div class="kpi"><h3 id="kpiTotal">R$0</h3><p>Total Geral</p></div>
+      <div class="kpi"><h3 id="kpiRefeicao">R$0</h3><p>Total Refeições</p></div>
+      <div class="kpi"><h3 id="kpiConducao">R$0</h3><p>Total Conduções</p></div>
+      <div class="kpi"><h3 id="kpiRetorno">R$0</h3><p>Total Retornos</p></div>
+    </div>
+    <canvas id="barChart"></canvas>
+    <canvas id="pieChart"></canvas>
+    <canvas id="lineChart"></canvas>
   </div>
+</div>
 
-  <!-- Modal -->
-  <div class="modal" id="modal"></div>
+<!-- Menu -->
+<div class="tabs">
+  <button class="tab-btn active" data-tab="form"><i class="fa fa-clipboard"></i><br>Relatório</button>
+  <button class="tab-btn" data-tab="dashboard"><i class="fa fa-chart-line"></i><br>Dashboard</button>
+</div>
 
-  <script>
-    let registros = JSON.parse(localStorage.getItem("registros")) || [];
-    const form = document.getElementById("relatorioForm");
-    const preview = document.getElementById("preview");
-    const modal = document.getElementById("modal");
+<script>
+  let registros = JSON.parse(localStorage.getItem("registros")) || [];
+  let checkins = [];
+  const form = document.getElementById("relatorioForm");
 
-    // ==== Charts ====
-    const barCtx = document.getElementById("barChart").getContext("2d");
-    const pieCtx = document.getElementById("pieChart").getContext("2d");
-    const lineCtx = document.getElementById("lineChart").getContext("2d");
+  // ==== Charts ====
+  const barCtx = document.getElementById("barChart").getContext("2d");
+  const pieCtx = document.getElementById("pieChart").getContext("2d");
+  const lineCtx = document.getElementById("lineChart").getContext("2d");
 
-    let barChart = new Chart(barCtx, { type: "bar", data: { labels: [], datasets: [] } });
-    let pieChart = new Chart(pieCtx, { type: "doughnut", data: { labels: ["Refeição", "Condução", "Retorno"], datasets: [{ data: [0,0,0], backgroundColor: ["#3498db","#2ecc71","#e74c3c"] }] } });
-    let lineChart = new Chart(lineCtx, { type: "line", data: { labels: [], datasets: [{ label: "Total Diário", data: [], borderColor: "#9b59b6", tension: 0.3 }] } });
+  let barChart = new Chart(barCtx, { type: "bar", data: { labels: [], datasets: [] },
+    options: { plugins: { legend: { labels: { color: "#fff" } } },
+    scales: { x: { ticks: { color: "#fff" } }, y: { ticks: { color: "#fff" } } } }
+  });
+  let pieChart = new Chart(pieCtx, { type: "doughnut", data: { labels: ["Refeição", "Condução", "Retorno"], datasets: [{ data: [0,0,0], backgroundColor: ["#3498db","#2ecc71","#e74c3c"], borderWidth: 3 }] },
+    options: { plugins: { legend: { labels: { color: "#fff" } } } }
+  });
+  let lineChart = new Chart(lineCtx, { type: "line", data: { labels: [], datasets: [{ label: "Total Diário", data: [], borderColor: "#00ffcc", backgroundColor: "#00ffcc55", fill: true, tension: 0.4 }] },
+    options: { plugins: { legend: { labels: { color: "#fff" } } },
+    scales: { x: { ticks: { color: "#fff" } }, y: { ticks: { color: "#fff" } } } }
+  });
 
-    function atualizarDashboard() {
-      const totalRefeicao = registros.reduce((s,r)=>s+r.refeicao,0);
-      const totalConducao = registros.reduce((s,r)=>s+r.conducao,0);
-      const totalRetorno = registros.reduce((s,r)=>s+r.retorno,0);
-      const totalGeral = totalRefeicao + totalConducao + totalRetorno;
+  function atualizarDashboard() {
+    const totalRefeicao = registros.reduce((s,r)=>s+r.refeicao,0);
+    const totalConducao = registros.reduce((s,r)=>s+r.conducao,0);
+    const totalRetorno = registros.reduce((s,r)=>s+r.retorno,0);
+    const totalGeral = totalRefeicao + totalConducao + totalRetorno;
 
-      document.getElementById("kpiTotal").textContent = "R$"+totalGeral;
-      document.getElementById("kpiRefeicao").textContent = "R$"+totalRefeicao;
-      document.getElementById("kpiConducao").textContent = "R$"+totalConducao;
-      document.getElementById("kpiRetorno").textContent = "R$"+totalRetorno;
+    document.getElementById("kpiTotal").textContent = "R$"+totalGeral;
+    document.getElementById("kpiRefeicao").textContent = "R$"+totalRefeicao;
+    document.getElementById("kpiConducao").textContent = "R$"+totalConducao;
+    document.getElementById("kpiRetorno").textContent = "R$"+totalRetorno;
 
-      const funcionarios = [...new Set(registros.map(r => r.funcionario))];
-      const refeicoes = funcionarios.map(f => registros.filter(r => r.funcionario===f).reduce((s,r)=>s+r.refeicao,0));
-      const conducoes = funcionarios.map(f => registros.filter(r => r.funcionario===f).reduce((s,r)=>s+r.conducao,0));
-      const retornos = funcionarios.map(f => registros.filter(r => r.funcionario===f).reduce((s,r)=>s+r.retorno,0));
+    const funcionarios = [...new Set(registros.map(r => r.funcionario))];
+    const refeicoes = funcionarios.map(f => registros.filter(r => r.funcionario===f).reduce((s,r)=>s+r.refeicao,0));
+    const conducoes = funcionarios.map(f => registros.filter(r => r.funcionario===f).reduce((s,r)=>s+r.conducao,0));
+    const retornos = funcionarios.map(f => registros.filter(r => r.funcionario===f).reduce((s,r)=>s+r.retorno,0));
 
-      barChart.data = { labels: funcionarios, datasets: [
-        { label: "Refeição", data: refeicoes, backgroundColor: "#3498db" },
-        { label: "Condução", data: conducoes, backgroundColor: "#2ecc71" },
-        { label: "Retorno", data: retornos, backgroundColor: "#e74c3c" }
-      ]};
-      barChart.update();
+    barChart.data = { labels: funcionarios, datasets: [
+      { label: "Refeição", data: refeicoes, backgroundColor: "#3498db" },
+      { label: "Condução", data: conducoes, backgroundColor: "#2ecc71" },
+      { label: "Retorno", data: retornos, backgroundColor: "#e74c3c" }
+    ]};
+    barChart.update();
 
-      pieChart.data.datasets[0].data = [totalRefeicao, totalConducao, totalRetorno];
-      pieChart.update();
+    pieChart.data.datasets[0].data = [totalRefeicao, totalConducao, totalRetorno];
+    pieChart.update();
 
-      const datas = [...new Set(registros.map(r=>r.data))].sort();
-      const totais = datas.map(d => registros.filter(r=>r.data===d).reduce((s,r)=>s+r.total,0));
+    const datas = [...new Set(registros.map(r=>r.data))].sort();
+    const totais = datas.map(d => registros.filter(r=>r.data===d).reduce((s,r)=>s+r.total,0));
 
-      lineChart.data.labels = datas;
-      lineChart.data.datasets[0].data = totais;
-      lineChart.update();
-    }
+    lineChart.data.labels = datas;
+    lineChart.data.datasets[0].data = totais;
+    lineChart.update();
+  }
 
-    // ==== Formulário ====
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const funcionario = document.getElementById("funcionario").value;
-      const data = document.getElementById("data").value;
-      const refeicao = parseFloat(document.getElementById("refeicao").value);
-      const conducao = parseFloat(document.getElementById("conducao").value);
-      const retorno = parseFloat(document.getElementById("retorno").value);
-      const foto = document.getElementById("foto").files[0];
-      const video = document.getElementById("video").files[0];
-      const total = refeicao + conducao + retorno;
+  // ==== Check-in ====
+  function adicionarCheckin(){
+    const ponto = document.getElementById("ponto").value;
+    if(!ponto) return alert("Informe o ponto!");
+    const timestamp = new Date().toLocaleTimeString();
+    checkins.push({ ponto, hora: timestamp });
+    const li = document.createElement("li");
+    li.textContent = "✔️ " + ponto + " - " + timestamp;
+    document.getElementById("listaCheckin").appendChild(li);
+    document.getElementById("ponto").value = "";
+  }
 
-      const registro = { funcionario, data, refeicao, conducao, retorno, total };
-      if(foto) registro.foto = URL.createObjectURL(foto);
-      if(video) registro.video = URL.createObjectURL(video);
+  // ==== Assinatura Digital ====
+  const canvas = document.getElementById("assinaturaCanvas");
+  const ctx = canvas.getContext("2d");
+  let desenhando = false;
 
-      registros.push(registro);
-      localStorage.setItem("registros", JSON.stringify(registros));
-      atualizarDashboard();
+  canvas.addEventListener("mousedown", ()=>desenhando=true);
+  canvas.addEventListener("mouseup", ()=>desenhando=false);
+  canvas.addEventListener("mousemove", desenhar);
+  canvas.addEventListener("touchstart", ()=>desenhando=true);
+  canvas.addEventListener("touchend", ()=>desenhando=false);
+  canvas.addEventListener("touchmove", desenharTouch);
 
-      preview.innerHTML = "";
-      if(registro.foto) preview.innerHTML += `<img src="${registro.foto}" alt="foto" onclick="abrirModal('${registro.foto}','img')">`;
-      if(registro.video) preview.innerHTML += `<video src="${registro.video}" onclick="abrirModal('${registro.video}','video')"></video>`;
+  function desenhar(e){
+    if(!desenhando) return;
+    ctx.fillStyle = "#000";
+    ctx.beginPath();
+    ctx.arc(e.offsetX, e.offsetY, 2, 0, 2*Math.PI);
+    ctx.fill();
+  }
+  function desenharTouch(e){
+    if(!desenhando) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.touches[0].clientX - rect.left;
+    const y = e.touches[0].clientY - rect.top;
+    ctx.fillStyle = "#000";
+    ctx.beginPath();
+    ctx.arc(x, y, 2, 0, 2*Math.PI);
+    ctx.fill();
+  }
+  function limparAssinatura(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
 
-      form.reset();
-    });
+  // ==== Salvar relatório ====
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const funcionario = document.getElementById("funcionario").value;
+    const data = document.getElementById("data").value;
+    const refeicao = parseFloat(document.getElementById("refeicao").value);
+    const conducao = parseFloat(document.getElementById("conducao").value);
+    const retorno = parseFloat(document.getElementById("retorno").value);
+    const total = refeicao + conducao + retorno;
+    const assinatura = canvas.toDataURL();
 
+    registros.push({ funcionario, data, refeicao, conducao, retorno, total, checkins, assinatura });
+    localStorage.setItem("registros", JSON.stringify(registros));
     atualizarDashboard();
+    alert("Relatório salvo com sucesso!");
 
-    // ==== Tabs ====
-    document.querySelectorAll(".tab-btn").forEach(btn=>{
-      btn.addEventListener("click",()=>{
-        document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
-        document.querySelectorAll(".tab-content").forEach(c=>c.classList.remove("active"));
-        btn.classList.add("active");
-        document.getElementById(btn.dataset.tab).classList.add("active");
-      });
+    form.reset();
+    limparAssinatura();
+    checkins = [];
+    document.getElementById("listaCheckin").innerHTML = "";
+  });
+
+  // ==== Imprimir ====
+  function imprimirRelatorio(){
+    window.print();
+  }
+
+  atualizarDashboard();
+
+  // ==== Tabs ====
+  document.querySelectorAll(".tab-btn").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(c=>c.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById(btn.dataset.tab).classList.add("active");
     });
-
-    // ==== Modal Preview ====
-    function abrirModal(src,tipo){
-      modal.innerHTML = tipo==="img" ? `<img src="${src}">` : `<video src="${src}" controls autoplay></video>`;
-      modal.classList.add("active");
-    }
-    modal.addEventListener("click",()=> modal.classList.remove("active"));
-
-    // ==== Mapa ====
-    const map = L.map("map").setView([-30.0346, -51.2177], 13);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
-    const marker = L.marker([-30.0346, -51.2177]).addTo(map).bindPopup("Funcionário");
-    if(navigator.geolocation){
-      setInterval(()=>{
-        navigator.geolocation.getCurrentPosition((pos)=>{
-          const {latitude, longitude} = pos.coords;
-          marker.setLatLng([latitude, longitude]);
-          map.setView([latitude, longitude], 15);
-        });
-      }, 3000);
-    }
-  </script>
+  });
+</script>
 </body>
 </html>
