@@ -3,18 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Planilha Inteligente - Protótipo Premium</title>
+  <title>Planilha Inteligente - Avançada</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body { font-family:'Poppins',sans-serif; background:#0f0f0f; color:#fff; margin:0; }
     header { background:linear-gradient(90deg,#6a1b9a,#8e24aa,#d81b60); padding:20px; text-align:center; font-size:22px; font-weight:600; }
-    main { max-width:1300px; margin:auto; padding:20px; }
+    main { max-width:1400px; margin:auto; padding:20px; }
     .sheet { background:#1e1e2f; padding:20px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,.4); overflow-x:auto; }
     table { width:100%; border-collapse:collapse; margin-top:10px; }
-    th, td { border:1px solid #444; padding:8px; text-align:center; }
-    th { background:#2c2c3c; }
+    th, td { border:1px solid #444; padding:6px; text-align:center; position:relative; }
+    th { background:#2c2c3c; cursor:grab; }
+    tr { cursor:grab; }
     input.cell { background:transparent; border:none; color:#fff; text-align:center; width:100%; }
     .controls { margin:15px 0; display:flex; gap:10px; flex-wrap:wrap; }
     input, button { padding:10px; border-radius:6px; border:none; font-size:14px; }
@@ -23,14 +24,17 @@
     button:hover { background:#d81b60; }
     .dashboards { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:20px; }
     canvas { background:#121212; border-radius:12px; padding:10px; }
+    .btn-col { position:absolute; top:2px; right:2px; font-size:12px; background:#d81b60; border:none; color:white; border-radius:4px; padding:2px 6px; cursor:pointer; }
+    .btn-row { font-size:12px; background:#f44336; border:none; color:white; border-radius:4px; padding:2px 6px; cursor:pointer; margin-left:5px; }
   </style>
 </head>
 <body>
-  <header>📊 Planilha Inteligente - Protótipo Premium</header>
+  <header>📊 Planilha Inteligente - Avançada</header>
   <main>
     <div class="controls">
       <input type="text" id="novaColuna" placeholder="Digite o nome da categoria (ex: Receita)">
       <button onclick="adicionarColuna()">➕ Adicionar Coluna</button>
+      <button onclick="adicionarLinha()">➕ Adicionar Linha</button>
       <button onclick="exportarCSV()">⬇️ Exportar CSV</button>
       <button onclick="exportarPDF()">📄 Exportar PDF</button>
     </div>
@@ -40,15 +44,15 @@
       <table id="tabela">
         <thead>
           <tr id="cabecalho">
-            <th>📅 Mês</th>
+            <th draggable="true">📅 Mês</th>
           </tr>
         </thead>
         <tbody id="corpo">
-          <tr><td>Janeiro</td></tr>
-          <tr><td>Fevereiro</td></tr>
-          <tr><td>Março</td></tr>
-          <tr><td>Abril</td></tr>
-          <tr><td>Maio</td></tr>
+          <tr draggable="true"><td>Janeiro <button class="btn-row" onclick="removerLinha(this)">✖</button></td></tr>
+          <tr draggable="true"><td>Fevereiro <button class="btn-row" onclick="removerLinha(this)">✖</button></td></tr>
+          <tr draggable="true"><td>Março <button class="btn-row" onclick="removerLinha(this)">✖</button></td></tr>
+          <tr draggable="true"><td>Abril <button class="btn-row" onclick="removerLinha(this)">✖</button></td></tr>
+          <tr draggable="true"><td>Maio <button class="btn-row" onclick="removerLinha(this)">✖</button></td></tr>
         </tbody>
       </table>
     </div>
@@ -68,122 +72,165 @@
 
     // --- Ícones por categoria ---
     const icones = {
-      receita: "💰",
-      despesa: "💸",
-      lucro: "📈",
-      estoque: "📦",
-      vendas: "🛒",
-      marketing: "📱",
-      cliente: "👥",
-      padrão: "📊"
+      receita:"💰",despesa:"💸",lucro:"📈",estoque:"📦",
+      vendas:"🛒",marketing:"📱",cliente:"👥",padrão:"📊"
     };
 
     // --- Gráficos ---
-    const ctxLinha = document.getElementById("graficoLinha").getContext("2d");
-    const ctxBarra = document.getElementById("graficoBarra").getContext("2d");
-    const ctxPizza = document.getElementById("graficoPizza").getContext("2d");
+    const ctxLinha=document.getElementById("graficoLinha").getContext("2d");
+    const ctxBarra=document.getElementById("graficoBarra").getContext("2d");
+    const ctxPizza=document.getElementById("graficoPizza").getContext("2d");
 
-    let graficoLinha = new Chart(ctxLinha, { type:'line', data:{labels:["Janeiro","Fevereiro","Março","Abril","Maio"], datasets:[]}, options:{plugins:{legend:{labels:{color:"white"}}}, scales:{x:{ticks:{color:"white"}}, y:{ticks:{color:"white"}}}}});
-    let graficoBarra = new Chart(ctxBarra, { type:'bar', data:{labels:["Janeiro","Fevereiro","Março","Abril","Maio"], datasets:[]}, options:{plugins:{legend:{labels:{color:"white"}}}, scales:{x:{ticks:{color:"white"}}, y:{ticks:{color:"white"}}}}});
-    let graficoPizza = new Chart(ctxPizza, { type:'pie', data:{labels:[], datasets:[{data:[], backgroundColor:[]}]}, options:{plugins:{legend:{labels:{color:"white"}}}}});
+    let graficoLinha=new Chart(ctxLinha,{type:'line',data:{labels:getMeses(),datasets:[]},options:{plugins:{legend:{labels:{color:"white"}}},scales:{x:{ticks:{color:"white"}},y:{ticks:{color:"white"}}}}});
+    let graficoBarra=new Chart(ctxBarra,{type:'bar',data:{labels:getMeses(),datasets:[]},options:{plugins:{legend:{labels:{color:"white"}}},scales:{x:{ticks:{color:"white"}},y:{ticks:{color:"white"}}}}});
+    let graficoPizza=new Chart(ctxPizza,{type:'pie',data:{labels:[],datasets:[{data:[],backgroundColor:[]}]},options:{plugins:{legend:{labels:{color:"white"}}}}});
+
+    function getMeses(){return Array.from(corpo.rows).map(r=>r.cells[0].innerText.replace("✖","").trim());}
 
     function adicionarColuna(){
-      let nome = document.getElementById("novaColuna").value.trim();
+      let nome=document.getElementById("novaColuna").value.trim();
       if(!nome) return alert("Digite um nome válido!");
       if(categorias.includes(nome)) return alert("Essa categoria já existe!");
-
       categorias.push(nome);
+      const chave=nome.toLowerCase();
+      const icone=icones[chave]||icones["padrão"];
 
-      // Detecta ícone
-      const chave = nome.toLowerCase();
-      const icone = icones[chave] || icones["padrão"];
-
-      // Cabeçalho com ícone
-      const th = document.createElement("th");
-      th.innerText = `${icone} ${nome}`;
+      const th=document.createElement("th");
+      th.draggable=true;
+      th.dataset.coluna=nome;
+      th.innerHTML=`${icone} <span contenteditable="true" onblur="renomearColuna('${nome}',this.innerText)">${nome}</span> <button class="btn-col" onclick="removerColuna('${nome}')">✖</button>`;
       cabecalho.appendChild(th);
 
-      // Células editáveis
-      for(let i=0; i<corpo.rows.length; i++){
-        const td = document.createElement("td");
-        const input = document.createElement("input");
-        input.type = "number";
-        input.className = "cell";
-        input.dataset.coluna = nome;
-        input.addEventListener("input", atualizarGraficos);
+      for(let i=0;i<corpo.rows.length;i++){
+        const td=document.createElement("td");
+        const input=document.createElement("input");
+        input.type="number"; input.className="cell"; input.dataset.coluna=nome;
+        input.addEventListener("input",atualizarGraficos);
         td.appendChild(input);
         corpo.rows[i].appendChild(td);
       }
 
-      // Adiciona dataset nos gráficos
-      const cor = getCor();
-      graficoLinha.data.datasets.push({ label:`${icone} ${nome}`, data:Array(corpo.rows.length).fill(0), borderColor:cor, backgroundColor:"transparent" });
-      graficoBarra.data.datasets.push({ label:`${icone} ${nome}`, data:Array(corpo.rows.length).fill(0), backgroundColor:cor });
+      const cor=getCor();
+      graficoLinha.data.datasets.push({label:`${icone} ${nome}`,data:Array(corpo.rows.length).fill(0),borderColor:cor,backgroundColor:"transparent"});
+      graficoBarra.data.datasets.push({label:`${icone} ${nome}`,data:Array(corpo.rows.length).fill(0),backgroundColor:cor});
       graficoPizza.data.labels.push(`${icone} ${nome}`);
       graficoPizza.data.datasets[0].data.push(0);
       graficoPizza.data.datasets[0].backgroundColor.push(cor);
 
       atualizarGraficos();
-      document.getElementById("novaColuna").value = "";
+      document.getElementById("novaColuna").value="";
     }
 
     function atualizarGraficos(){
-      categorias.forEach((cat, idx)=>{
-        let valores = [];
-        for(let i=0; i<corpo.rows.length; i++){
-          const input = corpo.rows[i].querySelector(`input[data-coluna='${cat}']`);
-          valores.push(parseFloat(input.value) || 0);
+      graficoLinha.data.labels=getMeses();
+      graficoBarra.data.labels=getMeses();
+      categorias.forEach((cat,idx)=>{
+        let valores=[];
+        for(let i=0;i<corpo.rows.length;i++){
+          const input=corpo.rows[i].querySelector(`input[data-coluna='${cat}']`);
+          valores.push(parseFloat(input?.value)||0);
         }
-        graficoLinha.data.datasets[idx].data = valores;
-        graficoBarra.data.datasets[idx].data = valores;
-        graficoPizza.data.datasets[0].data[idx] = valores.reduce((a,b)=>a+b,0);
+        graficoLinha.data.datasets[idx].data=valores;
+        graficoBarra.data.datasets[idx].data=valores;
+        graficoPizza.data.datasets[0].data[idx]=valores.reduce((a,b)=>a+b,0);
       });
-      graficoLinha.update();
-      graficoBarra.update();
-      graficoPizza.update();
+      graficoLinha.update(); graficoBarra.update(); graficoPizza.update();
     }
 
-    function getCor(){
-      const cores = ["#8e24aa","#d81b60","#ffb74d","#29b6f6","#43a047","#f44336","#3f51b5"];
-      return cores[(graficoLinha.data.datasets.length) % cores.length];
+    function renomearColuna(antigo,novo){if(!novo.trim()) return; categorias=categorias.map(c=>c===antigo?novo.trim():c); atualizarGraficos();}
+
+    function removerColuna(nome){
+      if(!confirm("Remover coluna "+nome+"?")) return;
+      categorias=categorias.filter(c=>c!==nome);
+      const th=cabecalho.querySelector(`th[data-coluna='${nome}']`); if(th) th.remove();
+      for(let i=0;i<corpo.rows.length;i++){const cell=corpo.rows[i].querySelector(`input[data-coluna='${nome}']`); if(cell) cell.parentElement.remove();}
+      graficoLinha.data.datasets=graficoLinha.data.datasets.filter(d=>!d.label.includes(nome));
+      graficoBarra.data.datasets=graficoBarra.data.datasets.filter(d=>!d.label.includes(nome));
+      let idx=graficoPizza.data.labels.findIndex(l=>l.includes(nome));
+      if(idx>-1){graficoPizza.data.labels.splice(idx,1);graficoPizza.data.datasets[0].data.splice(idx,1);graficoPizza.data.datasets[0].backgroundColor.splice(idx,1);}
+      atualizarGraficos();
     }
 
-    // Exportar CSV
+    function adicionarLinha(){
+      const tr=document.createElement("tr"); tr.draggable=true;
+      const tdMes=document.createElement("td");
+      tdMes.innerHTML=`Novo <button class="btn-row" onclick="removerLinha(this)">✖</button>`;
+      tr.appendChild(tdMes);
+      categorias.forEach(cat=>{
+        const td=document.createElement("td");
+        const input=document.createElement("input");
+        input.type="number"; input.className="cell"; input.dataset.coluna=cat;
+        input.addEventListener("input",atualizarGraficos);
+        td.appendChild(input); tr.appendChild(td);
+      });
+      corpo.appendChild(tr); atualizarGraficos();
+    }
+
+    function removerLinha(btn){btn.closest("tr").remove(); atualizarGraficos();}
+
+    function getCor(){const cores=["#8e24aa","#d81b60","#ffb74d","#29b6f6","#43a047","#f44336","#3f51b5"];return cores[(graficoLinha.data.datasets.length)%cores.length];}
+
+    // --- Drag & Drop Colunas ---
+    let dragCol=null;
+    cabecalho.addEventListener("dragstart",e=>{if(e.target.tagName==="TH"){dragCol=e.target;}});
+    cabecalho.addEventListener("dragover",e=>e.preventDefault());
+    cabecalho.addEventListener("drop",e=>{
+      if(dragCol && e.target.tagName==="TH" && dragCol!==e.target){
+        const from=Array.from(cabecalho.children).indexOf(dragCol);
+        const to=Array.from(cabecalho.children).indexOf(e.target);
+        moverColuna(from,to);
+      }
+    });
+
+    function moverColuna(from,to){
+      for(let i=0;i<tabela.rows.length;i++){
+        const cells=tabela.rows[i].cells;
+        if(to<from){tabela.rows[i].insertBefore(cells[from],cells[to]);}
+        else{tabela.rows[i].insertBefore(cells[from],cells[to].nextSibling);}
+      }
+    }
+
+    // --- Drag & Drop Linhas ---
+    let dragRow=null;
+    corpo.addEventListener("dragstart",e=>{if(e.target.tagName==="TR"){dragRow=e.target;}});
+    corpo.addEventListener("dragover",e=>e.preventDefault());
+    corpo.addEventListener("drop",e=>{
+      if(dragRow && e.target.closest("tr") && dragRow!==e.target.closest("tr")){
+        corpo.insertBefore(dragRow,e.target.closest("tr").nextSibling);
+        atualizarGraficos();
+      }
+    });
+
+    // --- Exportar CSV ---
     function exportarCSV(){
-      let csv = "Mês,"+categorias.join(",")+"\n";
-      for(let i=0; i<corpo.rows.length; i++){
-        let linha = corpo.rows[i].cells[0].innerText;
+      let csv="Mês,"+categorias.join(",")+"\n";
+      for(let i=0;i<corpo.rows.length;i++){
+        let linha=corpo.rows[i].cells[0].innerText.replace("✖","").trim();
         categorias.forEach(cat=>{
-          const input = corpo.rows[i].querySelector(`input[data-coluna='${cat}']`);
-          linha += ","+(parseFloat(input.value)||0);
+          const input=corpo.rows[i].querySelector(`input[data-coluna='${cat}']`);
+          linha+=","+(parseFloat(input?.value)||0);
         });
-        csv += linha+"\n";
+        csv+=linha+"\n";
       }
-      const blob = new Blob([csv], {type:"text/csv"});
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "planilha_inteligente.csv";
-      link.click();
+      const blob=new Blob([csv],{type:"text/csv"});
+      const link=document.createElement("a"); link.href=URL.createObjectURL(blob);
+      link.download="planilha_inteligente.csv"; link.click();
     }
 
-    // Exportar PDF
+    // --- Exportar PDF ---
     async function exportarPDF(){
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      doc.setFontSize(16);
-      doc.text("📊 Relatório - Planilha Inteligente", 20, 20);
-
-      let y = 40;
-      for(let i=0; i<corpo.rows.length; i++){
-        let linha = corpo.rows[i].cells[0].innerText;
+      const {jsPDF}=window.jspdf;
+      const doc=new jsPDF(); doc.setFontSize(16);
+      doc.text("📊 Relatório - Planilha Inteligente",20,20);
+      let y=40;
+      for(let i=0;i<corpo.rows.length;i++){
+        let linha=corpo.rows[i].cells[0].innerText.replace("✖","").trim();
         categorias.forEach(cat=>{
-          const input = corpo.rows[i].querySelector(`input[data-coluna='${cat}']`);
-          linha += " | " + (parseFloat(input.value)||0);
+          const input=corpo.rows[i].querySelector(`input[data-coluna='${cat}']`);
+          linha+=" | "+(parseFloat(input?.value)||0);
         });
-        doc.text(linha, 20, y);
-        y+=10;
+        doc.text(linha,20,y); y+=10;
       }
-
       doc.save("planilha_inteligente.pdf");
     }
   </script>
