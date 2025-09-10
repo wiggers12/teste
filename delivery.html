@@ -38,58 +38,95 @@
     @media(max-width: 900px){
       .dashboards { grid-template-columns:1fr; }
     }
+
+    /* Tela de bloqueio */
+    #telaBloqueio { text-align:center; padding:50px; }
+    #telaBloqueio h2 { margin-bottom:10px; }
+    #telaBloqueio a { background:#43a047; padding:12px 25px; border-radius:6px; color:white; text-decoration:none; font-size:16px; font-weight:600; }
+    #telaBloqueio a:hover { background:#2e7d32; }
+    #telaBloqueio input { padding:10px; border-radius:6px; border:none; margin-top:15px; }
+    #telaBloqueio button { padding:10px 20px; margin-left:10px; border:none; border-radius:6px; background:#8e24aa; color:white; cursor:pointer; }
+    #msgErro { color:#f44336; margin-top:10px; }
   </style>
 </head>
 <body>
   <header>📊 Planilha Inteligente - Excel + Dashboards</header>
-  <nav>
-    <button id="btnPlanilha" class="active" onclick="mostrarTela('planilha')">📝 Planilha</button>
-    <button id="btnDashboards" onclick="mostrarTela('dashboards')">📈 Dashboards</button>
-  </nav>
 
-  <main>
-    <!-- TELA PLANILHA -->
-    <section id="telaPlanilha">
-      <div class="controls">
-        <button onclick="adicionarLinha()">➕ Adicionar Linha</button>
-        <button onclick="adicionarColuna()">➕ Adicionar Coluna</button>
-        <a href="https://mpago.li/1Ys2kBK" target="_blank">💳 Comprar por R$29,90</a>
-      </div>
-      <div class="sheet">
-        <table id="tabela">
-          <thead>
-            <tr id="cabecalho">
-              <th></th><th>A</th><th>B</th><th>C</th>
-            </tr>
-          </thead>
-          <tbody id="corpo">
-            <tr><td class="rowHeader">1</td><td contenteditable="true">Nome</td><td contenteditable="true">Telefone</td><td contenteditable="true">Endereço</td></tr>
-            <tr><td class="rowHeader">2</td><td contenteditable="true">10</td><td contenteditable="true">20</td><td contenteditable="true">30</td></tr>
-            <tr><td class="rowHeader">3</td><td contenteditable="true">15</td><td contenteditable="true">25</td><td contenteditable="true">40</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
+  <!-- Tela de bloqueio -->
+  <div id="telaBloqueio">
+    <h2>🔒 Acesso restrito</h2>
+    <p>Adquira a licença para desbloquear o app:</p>
+    <a href="https://mpago.li/1Ys2kBK" target="_blank">💳 Comprar por R$29,90</a>
+    <p style="margin-top:20px;">Já comprou? Digite sua chave de acesso:</p>
+    <input type="password" id="chaveAcesso" placeholder="Digite a chave">
+    <button onclick="validarChave()">Entrar</button>
+    <p id="msgErro"></p>
+  </div>
 
-    <!-- TELA DASHBOARDS -->
-    <section id="telaDashboards" class="hidden">
-      <div class="dashboards">
-        <canvas id="graficoLinha"></canvas>
-        <canvas id="graficoBarra"></canvas>
-        <canvas id="graficoPizza"></canvas>
-      </div>
-      <div style="text-align:center; margin-top:20px;">
-        <a href="https://mpago.li/1Ys2kBK" target="_blank" style="background:#43a047; padding:12px 25px; border-radius:6px; color:white; text-decoration:none; font-size:16px; font-weight:600;">
-          💳 Comprar agora por R$29,90
-        </a>
-      </div>
-    </section>
-  </main>
+  <!-- Conteúdo do app -->
+  <div id="conteudoApp" class="hidden">
+    <nav>
+      <button id="btnPlanilha" class="active" onclick="mostrarTela('planilha')">📝 Planilha</button>
+      <button id="btnDashboards" onclick="mostrarTela('dashboards')">📈 Dashboards</button>
+    </nav>
+
+    <main>
+      <!-- TELA PLANILHA -->
+      <section id="telaPlanilha">
+        <div class="controls">
+          <button onclick="adicionarLinha()">➕ Adicionar Linha</button>
+          <button onclick="adicionarColuna()">➕ Adicionar Coluna</button>
+        </div>
+        <div class="sheet">
+          <table id="tabela">
+            <thead>
+              <tr id="cabecalho">
+                <th></th><th>A</th><th>B</th><th>C</th>
+              </tr>
+            </thead>
+            <tbody id="corpo">
+              <tr><td class="rowHeader">1</td><td contenteditable="true">Nome</td><td contenteditable="true">Telefone</td><td contenteditable="true">Endereço</td></tr>
+              <tr><td class="rowHeader">2</td><td contenteditable="true">10</td><td contenteditable="true">20</td><td contenteditable="true">30</td></tr>
+              <tr><td class="rowHeader">3</td><td contenteditable="true">15</td><td contenteditable="true">25</td><td contenteditable="true">40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TELA DASHBOARDS -->
+      <section id="telaDashboards" class="hidden">
+        <div class="dashboards">
+          <canvas id="graficoLinha"></canvas>
+          <canvas id="graficoBarra"></canvas>
+          <canvas id="graficoPizza"></canvas>
+        </div>
+      </section>
+    </main>
+  </div>
 
   <script>
     const tabela=document.getElementById("tabela");
     const corpo=document.getElementById("corpo");
     const cabecalho=document.getElementById("cabecalho");
+
+    // Função de validação da chave
+    function validarChave(){
+      const chave = document.getElementById("chaveAcesso").value.trim();
+      // 🔑 Defina a chave secreta de acesso (troque por outra)
+      if(chave === "MEU-CODIGO-123"){
+        document.getElementById("telaBloqueio").style.display="none";
+        document.getElementById("conteudoApp").classList.remove("hidden");
+        localStorage.setItem("acessoLiberado","true");
+      } else {
+        document.getElementById("msgErro").innerText="❌ Chave inválida. Tente novamente.";
+      }
+    }
+
+    // Se já liberou antes, mantém acesso
+    if(localStorage.getItem("acessoLiberado")==="true"){
+      document.getElementById("telaBloqueio").style.display="none";
+      document.getElementById("conteudoApp").classList.remove("hidden");
+    }
 
     // Navegação entre telas
     function mostrarTela(tela){
