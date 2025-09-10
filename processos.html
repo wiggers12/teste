@@ -1,200 +1,506 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Currículo - Dionatan Wiggers</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-            color: #333;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 900px;
-            margin: 2rem auto;
-            padding: 1.5rem;
-            background-color: #ffffff;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-        }
-        .section-title {
-            font-size: 1.875rem;
-            font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #e5e7eb;
-            text-align: left;
-        }
-        .subsection-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 0.5rem;
-        }
-        .highlight {
-            font-weight: 600;
-            color: #1d4ed8;
-        }
-        ul {
-            list-style: none;
-            padding-left: 0;
-        }
-        ul li {
-            margin-bottom: 0.5rem;
-            position: relative;
-            padding-left: 1.5rem;
-        }
-        ul li::before {
-            content: '•';
-            color: #3b82f6;
-            font-weight: bold;
-            display: inline-block;
-            width: 1em;
-            margin-left: -1.5em;
-            position: absolute;
-        }
-        .skills-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .skills-group {
-            flex: 1 1 45%;
-            min-width: 280px;
-        }
-        footer {
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #e5e7eb;
-            text-align: center;
-            color: #6b7280;
-            font-size: 0.875rem;
-        }
-    </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Chaveiro 24H — Atendimento Rápido</title>
+<meta name="description" content="Chaveiro 24 horas: abertura de portas, chaves codificadas, troca de fechadura e emergência. Agende online e fale no WhatsApp.">
+<style>
+  :root{
+    --bg:#0b1220; --card:#121a2b; --soft:#0e1626; --brand:#21d07a; --brand2:#3db2ff; --txt:#e8eefc; --muted:#a9b4ca; --danger:#ff5370; --ok:#22c55e; --warn:#f59e0b;
+    --shadow: 0 10px 30px rgba(0,0,0,.45);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;background:linear-gradient(180deg,var(--bg),#0c1528 60%,#0b1220);color:var(--txt)}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px}
+  header{position:sticky;top:0;background:rgba(11,18,32,.8);backdrop-filter:blur(8px);z-index:10;border-bottom:1px solid rgba(255,255,255,.06)}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:0 6px 18px rgba(61,178,255,.35)}
+  .title{font-weight:700;letter-spacing:.3px}
+  .cta{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,#1a2440,#151e36);color:var(--txt);cursor:pointer;transition:.2s;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+  .btn:hover{transform:translateY(-1px)}
+  .btn.brand{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#0b1220;border:none;font-weight:700}
+  .btn.ghost{background:transparent}
+  .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;padding:28px 0}
+  .card{background:linear-gradient(180deg,#11182a,#0e1626);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .hero .card{padding:22px}
+  .hero h1{font-size:clamp(26px,3.4vw,40px);margin:6px 0 6px}
+  .hero p{color:var(--muted);margin:8px 0 18px}
+  .tags{display:flex;gap:10px;flex-wrap:wrap}
+  .tag{font-size:12px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
+  .heroimg{min-height:260px;border-radius:var(--radius);background:
+     radial-gradient(120px 80px at 15% 20%, rgba(61,178,255,.25), transparent 60%),
+     radial-gradient(160px 120px at 85% 70%, rgba(33,208,122,.25), transparent 55%),
+     linear-gradient(135deg,#0e1626,#0b1220);
+     position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow)}
+  .illus{position:absolute;inset:0;display:grid;place-items:center}
+  .key{width:210px;height:210px;border-radius:50%;background:conic-gradient(from 180deg at 50% 50%, rgba(61,178,255,.8), rgba(33,208,122,.9));filter:blur(40px);opacity:.35}
+  .services{margin:8px 0 0}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .svc{padding:16px;display:flex;flex-direction:column;gap:10px}
+  .svc h3{margin:0;font-size:18px}
+  .price{font-weight:700;color:#d7e6ff}
+  .chip{font-size:12px;color:#b8c4de}
+  .svc .btn{margin-top:auto}
+  .section{margin:36px 0 0}
+  .section h2{margin:0 0 14px}
+  .list{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .list .card{padding:16px}
+  .contact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .contact-item{padding:16px;text-align:center}
+  .contact-item i{font-style:normal;font-weight:700}
+  .muted{color:var(--muted)}
+  .footer{margin-top:32px;padding:16px 0;color:#9fb0cc;font-size:13px;text-align:center;border-top:1px solid rgba(255,255,255,.08)}
+  /* Modal */
+  .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.55);z-index:30;padding:18px}
+  .modal.show{display:grid}
+  .modal .box{width:min(720px,100%);background:linear-gradient(180deg,#10192c,#0e1626);border:1px solid rgba(255,255,255,.1);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+  .modal header{position:unset;background:transparent;border:none}
+  .box-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+  .box-body{padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field input, .field select, .field textarea{
+    background:#0d1526;border:1px solid rgba(255,255,255,.12);color:var(--txt);padding:12px;border-radius:12px;outline:none
+  }
+  .field small{color:#95a4c7}
+  .box-foot{padding:12px 16px;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .note{font-size:13px;color:#9fb0cc}
+  .close{cursor:pointer}
+  /* Orders (local) */
+  .orders{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .ord{padding:14px}
+  .badge{font-size:12px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
+  .warn{color:#ffd28b}
+  /* Fab WhatsApp */
+  .fab{
+    position:fixed;right:16px;bottom:16px;width:54px;height:54px;display:grid;place-items:center;border-radius:50%;
+    background:linear-gradient(135deg,#25D366,#128C7E);box-shadow:0 12px 28px rgba(0,0,0,.45);z-index:25;cursor:pointer
+  }
+  .fab span{font-weight:900;font-size:22px;color:#fff}
+  /* Responsive */
+  @media (max-width:980px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.list{grid-template-columns:1fr}.box-body{grid-template-columns:1fr}.orders{grid-template-columns:1fr}.contact-grid{grid-template-columns:1fr 1fr}}
+  @media (max-width:540px){.grid{grid-template-columns:1fr}.contact-grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-    <div class="container">
-        <!-- Cabeçalho com nome e informações de contato -->
-        <header class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-900 mb-2">Dionatan Wiggers</h1>
-            <p class="text-xl text-gray-700 mb-4">Analista de Processos & Gestor de Negócios</p>
-            <div class="flex flex-col sm:flex-row justify-center items-center text-gray-600 text-sm sm:space-x-4">
-                <a href="mailto:dionegalato1212@gmail.com" class="text-blue-600 hover:underline mb-1 sm:mb-0">dionegalato1212@gmail.com</a>
-                <span class="hidden sm:inline">|</span>
-                <span>Porto Alegre, RS</span>
-                <span class="hidden sm:inline">|</span>
-                <a href="https://wiggers12.github.io/teste/" target="_blank" class="text-blue-600 hover:underline mt-1 sm:mt-0">Portfólio</a>
-            </div>
-        </header>
-
-        <!-- Seção de Resumo Profissional -->
-        <section class="mb-8">
-            <h2 class="section-title">Resumo Profissional</h2>
-            <p class="text-gray-700 leading-relaxed">
-                Profissional proativo e autodidata com foco em **Análise e Otimização de Processos**. Possuo sólida experiência em <span class="highlight">gestão de negócios</span> e na aplicação de melhorias contínuas, adquirida como CEO e professor de Jiu-Jitsu por mais de 5 anos. Minha trajetória me proporcionou habilidades em <span class="highlight">mapeamento de requisitos, análise de desempenho e tomada de decisão estratégica</span>. Com conhecimento em ferramentas de BI e metodologias ágeis, busco uma oportunidade para aplicar minha visão analítica e experiência prática em gestão para impulsionar a eficiência e o crescimento da organização.
-            </p>
-        </section>
-
-        <!-- Seção de Experiência Profissional e Projetos -->
-        <section class="mb-8">
-            <h2 class="section-title">Experiência Profissional e Projetos</h2>
-
-            <div class="mb-6">
-                <h3 class="subsection-title">CEO e Professor (Academia de Jiu-Jitsu)</h3>
-                <p class="text-gray-600 mb-2">Janeiro de 2020 – Fevereiro de 2025</p>
-                <ul class="text-gray-700">
-                    <li>**Otimização de Processos e Crescimento de Negócio:** Inicialmente com 10 alunos, implementei um programa de descontos para famílias e outras estratégias de crescimento que resultaram em um <span class="highlight">aumento de 300% no número de alunos</span>, triplicando a base de clientes da academia.</li>
-                    <li>**Análise de Performance e Desenvolvimento de Talentos:** Desenvolvi um sistema de acompanhamento de atletas que me permitiu analisar a performance e o comportamento de cada aluno, otimizando seus treinamentos para transformá-los em campeões.</li>
-                    <li>**Ferramenta de Gestão de Pagamentos:** Desenvolvi uma ferramenta interna para gestão de pagamentos que automatizou o envio de avisos com antecedência sobre vencimentos, otimizando o fluxo de caixa e a comunicação com os clientes.</li>
-                    <li>**Liderança e Gestão de Equipe:** Lderei e gerenciei uma equipe de mais de 70 alunos e instrutores, promovendo um ambiente de alta performance.</li>
-                </ul>
-            </div>
-            
-            <div class="mb-6">
-                <h3 class="subsection-title">Desenvolvedor e Analista de Projetos Digitais (Autônomo)</h3>
-                <p class="text-gray-600 mb-2">Janeiro de 2023 – Atualmente</p>
-                <ul class="text-gray-700">
-                    <li>**Análise de Requisitos e Processos:** Atuei no **levantamento de requisitos** para os projetos de clientes, transformando suas necessidades em especificações técnicas e **mapeando os processos** para a implementação das soluções.</li>
-                    <li>**Otimização e Análise de Desempenho:** Realizei **análises de desempenho** de aplicações e websites, identificando gargalos e oportunidades de melhoria para **otimizar fluxos e performance**.</li>
-                    <li>**Gestão de Projetos:** Gerenciei o ciclo de vida completo dos projetos, desde a concepção e implementação até a entrega e suporte, garantindo a qualidade e a satisfação do cliente.</li>
-                    <li>**Tecnologias Utilizadas:** HTML, CSS e JavaScript.</li>
-                </ul>
-            </div>
-
-            <div class="mb-6">
-                <h3 class="subsection-title">Analista de Dados & Engenheiro de Dados (Freelancer/Consultor)</h3>
-                <p class="text-gray-600 mb-2">Janeiro de 2021 – Dezembro de 2023</p>
-                <ul class="text-gray-700">
-                    <li>**Business Intelligence (BI):** Utilizei **Power BI** e **SQL** para criar dashboards e relatórios de análise de dados.</li>
-                    <li>**Engenharia de Dados (ETL):** Conhecimento em ferramentas como **Pentaho** e **SSIS** para construção de pipelines de dados.</li>
-                </ul>
-            </div>
-        </section>
-
-        <!-- Seção de Formação Acadêmica -->
-        <section class="mb-8">
-            <h2 class="section-title">Formação Acadêmica</h2>
-            <div class="mb-4">
-                <h3 class="subsection-title">Análise e Desenvolvimento de Sistemas</h3>
-                <p class="text-gray-600">Unisinos Porto Alegre</p>
-                <p class="text-gray-600">Porto Alegre, RS | 2024 – Trancado</p>
-            </div>
-        </section>
-
-        <!-- Seção de Habilidades -->
-        <section class="mb-8">
-            <h2 class="section-title">Habilidades</h2>
-            <div class="skills-list">
-                <div class="skills-group">
-                    <h3 class="font-semibold text-gray-800 mb-2">Análise e Gestão de Processos:</h3>
-                    <ul class="text-gray-700">
-                        <li>**Análise de Processos:** Mapeamento, documentação e otimização de fluxos de trabalho.</li>
-                        <li>**Análise de Requisitos:** Levantamento e tradução de necessidades de negócio.</li>
-                        <li>**Metodologias Ágeis:** Conhecimento em Scrum e Kanban.</li>
-                        <li>**Ferramentas de Gestão:** Trello, Jira, Excel (Avançado).</li>
-                        <li>**Visualização:** Criação de dashboards em Power BI.</li>
-                    </ul>
-                </div>
-                <div class="skills-group">
-                    <h3 class="font-semibold text-gray-800 mb-2">Outras Habilidades Técnicas e Soft Skills:</h3>
-                    <ul class="text-gray-700">
-                        <li>**Análise de Dados e BI:** SQL, Google Analytics.</li>
-                        <li>**Web:** HTML, CSS, JavaScript, SEO.</li>
-                        <li>**Gestão e Liderança:** Gestão de Equipes, Resolução de Problemas, Visão Estratégica.</li>
-                        <li>**Valores:** Proatividade, Disciplina, Resiliência e Foco em Resultados.</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- Seção de Conquistas Esportivas -->
-        <section class="mb-8">
-            <h2 class="section-title">Conquistas Esportivas</h2>
-            <h3 class="subsection-title">Atleta Profissional de Jiu-Jitsu</h3>
-            <p class="text-gray-600 mb-2">2006 – 2021</p>
-            <ul class="text-gray-700">
-                <li>Bicampeão Mundial, Bicampeão Europeu, Campeão Pan-Americano e Campeão Brasileiro.</li>
-            </ul>
-        </section>
-
-        <!-- Seção de Informações Adicionais -->
-        <section>
-            <h2 class="section-title">Informações Adicionais</h2>
-            <ul class="text-gray-700">
-                <li>Disponibilidade total de horário (24h) e para viagens.</li>
-                <li>Faixa preta de Jiu-Jitsu.</li>
-            </ul>
-        </section>
+<header>
+  <div class="wrap nav">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <div class="title">Chaveiro 24H</div>
+        <small class="muted">Emergência • Residencial • Automotivo</small>
+      </div>
     </div>
+    <div class="cta">
+      <button class="btn ghost" id="btnShare">Compartilhar</button>
+      <a class="btn brand" id="btnTopWhats" href="#" target="_blank" rel="noopener">Chamar no WhatsApp</a>
+    </div>
+  </div>
+</header>
 
-    <!-- Rodapé -->
-    <footer>
-        <p>&copy; 2025 Dionatan Wiggers. Todos os direitos reservados.</p>
-    </footer>
+<main class="wrap">
+  <section class="hero">
+    <div class="card">
+      <div class="tag">Atendimento em até 30–60 min*</div>
+      <h1>Precisou de chaveiro?<br/>Agende online ou fale agora.</h1>
+      <p>Destravamento de portas, troca de fechaduras, cópias de chaves, chaves codificadas e muito mais. Atendimento <b>24 horas</b> em toda a cidade.</p>
+      <div class="tags">
+        <span class="tag">Pagamento no local</span>
+        <span class="tag">Nota e garantia</span>
+        <span class="tag">Profissionais verificados</span>
+      </div>
+      <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+        <a class="btn brand" href="#servicos">Agendar agora</a>
+        <a class="btn" href="#contato">Ver contatos</a>
+      </div>
+      <small class="muted">*Tempo estimado conforme região e demanda.</small>
+    </div>
+    <div class="heroimg card">
+      <div class="illus"><div class="key"></div></div>
+    </div>
+  </section>
+
+  <section id="servicos" class="section">
+    <h2>Serviços & Preços</h2>
+    <div class="grid">
+      <!-- Serviços -->
+      <div class="card svc" data-sku="ABRE-PORTA" data-desc="Abertura de Porta" data-preco="150">
+        <h3>Abertura de Porta</h3>
+        <div class="muted">Sem danos, métodos não destrutivos quando possível.</div>
+        <div class="chip">Residencial / Comercial</div>
+        <div class="price">R$ 150,00</div>
+        <button class="btn brand contratar">Contratar</button>
+      </div>
+
+      <div class="card svc" data-sku="TROCA-FECHADURA" data-desc="Troca de Fechadura" data-preco="220">
+        <h3>Troca de Fechadura</h3>
+        <div class="muted">Instalação com ajuste de alinhamento e teste de segurança.</div>
+        <div class="chip">Material incluso</div>
+        <div class="price">R$ 220,00</div>
+        <button class="btn brand contratar">Contratar</button>
+      </div>
+
+      <div class="card svc" data-sku="COPIA-CHAVE" data-desc="Cópia de Chave" data-preco="25">
+        <h3>Cópia de Chave</h3>
+        <div class="muted">Cópias simples e reforçadas de alta durabilidade.</div>
+        <div class="chip">Até 10 unidades</div>
+        <div class="price">R$ 25,00</div>
+        <button class="btn brand contratar">Contratar</button>
+      </div>
+
+      <div class="card svc" data-sku="AUTO-COD" data-desc="Chave Automotiva Codificada" data-preco="450">
+        <h3>Chave Automotiva Codificada</h3>
+        <div class="muted">Programação de transponder e telecomando (modelos compatíveis).</div>
+        <div class="chip">Sob consulta de modelo</div>
+        <div class="price">R$ 450,00</div>
+        <button class="btn brand contratar">Contratar</button>
+      </div>
+
+      <div class="card svc" data-sku="PORTAO-CONTROLE" data-desc="Controle de Portão" data-preco="180">
+        <h3>Controle de Portão</h3>
+        <div class="muted">Cópia/Clonagem de controles compatíveis e cadastro no receptor.</div>
+        <div class="chip">Fibra/rolling code compatível</div>
+        <div class="price">R$ 180,00</div>
+        <button class="btn brand contratar">Contratar</button>
+      </div>
+
+      <div class="card svc" data-sku="COFRE" data-desc="Abertura de Cofre" data-preco="600">
+        <h3>Abertura de Cofre</h3>
+        <div class="muted">Procedimento técnico com verificação de propriedade.</div>
+        <div class="chip">Sob agendamento</div>
+        <div class="price">R$ 600,00</div>
+        <button class="btn brand contratar">Contratar</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Por que escolher a gente?</h2>
+    <div class="list">
+      <div class="card">
+        <b>Transparência nos preços</b>
+        <p class="muted">Antes do atendimento, você recebe um orçamento estimado e o que pode variar (distância, peças, complexidade).</p>
+      </div>
+      <div class="card">
+        <b>Garantia & Nota</b>
+        <p class="muted">Serviços com garantia e nota fiscal. Componentes com procedência.</p>
+      </div>
+      <div class="card">
+        <b>Pagamento facilitado</b>
+        <p class="muted">Pix, débito, crédito e dinheiro. Também podemos faturar PJ sob contrato.</p>
+      </div>
+      <div class="card">
+        <b>Atendimento 24 horas</b>
+        <p class="muted">Chamados de emergência a qualquer hora, inclusive fins de semana e feriados.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Depoimentos</h2>
+    <div class="list">
+      <div class="card"><b>Carla M.</b><p class="muted">“Chegaram rápido, abriram sem quebrar a fechadura. Excelente!”</p></div>
+      <div class="card"><b>Renato S.</b><p class="muted">“Resolvido em 20 min, preço justo e atendimento atencioso.”</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Meus Pedidos (este dispositivo)</h2>
+    <div id="orders" class="orders"></div>
+  </section>
+
+  <section id="contato" class="section">
+    <h2>Contato & Região</h2>
+    <div class="contact-grid">
+      <a class="card contact-item" id="whatsLink" href="#" target="_blank" rel="noopener"><i>WhatsApp</i><br><span class="muted">Fale agora</span></a>
+      <a class="card contact-item" href="tel:+5500000000000"><i>Ligar</i><br><span class="muted">Clique para chamar</span></a>
+      <a class="card contact-item" href="mailto:contato@chaveiro24h.com"><i>E-mail</i><br><span class="muted">contato@chaveiro24h.com</span></a>
+      <a class="card contact-item" href="https://www.google.com/maps/search/?api=1&query=chaveiro+perto+de+mim" target="_blank" rel="noopener"><i>Maps</i><br><span class="muted">Abrir no Google Maps</span></a>
+    </div>
+  </section>
+
+  <div class="footer">© <span id="year"></span> Chaveiro 24H — Protótipo. Preços e prazos sujeitos a confirmação.</div>
+</main>
+
+<!-- Modal de Agendamento -->
+<div class="modal" id="modal">
+  <div class="box">
+    <div class="box-head">
+      <strong>Agendar Serviço</strong>
+      <span class="close" id="closeModal">✕</span>
+    </div>
+    <div class="box-body">
+      <div>
+        <div class="field">
+          <label>Serviço</label>
+          <input id="mServico" type="text" readonly>
+        </div>
+        <div class="field">
+          <label>Preço estimado</label>
+          <input id="mPreco" type="text" readonly>
+        </div>
+        <div class="field">
+          <label>Data</label>
+          <input id="mData" type="date" required>
+        </div>
+        <div class="field">
+          <label>Hora</label>
+          <input id="mHora" type="time" required>
+        </div>
+        <div class="field">
+          <label>Pagamento</label>
+          <select id="mPagamento">
+            <option>Pix</option>
+            <option>Cartão (crédito/débito)</option>
+            <option>Dinheiro</option>
+          </select>
+          <small>Pagamento realizado no local. Este é um agendamento sem cobrança online.</small>
+        </div>
+      </div>
+      <div>
+        <div class="field">
+          <label>Nome</label>
+          <input id="mNome" type="text" placeholder="Seu nome">
+        </div>
+        <div class="field">
+          <label>WhatsApp</label>
+          <input id="mFone" type="tel" placeholder="(DDD) 9xxxx-xxxx">
+        </div>
+        <div class="field">
+          <label>Endereço (com nº e bairro)</label>
+          <textarea id="mEnd" rows="3" placeholder="Rua, nº, bairro, cidade"></textarea>
+        </div>
+        <div class="field">
+          <label>Observações</label>
+          <textarea id="mObs" rows="3" placeholder="Referência, vaga, andar..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="box-foot">
+      <div class="note">Ao confirmar, seu pedido será salvo no seu dispositivo e você poderá enviar no WhatsApp com 1 clique.</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" id="btnICS">Baixar .ics</button>
+        <a class="btn" id="btnWpp" target="_blank" rel="noopener">Enviar no WhatsApp</a>
+        <button class="btn brand" id="btnConfirmar">Confirmar Pedido</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Botão flutuante WhatsApp -->
+<a class="fab" id="fabWhats" href="#" target="_blank" rel="noopener" aria-label="Abrir WhatsApp"><span>✆</span></a>
+
+<script>
+/* ================== CONFIG ================== */
+const BUSINESS_WHATSAPP = "+5551999999999"; // <-- TROQUE para seu número com DDI +55 e DDD (ex: +5551987654321)
+const BUSINESS_NAME = "Chaveiro 24H";
+const STORE_KEY = "chaveiro24h_pedidos";
+/* ============================================ */
+
+const fmtBRL = (v)=> new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(v);
+const qs = (s,p=document)=>p.querySelector(s);
+const qsa = (s,p=document)=>[...p.querySelectorAll(s)];
+
+// Header links
+const wppBase = (num,msg)=>`https://wa.me/${num.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`;
+const defaultMsg = ()=>`Olá, ${BUSINESS_NAME}! Vim pelo site e gostaria de atendimento.`;
+qs('#btnTopWhats').href = wppBase(BUSINESS_WHATSAPP, defaultMsg());
+qs('#whatsLink').href = qs('#fabWhats').href = wppBase(BUSINESS_WHATSAPP, defaultMsg());
+
+// Compartilhar
+qs('#btnShare').addEventListener('click', async ()=>{
+  const data = { title: "Chaveiro 24H", text: "Chaveiro 24 horas — agende online ou fale no WhatsApp.", url: location.href };
+  if (navigator.share) { try { await navigator.share(data); } catch(e){} }
+  else { navigator.clipboard.writeText(location.href); alert("Link copiado!"); }
+});
+
+// Ano
+qs('#year').textContent = new Date().getFullYear();
+
+// Modal controls
+const modal = qs('#modal');
+const openModal = ()=> modal.classList.add('show');
+const closeModal = ()=> modal.classList.remove('show');
+qs('#closeModal').onclick = closeModal;
+modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
+
+// Prefill min date/time
+function setMinDateTime(){
+  const d = new Date(); d.setMinutes(d.getMinutes()+60); // +1h
+  const dt = new Date(d.getTime()-d.getTimezoneOffset()*60000);
+  qs('#mData').value = dt.toISOString().slice(0,10);
+  qs('#mData').min = dt.toISOString().slice(0,10);
+  qs('#mHora').value = dt.toTimeString().slice(0,5);
+}
+
+// “Contratar” abre modal preenchendo serviço e preço
+qsa('.contratar').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const card = btn.closest('.svc');
+    const serv = card.dataset.desc;
+    const preco = Number(card.dataset.preco);
+    qs('#mServico').value = serv;
+    qs('#mPreco').value = fmtBRL(preco);
+    setMinDateTime();
+    openModal();
+  });
+});
+
+// Monta mensagem WhatsApp a partir do formulário
+function buildOrder(){
+  const servico = qs('#mServico').value.trim();
+  const preco = qs('#mPreco').value.trim();
+  const data = qs('#mData').value;
+  const hora = qs('#mHora').value;
+  const nome = qs('#mNome').value.trim();
+  const fone = qs('#mFone').value.trim();
+  const end = qs('#mEnd').value.trim();
+  const obs = qs('#mObs').value.trim();
+  const pagamento = qs('#mPagamento').value;
+
+  if(!servico || !data || !hora || !nome || !fone || !end){
+    alert("Preencha: nome, WhatsApp, endereço, data e hora.");
+    return null;
+  }
+  const id = "PED-"+Math.random().toString(36).slice(2,8).toUpperCase();
+  const when = `${data} ${hora}`;
+  const msg =
+`*${BUSINESS_NAME} — Novo Pedido*
+ID: ${id}
+Serviço: ${servico}
+Preço estimado: ${preco}
+Quando: ${when}
+Pagamento: ${pagamento}
+
+Cliente: ${nome}
+WhatsApp: ${fone}
+Endereço: ${end}
+Obs: ${obs || "-"}
+(Enviado via site)`;
+  return {id, servico, preco, when, pagamento, nome, fone, end, obs, msg};
+}
+
+// Link WhatsApp no modal
+qs('#btnWpp').addEventListener('click', (e)=>{
+  const ord = buildOrder(); if(!ord){ e.preventDefault(); return; }
+  e.currentTarget.href = wppBase(BUSINESS_WHATSAPP, ord.msg);
+});
+
+// Salvar pedido localmente e fechar modal
+qs('#btnConfirmar').addEventListener('click', ()=>{
+  const ord = buildOrder(); if(!ord) return;
+  const arr = JSON.parse(localStorage.getItem(STORE_KEY) || "[]");
+  arr.unshift({...ord, status:"Aguardando confirmação"});
+  localStorage.setItem(STORE_KEY, JSON.stringify(arr));
+  renderOrders();
+  closeModal();
+  // Sugerir WhatsApp
+  if(confirm("Pedido salvo! Deseja abrir o WhatsApp para enviar os dados agora?")){
+    window.open(wppBase(BUSINESS_WHATSAPP, ord.msg), "_blank");
+  }
+});
+
+// Gerar arquivo .ics (agenda)
+qs('#btnICS').addEventListener('click', ()=>{
+  const ord = buildOrder(); if(!ord) return;
+  const [data, hora] = ord.when.split(" ");
+  const dtStart = new Date(`${data}T${hora}:00`);
+  const dtEnd = new Date(dtStart.getTime()+60*60*1000); // 1h
+  const toICS = (d)=> d.toISOString().replace(/[-:]/g,"").split(".")[0]+"Z";
+  const ics =
+`BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//${BUSINESS_NAME}//PT-BR
+BEGIN:VEVENT
+UID:${ord.id}
+DTSTAMP:${toICS(new Date())}
+DTSTART:${toICS(dtStart)}
+DTEND:${toICS(dtEnd)}
+SUMMARY:${ord.servico} - ${BUSINESS_NAME}
+DESCRIPTION:${ord.msg.replace(/\n/g,'\\n')}
+LOCATION:${ord.end}
+END:VEVENT
+END:VCALENDAR`;
+  const blob = new Blob([ics],{type:"text/calendar"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `${ord.id}.ics`; a.click();
+  URL.revokeObjectURL(url);
+});
+
+// Render pedidos locais
+function renderOrders(){
+  const wrap = qs('#orders');
+  const arr = JSON.parse(localStorage.getItem(STORE_KEY) || "[]");
+  if(arr.length===0){ wrap.innerHTML = `<div class="card ord"><div class="muted">Nenhum pedido salvo neste dispositivo ainda.</div></div>`; return; }
+  wrap.innerHTML = arr.map(o=>`
+    <div class="card ord">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
+        <b>${o.servico}</b>
+        <span class="badge">${o.status}</span>
+      </div>
+      <div class="muted">ID: ${o.id}</div>
+      <div class="muted">Quando: ${o.when}</div>
+      <div class="muted">Cliente: ${o.nome} — ${o.fone}</div>
+      <div class="muted">Endereço: ${o.end}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <a class="btn" href="${wppBase(BUSINESS_WHATSAPP,o.msg)}" target="_blank" rel="noopener">Enviar no WhatsApp</a>
+        <button class="btn" onclick='downloadICS(${JSON.stringify(JSON.stringify(o))})'>.ics</button>
+        <button class="btn" onclick='copyTxt(${JSON.stringify(JSON.stringify(o.msg))})'>Copiar</button>
+        <button class="btn" onclick='delOrder("${o.id}")'>Excluir</button>
+      </div>
+    </div>
+  `).join('');
+}
+function copyTxt(txt){ navigator.clipboard.writeText(JSON.parse(txt)); alert("Copiado!"); }
+function delOrder(id){
+  const arr = JSON.parse(localStorage.getItem(STORE_KEY) || "[]").filter(x=>x.id!==id);
+  localStorage.setItem(STORE_KEY, JSON.stringify(arr));
+  renderOrders();
+}
+function downloadICS(ojson){
+  const o = JSON.parse(ojson);
+  const [data, hora] = o.when.split(" ");
+  const dtStart = new Date(`${data}T${hora}:00`);
+  const dtEnd = new Date(dtStart.getTime()+60*60*1000);
+  const toICS = (d)=> d.toISOString().replace(/[-:]/g,"").split(".")[0]+"Z";
+  const ics =
+`BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//${BUSINESS_NAME}//PT-BR
+BEGIN:VEVENT
+UID:${o.id}
+DTSTAMP:${toICS(new Date())}
+DTSTART:${toICS(dtStart)}
+DTEND:${toICS(dtEnd)}
+SUMMARY:${o.servico} - ${BUSINESS_NAME}
+DESCRIPTION:${o.msg.replace(/\n/g,'\\n')}
+LOCATION:${o.end}
+END:VEVENT
+END:VCALENDAR`;
+  const blob = new Blob([ics],{type:"text/calendar"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `${o.id}.ics`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Carregar pedidos salvos
+renderOrders();
+
+// Acessibilidade: rolagem suave
+document.addEventListener('click',(e)=>{
+  const a = e.target.closest('a[href^="#"]');
+  if(!a) return;
+  const id = a.getAttribute('href').slice(1);
+  const el = document.getElementById(id);
+  if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth',block:'start'}); }
+});
+</script>
 </body>
 </html>
