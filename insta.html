@@ -3,149 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Instagram - Protótipo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <title>Sistema Jurídico Online</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1a237e">
+
   <style>
-    body { font-family:'Poppins',sans-serif; background:#0f0f0f; color:#fff; margin:0; }
-    header { background:linear-gradient(90deg,#833ab4,#fd1d1d,#fcb045); padding:20px; text-align:center; font-size:22px; font-weight:600; }
-
-    main { max-width:1400px; margin:auto; padding:20px; }
-
-    /* KPIs */
-    .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:15px; margin-bottom:20px; }
-    .kpi { background:#1e1e2f; padding:15px; border-radius:12px; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,.4); }
-    .kpi h2 { margin:0; font-size:24px; color:#fcb045; }
-    .kpi p { margin:5px 0 0; font-size:14px; }
-
-    /* Formulário */
-    .formulario { background:#1e1e2f; padding:15px; border-radius:12px; margin-bottom:20px; }
-    .formulario input { padding:10px; margin:5px; border-radius:6px; border:none; width:120px; text-align:center; }
-    .formulario button { padding:10px 20px; border:none; border-radius:6px; background:#fcb045; color:#000; font-weight:600; cursor:pointer; }
-    .formulario button:hover { background:#fd1d1d; color:#fff; }
-
-    /* Dashboards */
-    .dashboards { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-    canvas { background:#121212; border-radius:12px; padding:10px; }
-    @media(max-width:900px){ .dashboards { grid-template-columns:1fr; } }
-
-    /* Exportar */
-    .exportar { text-align:center; margin:20px; }
-    .exportar button { padding:10px 20px; border:none; border-radius:6px; background:#43a047; color:#fff; font-weight:600; cursor:pointer; margin:5px; }
-    .exportar button:hover { background:#2e7d32; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      color: #333;
+    }
+    header {
+      background: #1a237e;
+      color: #fff;
+      text-align: center;
+      padding: 15px;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background: #283593;
+    }
+    nav button {
+      flex: 1;
+      padding: 15px;
+      border: none;
+      background: #283593;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    nav button.active {
+      background: #1a237e;
+    }
+    iframe {
+      width: 100%;
+      height: calc(100vh - 110px);
+      border: none;
+    }
   </style>
 </head>
 <body>
-  <header>📊 Dashboard Instagram - Protótipo Completo</header>
-  <main>
-    <!-- KPIs -->
-    <div class="kpis">
-      <div class="kpi"><h2 id="kpiSeguidores">0</h2><p>Seguidores</p></div>
-      <div class="kpi"><h2 id="kpiCrescimento">0%</h2><p>Crescimento</p></div>
-      <div class="kpi"><h2 id="kpiEngajamento">0%</h2><p>Engajamento</p></div>
-    </div>
+  <header>Sistema Jurídico Online</header>
 
-    <!-- Formulário -->
-    <div class="formulario">
-      <input type="number" id="seguidores" placeholder="Seguidores">
-      <input type="number" id="likes" placeholder="Likes">
-      <input type="number" id="alcance" placeholder="Alcance">
-      <input type="number" id="salvos" placeholder="Salvos">
-      <input type="number" id="compartilhados" placeholder="Compartilhados">
-      <button onclick="adicionarDados()">Adicionar Dados</button>
-    </div>
+  <nav>
+    <button id="btn-sheet" class="active">📑 Controle de Processos</button>
+    <button id="btn-dashboard">📊 Dashboard</button>
+  </nav>
 
-    <!-- Dashboards -->
-    <div class="dashboards">
-      <canvas id="graficoLinha"></canvas>
-      <canvas id="graficoBarra"></canvas>
-      <canvas id="graficoPizza"></canvas>
-    </div>
-
-    <!-- Exportar -->
-    <div class="exportar">
-      <button onclick="exportarCSV()">⬇️ Exportar CSV</button>
-      <button onclick="exportarPDF()">📄 Exportar PDF</button>
-    </div>
-  </main>
+  <iframe id="content" src="https://docs.google.com/spreadsheets/d/1z2TEGu1c9CVtN-Pz1QhGBIf-zq94ZaUBfirUKcvxD0U/edit?gid=644009686#gid=644009686"></iframe>
 
   <script>
-    let dados = [];
+    const sheetBtn = document.getElementById("btn-sheet");
+    const dashBtn = document.getElementById("btn-dashboard");
+    const iframe = document.getElementById("content");
 
-    // Gráficos
-    const ctxLinha=document.getElementById("graficoLinha").getContext("2d");
-    const ctxBarra=document.getElementById("graficoBarra").getContext("2d");
-    const ctxPizza=document.getElementById("graficoPizza").getContext("2d");
+    sheetBtn.addEventListener("click", () => {
+      iframe.src = "https://docs.google.com/spreadsheets/d/1z2TEGu1c9CVtN-Pz1QhGBIf-zq94ZaUBfirUKcvxD0U/edit?gid=644009686#gid=644009686";
+      sheetBtn.classList.add("active");
+      dashBtn.classList.remove("active");
+    });
 
-    let graficoLinha=new Chart(ctxLinha,{type:'line',data:{labels:[],datasets:[{label:"Seguidores",data:[],borderColor:"#fcb045"}]},options:{plugins:{legend:{labels:{color:"white"}}},scales:{x:{ticks:{color:"white"}},y:{ticks:{color:"white"}}}}});
-    let graficoBarra=new Chart(ctxBarra,{type:'bar',data:{labels:[],datasets:[{label:"Likes",data:[],backgroundColor:"#fd1d1d"},{label:"Alcance",data:[],backgroundColor:"#833ab4"}]},options:{plugins:{legend:{labels:{color:"white"}}},scales:{x:{ticks:{color:"white"}},y:{ticks:{color:"white"}}}}});
-    let graficoPizza=new Chart(ctxPizza,{type:'pie',data:{labels:["Likes","Salvos","Compartilhados"],datasets:[{data:[0,0,0],backgroundColor:["#fd1d1d","#fcb045","#833ab4"]}]},options:{plugins:{legend:{labels:{color:"white"}}}}});
-
-    // Adicionar dados
-    function adicionarDados(){
-      const seguidores=parseInt(document.getElementById("seguidores").value)||0;
-      const likes=parseInt(document.getElementById("likes").value)||0;
-      const alcance=parseInt(document.getElementById("alcance").value)||0;
-      const salvos=parseInt(document.getElementById("salvos").value)||0;
-      const compartilhados=parseInt(document.getElementById("compartilhados").value)||0;
-
-      dados.push({seguidores,likes,alcance,salvos,compartilhados});
-      atualizarGraficos();
-      atualizarKPIs();
-    }
-
-    // Atualizar KPIs
-    function atualizarKPIs(){
-      if(dados.length===0) return;
-      const ult=dados[dados.length-1];
-      const pen=dados.length>1?dados[dados.length-2]:{seguidores:ult.seguidores};
-
-      document.getElementById("kpiSeguidores").innerText=ult.seguidores;
-      let crescimento=((ult.seguidores-pen.seguidores)/pen.seguidores*100)||0;
-      document.getElementById("kpiCrescimento").innerText=crescimento.toFixed(1)+"%";
-      let engajamento=((ult.likes+ult.salvos+ult.compartilhados)/ult.seguidores*100)||0;
-      document.getElementById("kpiEngajamento").innerText=engajamento.toFixed(1)+"%";
-    }
-
-    // Atualizar gráficos
-    function atualizarGraficos(){
-      const labels=dados.map((_,i)=>"Dia "+(i+1));
-      graficoLinha.data.labels=labels;
-      graficoLinha.data.datasets[0].data=dados.map(d=>d.seguidores);
-      graficoLinha.update();
-
-      graficoBarra.data.labels=labels;
-      graficoBarra.data.datasets[0].data=dados.map(d=>d.likes);
-      graficoBarra.data.datasets[1].data=dados.map(d=>d.alcance);
-      graficoBarra.update();
-
-      const ult=dados[dados.length-1];
-      graficoPizza.data.datasets[0].data=[ult.likes,ult.salvos,ult.compartilhados];
-      graficoPizza.update();
-    }
-
-    // Exportar CSV
-    function exportarCSV(){
-      let csv="Dia,Seguidores,Likes,Alcance,Salvos,Compartilhados\n";
-      dados.forEach((d,i)=>{ csv+=`${i+1},${d.seguidores},${d.likes},${d.alcance},${d.salvos},${d.compartilhados}\n`; });
-      const blob=new Blob([csv],{type:"text/csv"});
-      const link=document.createElement("a"); link.href=URL.createObjectURL(blob); link.download="instagram_dashboard.csv"; link.click();
-    }
-
-    // Exportar PDF
-    async function exportarPDF(){
-      const {jsPDF}=window.jspdf;
-      const doc=new jsPDF();
-      doc.setFontSize(16);
-      doc.text("📊 Relatório Instagram",20,20);
-      let y=40;
-      dados.forEach((d,i)=>{
-        doc.text(`Dia ${i+1} - Seguidores: ${d.seguidores} | Likes: ${d.likes} | Alcance: ${d.alcance} | Salvos: ${d.salvos} | Compart.: ${d.compartilhados}`,20,y);
-        y+=10;
-      });
-      doc.save("instagram_dashboard.pdf");
-    }
+    dashBtn.addEventListener("click", () => {
+      iframe.src = "https://lookerstudio.google.com/u/0/reporting/ef4a681f-497d-4b3e-81a5-a3b091a01167/page/n8gXF/edit";
+      dashBtn.classList.add("active");
+      sheetBtn.classList.remove("active");
+    });
   </script>
 </body>
 </html>
