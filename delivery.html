@@ -113,7 +113,7 @@
     function validarChave(){
       const chave = document.getElementById("chaveAcesso").value.trim();
       // 🔑 Defina a chave secreta de acesso (troque por outra)
-      if(chave === "talita.melo"){
+      if(chave === "liberado"){
         document.getElementById("telaBloqueio").style.display="none";
         document.getElementById("conteudoApp").classList.remove("hidden");
         localStorage.setItem("acessoLiberado","true");
