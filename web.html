@@ -3,34 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema Online - Multiáreas</title>
+  <title>SaaS Online</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1a237e">
-
   <style>
-    body { margin: 0; font-family: Arial, sans-serif; background: #f4f6f9; color: #333; }
-    header { background: linear-gradient(90deg, #1a237e, #283593); color: #fff; text-align: center; padding: 15px; font-size: 1.2rem; font-weight: bold; }
-    nav { display: flex; justify-content: center; background: #eeeeee; flex-wrap: wrap; }
-    nav button {
-      flex: 1;
-      min-width: 150px;
-      padding: 15px;
-      border: none;
-      font-size: 1rem;
-      cursor: pointer;
-      color: #fff;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-    nav button#btn-juridico { background: #1a237e; }
-    nav button#btn-produtividade { background: #ff9800; }
-    nav button#btn-financeiro { background: #2e7d32; }
-    nav button.active { filter: brightness(85%); }
-    iframe { width: 100%; height: calc(100vh - 120px); border: none; }
+    body { margin:0; font-family:Arial,sans-serif; background:#f4f6f9; }
+    header { background: var(--cor-principal, #1a237e); color:#fff; text-align:center; padding:15px; font-size:1.2rem; font-weight:bold; display:flex; align-items:center; justify-content:center; gap:10px; }
+    header img { height:40px; }
+    nav { display:flex; justify-content:center; background:#eeeeee; flex-wrap:wrap; }
+    nav button { flex:1; min-width:150px; padding:15px; border:none; font-size:1rem; cursor:pointer; color:#fff; font-weight:bold; transition:0.3s; }
+    nav button.active { filter:brightness(85%); }
+    iframe { width:100%; height:calc(100vh - 120px); border:none; }
+    nav button#btn-juridico { background:#1a237e; }
+    nav button#btn-produtividade { background:#ff9800; }
+    nav button#btn-financeiro { background:#2e7d32; }
   </style>
 </head>
 <body>
-  <header>⚖️ Sistema Online - Multiáreas</header>
+  <header>
+    <img id="logo" src="logo.png" alt="Logo">
+    <span id="titulo">Sistema Online</span>
+  </header>
 
   <nav>
     <button id="btn-juridico" class="active">📑 Jurídico</button>
@@ -38,33 +31,53 @@
     <button id="btn-financeiro">💰 Financeiro</button>
   </nav>
 
-  <iframe id="content" src="https://docs.google.com/spreadsheets/d/1z2TEGu1c9CVtN-Pz1QhGBIf-zq94ZaUBfirUKcvxD0U/edit?gid=644009686#gid=644009686"></iframe>
+  <iframe id="content"></iframe>
 
   <script>
+    // ================= CONFIGURAÇÃO RÁPIDA =================
+    const CLIENTE = {
+      nome: "Sistema Jurídico Online",
+      logo: "logo.png",
+      cor: "#1a237e",
+      links: {
+        juridico: "https://docs.google.com/spreadsheets/d/1z2TEGu1c9CVtN-Pz1QhGBIf-zq94ZaUBfirUKcvxD0U/edit",
+        produtividade: "https://lookerstudio.google.com/embed/reporting/ef4a681f-497d-4b3e-81a5-a3b091a01167/page/n8gXF",
+        financeiro: "https://docs.google.com/spreadsheets/d/xxxxxxxxxxxxxxxxxxxxxxxxxxxx/edit"
+      }
+    };
+    // =======================================================
+
+    // Aplicar personalização
+    document.getElementById("titulo").innerText = CLIENTE.nome;
+    document.getElementById("logo").src = CLIENTE.logo;
+    document.querySelector("meta[name='theme-color']").setAttribute("content", CLIENTE.cor);
+    document.querySelector("header").style.background = CLIENTE.cor;
+
     const iframe = document.getElementById("content");
+    iframe.src = CLIENTE.links.juridico;
 
-    document.getElementById("btn-juridico").addEventListener("click", () => {
-      iframe.src = "https://docs.google.com/spreadsheets/d/1z2TEGu1c9CVtN-Pz1QhGBIf-zq94ZaUBfirUKcvxD0U/edit?gid=644009686#gid=644009686"; // Jurídico
-      setActive("btn-juridico");
-    });
-
-    document.getElementById("btn-produtividade").addEventListener("click", () => {
-      iframe.src = "https://lookerstudio.google.com/embed/reporting/ef4a681f-497d-4b3e-81a5-a3b091a01167/page/n8gXF"; // Produtividade (exemplo)
-      setActive("btn-produtividade");
-    });
-
-    document.getElementById("btn-financeiro").addEventListener("click", () => {
-      iframe.src = "https://docs.google.com/spreadsheets/d/xxxxxxxxxxxxxxxxxxxxxxxxxxxx/edit"; // Financeiro (substituir pelo link real)
-      setActive("btn-financeiro");
-    });
-
+    // Troca de abas
     function setActive(id) {
       document.querySelectorAll("nav button").forEach(btn => btn.classList.remove("active"));
       document.getElementById(id).classList.add("active");
     }
-  </script>
 
-  <script>
+    document.getElementById("btn-juridico").addEventListener("click", () => {
+      iframe.src = CLIENTE.links.juridico;
+      setActive("btn-juridico");
+    });
+
+    document.getElementById("btn-produtividade").addEventListener("click", () => {
+      iframe.src = CLIENTE.links.produtividade;
+      setActive("btn-produtividade");
+    });
+
+    document.getElementById("btn-financeiro").addEventListener("click", () => {
+      iframe.src = CLIENTE.links.financeiro;
+      setActive("btn-financeiro");
+    });
+
+    // PWA Service Worker
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js");
     }
