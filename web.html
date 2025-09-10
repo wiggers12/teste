@@ -1,199 +1,73 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Currículo - Dionatan Wiggers</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-            color: #333;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 900px;
-            margin: 2rem auto;
-            padding: 1.5rem;
-            background-color: #ffffff;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-        }
-        .section-title {
-            font-size: 1.875rem;
-            font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #e5e7eb;
-            text-align: left;
-        }
-        .subsection-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 0.5rem;
-        }
-        .highlight {
-            font-weight: 600;
-            color: #1d4ed8;
-        }
-        ul {
-            list-style: none;
-            padding-left: 0;
-        }
-        ul li {
-            margin-bottom: 0.5rem;
-            position: relative;
-            padding-left: 1.5rem;
-        }
-        ul li::before {
-            content: '•';
-            color: #3b82f6;
-            font-weight: bold;
-            display: inline-block;
-            width: 1em;
-            margin-left: -1.5em;
-            position: absolute;
-        }
-        .skills-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .skills-group {
-            flex: 1 1 45%;
-            min-width: 280px;
-        }
-        footer {
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #e5e7eb;
-            text-align: center;
-            color: #6b7280;
-            font-size: 0.875rem;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema Online - Multiáreas</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1a237e">
+
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f4f6f9; color: #333; }
+    header { background: linear-gradient(90deg, #1a237e, #283593); color: #fff; text-align: center; padding: 15px; font-size: 1.2rem; font-weight: bold; }
+    nav { display: flex; justify-content: center; background: #eeeeee; flex-wrap: wrap; }
+    nav button {
+      flex: 1;
+      min-width: 150px;
+      padding: 15px;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      color: #fff;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    nav button#btn-juridico { background: #1a237e; }
+    nav button#btn-produtividade { background: #ff9800; }
+    nav button#btn-financeiro { background: #2e7d32; }
+    nav button.active { filter: brightness(85%); }
+    iframe { width: 100%; height: calc(100vh - 120px); border: none; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Cabeçalho com nome e informações de contato -->
-        <header class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-900 mb-2">Dionatan Wiggers</h1>
-            <p class="text-xl text-gray-700 mb-4">Desenvolvedor Web & Analista de Requisitos</p>
-            <div class="flex flex-col sm:flex-row justify-center items-center text-gray-600 text-sm sm:space-x-4">
-                <a href="mailto:dionegalato1212@gmail.com" class="text-blue-600 hover:underline mb-1 sm:mb-0">dionegalato1212@gmail.com</a>
-                <span class="hidden sm:inline">|</span>
-                <span>Porto Alegre, RS</span>
-                <span class="hidden sm:inline">|</span>
-                <a href="https://wiggers12.github.io/teste/" target="_blank" class="text-blue-600 hover:underline mt-1 sm:mt-0">Portfólio</a>
-            </div>
-        </header>
+  <header>⚖️ Sistema Online - Multiáreas</header>
 
-        <!-- Seção de Resumo Profissional -->
-        <section class="mb-8">
-            <h2 class="section-title">Resumo Profissional</h2>
-            <p class="text-gray-700 leading-relaxed">
-                Profissional proativo e autodidata com foco em **Desenvolvimento Web**. Possuo sólida experiência na criação de websites e aplicações interativas, gerenciando o ciclo de vida completo dos projetos. Minha trajetória como CEO e professor de Jiu-Jitsu, onde gerenciei equipes e analisei performance, me proporcionou habilidades em <span class="highlight">levantamento de requisitos, otimização de fluxos de trabalho e foco na experiência do usuário</span>. Proficiente em **HTML, CSS e JavaScript**, busco uma oportunidade para aplicar minha visão de desenvolvimento e análise, contribuindo para a criação de soluções digitais eficientes.
-            </p>
-        </section>
+  <nav>
+    <button id="btn-juridico" class="active">📑 Jurídico</button>
+    <button id="btn-produtividade">📊 Produtividade</button>
+    <button id="btn-financeiro">💰 Financeiro</button>
+  </nav>
 
-        <!-- Seção de Experiência Profissional e Projetos -->
-        <section class="mb-8">
-            <h2 class="section-title">Experiência Profissional e Projetos</h2>
+  <iframe id="content" src="https://docs.google.com/spreadsheets/d/1z2TEGu1c9CVtN-Pz1QhGBIf-zq94ZaUBfirUKcvxD0U/edit?gid=644009686#gid=644009686"></iframe>
 
-            <div class="mb-6">
-                <h3 class="subsection-title">Desenvolvedor e Analista de Projetos Digitais (Autônomo)</h3>
-                <p class="text-gray-600 mb-2">Janeiro de 2023 – Atualmente</p>
-                <ul class="text-gray-700">
-                    <li>**Desenvolvimento Web e Front-end:** Atuação na criação de websites e aplicações interativas como o <span class="highlight">App de Vagas de Emprego</span> e sites para clientes.
-                        <ul class="ml-4 mt-2">
-                            <li>Tecnologias: HTML, CSS e JavaScript.</li>
-                        </ul>
-                    </li>
-                    <li>**Análise de Requisitos e UX/UI:** Realizei o <span class="highlight">levantamento de requisitos</span> e a prototipagem de interfaces, garantindo que as soluções digitais atendessem às necessidades dos clientes e proporcionassem uma boa experiência ao usuário.</li>
-                    <li>**Otimização de Sites e SEO:** Aplicação de técnicas de <span class="highlight">SEO</span> e otimização de sites para melhorar a visibilidade e o desempenho online dos projetos.</li>
-                    <li>**Controle de Versões:** Utilização de <span class="highlight">Git</span> para controle de versões e gerenciamento de projetos.</li>
-                </ul>
-            </div>
-            
-            <div class="mb-6">
-                <h3 class="subsection-title">CEO e Professor (Academia de Jiu-Jitsu)</h3>
-                <p class="text-gray-600 mb-2">Janeiro de 2020 – Fevereiro de 2025</p>
-                <ul class="text-gray-700">
-                    <li>**Otimização de Processos:** Apliquei metodologias de gestão para otimizar processos internos, como a criação de uma ferramenta de gestão de pagamentos, que automatizou avisos de vencimento.</li>
-                    <li>**Liderança e Gestão:** Lderei e gerenciei uma equipe de mais de 70 alunos, promovendo um ambiente de alta performance.</li>
-                </ul>
-            </div>
+  <script>
+    const iframe = document.getElementById("content");
 
-            <div class="mb-6">
-                <h3 class="subsection-title">Analista de Dados & Engenheiro de Dados (Freelancer/Consultor)</h3>
-                <p class="text-gray-600 mb-2">Janeiro de 2021 – Dezembro de 2023</p>
-                <ul class="text-gray-700">
-                    <li>**Análise de Dados:** Utilizei <span class="highlight">Power BI</span> e <span class="highlight">SQL</span> para criar dashboards e relatórios de análise.</li>
-                    <li>**Engenharia de Dados (ETL):** Conhecimento em ferramentas como <span class="highlight">Pentaho</span> e <span class="highlight">SSIS</span> para construção de pipelines de dados.</li>
-                </ul>
-            </div>
-        </section>
+    document.getElementById("btn-juridico").addEventListener("click", () => {
+      iframe.src = "https://docs.google.com/spreadsheets/d/1z2TEGu1c9CVtN-Pz1QhGBIf-zq94ZaUBfirUKcvxD0U/edit?gid=644009686#gid=644009686"; // Jurídico
+      setActive("btn-juridico");
+    });
 
-        <!-- Seção de Formação Acadêmica -->
-        <section class="mb-8">
-            <h2 class="section-title">Formação Acadêmica</h2>
-            <div class="mb-4">
-                <h3 class="subsection-title">Análise e Desenvolvimento de Sistemas</h3>
-                <p class="text-gray-600">Unisinos Porto Alegre</p>
-                <p class="text-gray-600">Porto Alegre, RS | 2024 – Trancado</p>
-            </div>
-        </section>
+    document.getElementById("btn-produtividade").addEventListener("click", () => {
+      iframe.src = "https://lookerstudio.google.com/embed/reporting/ef4a681f-497d-4b3e-81a5-a3b091a01167/page/n8gXF"; // Produtividade (exemplo)
+      setActive("btn-produtividade");
+    });
 
-        <!-- Seção de Habilidades -->
-        <section class="mb-8">
-            <h2 class="section-title">Habilidades</h2>
-            <div class="skills-list">
-                <div class="skills-group">
-                    <h3 class="font-semibold text-gray-800 mb-2">Desenvolvimento Web:</h3>
-                    <ul class="text-gray-700">
-                        <li>**Front-end:** HTML, CSS, JavaScript, SEO.</li>
-                        <li>**Controle de Versão:** Git e GitHub.</li>
-                        <li>**Análise de Desempenho:** Google Analytics e Search Console.</li>
-                    </ul>
-                </div>
-                <div class="skills-group">
-                    <h3 class="font-semibold text-gray-800 mb-2">Análise e Gestão:</h3>
-                    <ul class="text-gray-700">
-                        <li>**Análise de Processos:** Mapeamento, otimização, metodologias ágeis (Trello, Jira).</li>
-                        <li>**Análise de Dados:** Power BI, SQL, Pentaho.</li>
-                        <li>**Liderança e Soft Skills:** Resolução de Problemas, Foco em Resultados, Disciplina e Resiliência.</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
+    document.getElementById("btn-financeiro").addEventListener("click", () => {
+      iframe.src = "https://docs.google.com/spreadsheets/d/xxxxxxxxxxxxxxxxxxxxxxxxxxxx/edit"; // Financeiro (substituir pelo link real)
+      setActive("btn-financeiro");
+    });
 
-        <!-- Seção de Conquistas Esportivas -->
-        <section class="mb-8">
-            <h2 class="section-title">Conquistas Esportivas</h2>
-            <h3 class="subsection-title">Atleta Profissional de Jiu-Jitsu</h3>
-            <p class="text-gray-600 mb-2">2006 – 2021</p>
-            <ul class="text-gray-700">
-                <li>Bicampeão Mundial, Bicampeão Europeu, Campeão Pan-Americano e Campeão Brasileiro.</li>
-            </ul>
-        </section>
+    function setActive(id) {
+      document.querySelectorAll("nav button").forEach(btn => btn.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+  </script>
 
-        <!-- Seção de Informações Adicionais -->
-        <section>
-            <h2 class="section-title">Informações Adicionais</h2>
-            <ul class="text-gray-700">
-                <li>Disponibilidade total de horário (24h) e para viagens.</li>
-                <li>Faixa preta de Jiu-Jitsu.</li>
-            </ul>
-        </section>
-    </div>
-
-    <!-- Rodapé -->
-    <footer>
-        <p>&copy; 2025 Dionatan Wiggers. Todos os direitos reservados.</p>
-    </footer>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js");
+    }
+  </script>
 </body>
 </html>
