@@ -54,6 +54,7 @@
     <button id="btn-dashboard">📊 Dashboard</button>
   </nav>
 
+  <!-- Área onde Sheets ou Dashboard aparecem -->
   <iframe id="content" src="https://docs.google.com/spreadsheets/d/1z2TEGu1c9CVtN-Pz1QhGBIf-zq94ZaUBfirUKcvxD0U/edit?gid=644009686#gid=644009686"></iframe>
 
   <script>
@@ -68,10 +69,16 @@
     });
 
     dashBtn.addEventListener("click", () => {
-      iframe.src = "https://lookerstudio.google.com/u/0/reporting/ef4a681f-497d-4b3e-81a5-a3b091a01167/page/n8gXF/edit";
+      iframe.src = "https://lookerstudio.google.com/embed/reporting/ef4a681f-497d-4b3e-81a5-a3b091a01167/page/n8gXF";
       dashBtn.classList.add("active");
       sheetBtn.classList.remove("active");
     });
+  </script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js");
+    }
   </script>
 </body>
 </html>
