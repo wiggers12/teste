@@ -25,9 +25,12 @@
     .rowHeader { background:#2c2c3c; }
     td[contenteditable="true"] { background:#1e1e2f; outline:none; }
 
-    .controls { margin:15px 0; display:flex; gap:10px; flex-wrap:wrap; }
-    .controls button { padding:10px; border-radius:6px; border:none; font-size:14px; background:#8e24aa; color:#fff; cursor:pointer; }
+    .controls { margin:15px 0; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .controls button, .controls a { padding:10px 20px; border-radius:6px; border:none; font-size:14px; cursor:pointer; text-decoration:none; font-weight:600; }
+    .controls button { background:#8e24aa; color:#fff; }
     .controls button:hover { background:#d81b60; }
+    .controls a { background:#43a047; color:#fff; }
+    .controls a:hover { background:#2e7d32; }
 
     /* Dashboards */
     .dashboards { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
@@ -50,6 +53,7 @@
       <div class="controls">
         <button onclick="adicionarLinha()">➕ Adicionar Linha</button>
         <button onclick="adicionarColuna()">➕ Adicionar Coluna</button>
+        <a href="https://mpago.li/1Ys2kBK" target="_blank">💳 Comprar por R$29,90</a>
       </div>
       <div class="sheet">
         <table id="tabela">
@@ -74,6 +78,11 @@
         <canvas id="graficoBarra"></canvas>
         <canvas id="graficoPizza"></canvas>
       </div>
+      <div style="text-align:center; margin-top:20px;">
+        <a href="https://mpago.li/1Ys2kBK" target="_blank" style="background:#43a047; padding:12px 25px; border-radius:6px; color:white; text-decoration:none; font-size:16px; font-weight:600;">
+          💳 Comprar agora por R$29,90
+        </a>
+      </div>
     </section>
   </main>
 
@@ -89,8 +98,14 @@
       document.getElementById("btnPlanilha").classList.remove("active");
       document.getElementById("btnDashboards").classList.remove("active");
 
-      if(tela==="planilha"){ document.getElementById("telaPlanilha").classList.remove("hidden"); document.getElementById("btnPlanilha").classList.add("active"); }
-      else { document.getElementById("telaDashboards").classList.remove("hidden"); document.getElementById("btnDashboards").classList.add("active"); atualizarGraficos(); }
+      if(tela==="planilha"){ 
+        document.getElementById("telaPlanilha").classList.remove("hidden"); 
+        document.getElementById("btnPlanilha").classList.add("active"); 
+      } else { 
+        document.getElementById("telaDashboards").classList.remove("hidden"); 
+        document.getElementById("btnDashboards").classList.add("active"); 
+        atualizarGraficos(); 
+      }
     }
 
     // Gráficos
