@@ -1,171 +1,222 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Robô Aviator - Mega Ultra</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; background:#0d1117; color:#e6edf3; margin:0; padding:20px; }
-    h1 { text-align:center; }
-    textarea, select { width:100%; margin:10px 0; padding:10px; border-radius:8px; border:1px solid #30363d; background:#161b22; color:#fff; }
-    button { padding:10px 20px; border:0; border-radius:8px; background:#238636; color:#fff; cursor:pointer; font-weight:bold; margin-top:10px; }
-    .result { margin-top:20px; padding:15px; background:#161b22; border-radius:8px; transition: all 0.5s ease; }
-    .highlight { font-size:20px; font-weight:bold; }
-    .alerta { border:2px solid #ff0000; background:#400; }
-    canvas { margin-top:20px; background:#fff; border-radius:8px; }
-    h2 { margin-top:30px; }
-    .hist { margin-top:10px; display:grid; gap:10px; }
-    .item { background:#161b22; padding:10px; border-radius:8px; border:1px solid #30363d; }
-    .badge { padding:3px 8px; border-radius:999px; font-size:12px; }
-    .verde { background:#2ea043; color:#000; }
-    .amarelo { background:#d29922; color:#000; }
-    .vermelho { background:#da3633; color:#fff; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Robô Aviator — Previsor v2</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0d1117;color:#e6edf3;margin:0;padding:18px}
+  h1{text-align:center;margin:0 0 10px}
+  textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid #30363d;background:#161b22;color:#fff}
+  button{padding:10px 16px;border:0;border-radius:8px;background:#238636;color:#fff;font-weight:700;cursor:pointer;margin-top:10px}
+  .grid{display:grid;gap:12px;grid-template-columns:1fr;max-width:980px;margin:0 auto}
+  .card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:14px}
+  .big{font-size:28px;font-weight:800}
+  .muted{color:#8b949e}
+  .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;margin-left:8px}
+  .green{background:#2ea043;color:#000}
+  .yellow{background:#d29922;color:#000}
+  .red{background:#da3633}
+  canvas{background:#fff;border-radius:10px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .kpi{background:#0b0f14;border:1px solid #30363d;border-radius:10px;padding:8px 10px}
+</style>
 </head>
 <body>
-  <h1>📊 Robô Aviator - Mega Ultra</h1>
-  <p>Cole abaixo os últimos resultados (separados por vírgula):</p>
-  <textarea id="input" placeholder="Ex.: 1.10, 1.50, 2.30, 10.00, 1.20"></textarea>
-  <label>Analisar últimas:
-    <select id="janela">
-      <option value="10">10 rodadas</option>
-      <option value="20">20 rodadas</option>
-      <option value="50">50 rodadas</option>
-    </select>
-  </label>
-  <button onclick="analisar()">Analisar</button>
+  <h1>📊 Robô Aviator — Previsor v2</h1>
+  <div class="grid">
 
-  <div class="result" id="output"></div>
-  <canvas id="chart" height="120"></canvas>
+    <div class="card">
+      <p>Cole os resultados (separados por vírgula). Ex.: <span class="muted">1.10, 1.45, 2.30, 10.00, 1.20</span></p>
+      <textarea id="inp" rows="4"></textarea>
+      <div class="row">
+        <label>Janela: 
+          <select id="win">
+            <option value="20">últimas 20</option>
+            <option value="30" selected>últimas 30</option>
+            <option value="50">últimas 50</option>
+          </select>
+        </label>
+        <label>Trim superior (cortar explosões): 
+          <select id="trim">
+            <option value="0.10">10%</option>
+            <option value="0.15" selected>15%</option>
+            <option value="0.20">20%</option>
+          </select>
+        </label>
+        <label>Peso da recência (EW): 
+          <select id="decay">
+            <option value="0.95">suave</option>
+            <option value="0.92" selected>médio</option>
+            <option value="0.88">forte</option>
+          </select>
+        </label>
+      </div>
+      <button onclick="run()">Analisar</button>
+    </div>
 
-  <!-- Histórico -->
-  <h2>📜 Histórico de Análises</h2>
-  <div class="hist" id="hist"></div>
+    <div class="card" id="out">
+      <div class="big" id="pred">—</div>
+      <div class="muted" id="explain">Cole os resultados e clique em Analisar.</div>
+      <div class="row" style="margin-top:8px">
+        <div class="kpi" id="seq">Seq. baixas: —</div>
+        <div class="kpi" id="since">Desde última >10x: —</div>
+        <div class="kpi" id="ratio">% >5x: —</div>
+        <div class="kpi" id="std">Volatilidade: —</div>
+      </div>
+    </div>
 
-  <!-- Som de alerta -->
-  <audio id="beep">
-    <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
-  </audio>
+    <div class="card">
+      <canvas id="ch" height="120"></canvas>
+    </div>
 
-  <script>
-    let historico = [];
+  </div>
 
-    function analisar(){
-      const input = document.getElementById("input").value;
-      if(!input.trim()){ alert("Cole os resultados!"); return; }
+<script>
+function parseVals(){
+  const raw = document.getElementById('inp').value;
+  return raw.split(',').map(s=>parseFloat(String(s).replace(/[^\d.]/g,'')))
+             .filter(v=>!isNaN(v)&&v>0);
+}
+function lastN(arr,n){ return arr.slice(-n); }
+function quantile(arr,q){
+  if(arr.length===0) return 0;
+  const a=[...arr].sort((x,y)=>x-y);
+  const idx = (a.length-1)*q;
+  const lo = Math.floor(idx), hi=Math.ceil(idx);
+  if(lo===hi) return a[lo];
+  return a[lo] + (a[hi]-a[lo])*(idx-lo);
+}
+function winsorizeTop(arr,qTop){
+  const q=quantile(arr, 1-qTop); // ex.: 0.85 p/ trim 15%
+  return arr.map(v=>Math.min(v,q));
+}
+function expWeightedMean(arr, decay){
+  // decay in (0,1). Newer points get more weight.
+  const n=arr.length;
+  let wsum=0, xsum=0;
+  for(let i=0;i<n;i++){
+    const w = Math.pow(decay, n-1-i);
+    wsum += w; xsum += w*arr[i];
+  }
+  return xsum/wsum;
+}
+function expWeightedStd(arr, decay){
+  const mean = expWeightedMean(arr,decay);
+  const n=arr.length;
+  let wsum=0, ssum=0;
+  for(let i=0;i<n;i++){
+    const w = Math.pow(decay, n-1-i);
+    wsum += w; ssum += w*Math.pow(arr[i]-mean,2);
+  }
+  return Math.sqrt(ssum/wsum);
+}
+function consecutiveLowsEnd(arr, thr=2.0){
+  let c=0;
+  for(let i=arr.length-1;i>=0;i--){
+    if(arr[i]<=thr) c++; else break;
+  }
+  return c;
+}
+function sinceLastHigh(arr, thr=10.0){
+  for(let i=arr.length-1;i>=0;i--){
+    if(arr[i]>thr) return arr.length-1-i;
+  }
+  return Infinity;
+}
+function ratioAbove(arr, thr){ return arr.filter(v=>v>thr).length/arr.length; }
 
-      const valores = input.split(",").map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
-      const janela = parseInt(document.getElementById("janela").value);
-      const ultimos = valores.slice(-janela);
+let chart;
 
-      let baixos = ultimos.filter(v => v <= 2).length;
-      let medios = ultimos.filter(v => v > 2 && v <= 10).length;
-      let altos = ultimos.filter(v => v > 10).length;
+function run(){
+  const vals = parseVals();
+  const win = parseInt(document.getElementById('win').value||30);
+  const trim = parseFloat(document.getElementById('trim').value||0.15);
+  const decay = parseFloat(document.getElementById('decay').value||0.92);
 
-      // detectar sequências de rodadas baixas consecutivas
-      let seqBaixa = 0, maxSeqBaixa = 0;
-      for(let v of ultimos){
-        if(v <= 2){ seqBaixa++; maxSeqBaixa = Math.max(maxSeqBaixa, seqBaixa); }
-        else { seqBaixa = 0; }
-      }
+  if(vals.length<5){ alert('Cole pelo menos 5 valores.'); return; }
 
-      // última explosão
-      let ultimaAlta = ultimos.length - 1 - [...ultimos].reverse().findIndex(v => v > 10);
-      let desdeAlta = (ultimaAlta === -1) ? "Nunca" : (ultimos.length - 1 - ultimaAlta) + " rodadas atrás";
+  const v = lastN(vals, win);
+  // --- robustez contra explosões ---
+  const vWins = winsorizeTop(v, trim); // corta topo (ex.: 15%)
+  // --- baseline com peso de recência ---
+  const base = expWeightedMean(vWins, decay);
+  let pred = base;
 
-      // médias móveis
-      let mediaCurta = media(ultimos.slice(-10));
-      let mediaLonga = media(ultimos);
+  // --- features ---
+  const consecLow = consecutiveLowsEnd(v, 2.0);
+  const sinceHigh = sinceLastHigh(v, 10.0);
+  const hi5ratio = ratioAbove(v, 5.0);
+  const vol = expWeightedStd(vWins, decay);
 
-      // probabilidade (heurística)
-      let probMedia = (maxSeqBaixa >= 3) ? Math.min(90, 40 + maxSeqBaixa*10) : 30;
-      let probAlta = (desdeAlta !== "Nunca" && parseInt(desdeAlta) >= 10) ? 50 : 20;
+  // --- ajustes heurísticos calibrados ---
+  // sequências baixas empurram a previsão para cima (até +1.2)
+  pred += 0.18 * Math.min(consecLow, 6);
 
-      // classificação textual
-      let call = "";
-      let cor = "amarelo";
-      if(maxSeqBaixa >= 5){
-        call = "⚠️ Muitas rodadas baixas consecutivas → pode vir rodada média/alta.";
-        cor = "verde";
-      } else if(altos === 0){
-        call = "🔴 Nenhuma explosão detectada nesta janela → tendência baixa.";
-        cor = "vermelho";
-      } else {
-        call = "🟡 Situação equilibrada → chance moderada de rodada média.";
-        cor = "amarelo";
-      }
+  // alta recente puxa para baixo; se faz tempo sem alta, leve alta
+  if (isFinite(sinceHigh)) {
+    if (sinceHigh <= 3) pred -= [0.35,0.25,0.15,0.08][sinceHigh] ?? 0.05;
+    if (sinceHigh >= 8) pred += 0.25;
+  } else {
+    // nunca teve >10x na janela
+    pred += 0.10;
+  }
 
-      // saída principal
-      const outBox = document.getElementById("output");
-      outBox.innerHTML = `
-        <div class="highlight ${cor}">${call}</div><br>
-        Total analisado: <b>${ultimos.length}</b><br>
-        Baixas (≤2x): <b>${baixos}</b> • Médias (2–10x): <b>${medios}</b> • Altas (>10x): <b>${altos}</b><br>
-        Máx. sequência baixa: <b>${maxSeqBaixa}</b><br>
-        Última explosão (>10x): <b>${desdeAlta}</b><br>
-        Média móvel curta (10): <b>${mediaCurta.toFixed(2)}x</b> • longa (${ultimos.length}): <b>${mediaLonga.toFixed(2)}x</b><br><br>
-        🔮 Próxima rodada estimada:<br>
-        Média (2–10x): <b>${probMedia}%</b><br>
-        Alta (>10x): <b>${probAlta}%</b>
-      `;
+  // regime com muitas >5x eleva levemente
+  if (hi5ratio > 0.20) pred += 0.15 + 0.5*(hi5ratio-0.20);
 
-      if(maxSeqBaixa >= 5){
-        outBox.classList.add("alerta");
-        document.getElementById("beep").play();
-      } else {
-        outBox.classList.remove("alerta");
-      }
+  // limitar a faixa útil
+  pred = Math.max(1.10, Math.min(pred, 12.0));
 
-      // gráfico
-      const ctx = document.getElementById("chart").getContext("2d");
-      if(window.grafico){ window.grafico.destroy(); }
-      window.grafico = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: ultimos.map((_,i)=>i+1),
-          datasets: [{
-            label: "Histórico de Rodadas",
-            data: ultimos,
-            borderColor: "#2ea043",
-            backgroundColor: "rgba(46,160,67,0.2)",
-            tension: 0.3,
-            fill:true,
-            pointBackgroundColor: ultimos.map(v => v>10 ? "red" : "#2ea043"),
-            pointRadius: ultimos.map(v => v>10 ? 6 : 3)
-          },{
-            label: "Média Móvel",
-            data: Array(ultimos.length).fill(mediaLonga),
-            borderColor: "orange",
-            borderDash: [5,5],
-            pointRadius:0
-          }]
-        },
-        options: { responsive:true, plugins:{ legend:{labels:{color:"#000"}} }, 
-          scales:{ x:{ticks:{color:"#000"}}, y:{ticks:{color:"#000"}} } }
-      });
+  // --- intervalo de confiança (80%) a partir da volatilidade ponderada ---
+  const icWidth = Math.max(0.4, 0.9*vol); // largura depende da vol
+  let lo = Math.max(1.00, pred - icWidth);
+  let hi = pred + icWidth;
 
-      // salvar no histórico
-      historico.unshift({baixos,medios,altos,maxSeqBaixa,desdeAlta,mediaCurta,mediaLonga,probMedia,probAlta,call,cor});
-      renderHistorico();
-    }
+  // --- confiança qualitativa ---
+  let score = 0;
+  if (consecLow>=4) score++;
+  if (sinceHigh>=10 || !isFinite(sinceHigh)) score++;
+  if (vol<2.2) score++;
+  if (sinceHigh<=2) score--;           // alta muito recente reduz confiança
+  if (vol>4.5) score--;
+  const conf = (score>=2) ? 'alta' : (score>=0 ? 'média' : 'baixa');
+  const confBadge = (score>=2) ? 'green' : (score>=0 ? 'yellow' : 'red');
 
-    function media(arr){ return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0; }
+  // --- saída principal ---
+  const predTxt = `📊 Próxima rodada prevista: ~${pred.toFixed(2)}x ` +
+                  `<span class="badge ${confBadge}">Confiança: ${conf}</span><br>` +
+                  `<span class="muted">IC80%: ${lo.toFixed(2)}x – ${hi.toFixed(2)}x</span>`;
+  document.getElementById('pred').innerHTML = predTxt;
 
-    function renderHistorico(){
-      const histBox = document.getElementById("hist");
-      histBox.innerHTML = historico.map((h,i) => `
-        <div class="item">
-          <b>Análise #${historico.length - i}</b><br>
-          <span class="badge ${h.cor}">${h.call}</span><br>
-          Baixas:${h.baixos} • Médias:${h.medios} • Altas:${h.altos}<br>
-          Seq.baixa:${h.maxSeqBaixa} • Última alta:${h.desdeAlta}<br>
-          Estimado → Média:${h.probMedia}% • Alta:${h.probAlta}%<br>
-          <i>(Média curta:${h.mediaCurta.toFixed(2)}x • longa:${h.mediaLonga.toFixed(2)}x)</i><br>
-          Resultado real: <input type="text" placeholder="Ex.: 6.20x" style="width:80px;background:#0d1117;color:#fff;border:1px solid #30363d;border-radius:4px;padding:2px">
-        </div>
-      `).join("");
-    }
-  </script>
+  document.getElementById('explain').innerHTML =
+    `Base: média ponderada winsorizada = ${base.toFixed(2)}x • ` +
+    `ajustes: seq=${consecLow}, desde_alta=${isFinite(sinceHigh)?sinceHigh:'nenhuma'}, ` +
+    `%>5x=${(hi5ratio*100).toFixed(0)}%`;
+
+  document.getElementById('seq').textContent = `Seq. baixas: ${consecLow}`;
+  document.getElementById('since').textContent = `Desde última >10x: ${isFinite(sinceHigh)?sinceHigh+' rod.':'nenhuma'}`;
+  document.getElementById('ratio').textContent = `% >5x: ${(hi5ratio*100).toFixed(0)}%`;
+  document.getElementById('std').textContent = `Volatilidade: ${vol.toFixed(2)}`;
+
+  // --- gráfico ---
+  const ctx = document.getElementById('ch').getContext('2d');
+  if(chart) chart.destroy();
+  chart = new Chart(ctx,{
+    type:'line',
+    data:{
+      labels: v.map((_,i)=>i+1),
+      datasets:[
+        {label:'Histórico', data:v, borderColor:'#2ea043', backgroundColor:'rgba(46,160,67,.2)', tension:.3, fill:true,
+         pointBackgroundColor: v.map(x=>x>10?'red':'#2ea043'), pointRadius:v.map(x=>x>10?6:3)},
+        {label:'Média ponderada', data:Array(v.length).fill(base), borderColor:'orange', borderDash:[5,5], pointRadius:0},
+        {label:'Prevista', data:Array(v.length-1).fill(null).concat([pred]), borderColor:'#58a6ff', pointRadius:5}
+      ]
+    },
+    options:{plugins:{legend:{labels:{color:'#000'}}}, scales:{x:{ticks:{color:'#000'}},y:{ticks:{color:'#000'}}}}
+  });
+}
+</script>
 </body>
 </html>
