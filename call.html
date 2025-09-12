@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Robô Aviator - Analisador</title>
+  <title>Robô Aviator - Mega Ultra</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { font-family: Arial, sans-serif; background:#0d1117; color:#e6edf3; margin:0; padding:20px; }
     h1 { text-align:center; }
-    textarea { width:100%; height:100px; margin:10px 0; padding:10px; border-radius:8px; border:1px solid #30363d; background:#161b22; color:#fff; }
-    button { padding:10px 20px; border:0; border-radius:8px; background:#238636; color:#fff; cursor:pointer; font-weight:bold; }
+    textarea, select { width:100%; margin:10px 0; padding:10px; border-radius:8px; border:1px solid #30363d; background:#161b22; color:#fff; }
+    button { padding:10px 20px; border:0; border-radius:8px; background:#238636; color:#fff; cursor:pointer; font-weight:bold; margin-top:10px; }
     .result { margin-top:20px; padding:15px; background:#161b22; border-radius:8px; transition: all 0.5s ease; }
-    .highlight { font-size:20px; font-weight:bold; color:#2ea043; }
+    .highlight { font-size:20px; font-weight:bold; }
     .alerta { border:2px solid #ff0000; background:#400; }
     canvas { margin-top:20px; background:#fff; border-radius:8px; }
     h2 { margin-top:30px; }
@@ -19,13 +19,21 @@
     .item { background:#161b22; padding:10px; border-radius:8px; border:1px solid #30363d; }
     .badge { padding:3px 8px; border-radius:999px; font-size:12px; }
     .verde { background:#2ea043; color:#000; }
+    .amarelo { background:#d29922; color:#000; }
     .vermelho { background:#da3633; color:#fff; }
   </style>
 </head>
 <body>
-  <h1>📊 Robô Aviator</h1>
+  <h1>📊 Robô Aviator - Mega Ultra</h1>
   <p>Cole abaixo os últimos resultados (separados por vírgula):</p>
   <textarea id="input" placeholder="Ex.: 1.10, 1.50, 2.30, 10.00, 1.20"></textarea>
+  <label>Analisar últimas:
+    <select id="janela">
+      <option value="10">10 rodadas</option>
+      <option value="20">20 rodadas</option>
+      <option value="50">50 rodadas</option>
+    </select>
+  </label>
   <button onclick="analisar()">Analisar</button>
 
   <div class="result" id="output"></div>
@@ -48,37 +56,61 @@
       if(!input.trim()){ alert("Cole os resultados!"); return; }
 
       const valores = input.split(",").map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
+      const janela = parseInt(document.getElementById("janela").value);
+      const ultimos = valores.slice(-janela);
 
-      let baixos = valores.filter(v => v <= 2).length;
-      let medios = valores.filter(v => v > 2 && v <= 10).length;
-      let altos = valores.filter(v => v > 10).length;
+      let baixos = ultimos.filter(v => v <= 2).length;
+      let medios = ultimos.filter(v => v > 2 && v <= 10).length;
+      let altos = ultimos.filter(v => v > 10).length;
 
-      // cálculo simples de probabilidade
-      let probMedia = (baixos >= 3) ? Math.min(85, 40 + baixos*5) : 30;
-      let probAlta = (medios >= 3) ? Math.min(65, 20 + medios*4) : 15;
+      // detectar sequências de rodadas baixas consecutivas
+      let seqBaixa = 0, maxSeqBaixa = 0;
+      for(let v of ultimos){
+        if(v <= 2){ seqBaixa++; maxSeqBaixa = Math.max(maxSeqBaixa, seqBaixa); }
+        else { seqBaixa = 0; }
+      }
 
-      // resultado base
-      const resumo = {
-        total: valores.length,
-        baixos, medios, altos,
-        probMedia, probAlta,
-        alerta: baixos >= 5
-      };
+      // última explosão
+      let ultimaAlta = ultimos.length - 1 - [...ultimos].reverse().findIndex(v => v > 10);
+      let desdeAlta = (ultimaAlta === -1) ? "Nunca" : (ultimos.length - 1 - ultimaAlta) + " rodadas atrás";
 
-      // Mostrar na tela principal
+      // médias móveis
+      let mediaCurta = media(ultimos.slice(-10));
+      let mediaLonga = media(ultimos);
+
+      // probabilidade (heurística)
+      let probMedia = (maxSeqBaixa >= 3) ? Math.min(90, 40 + maxSeqBaixa*10) : 30;
+      let probAlta = (desdeAlta !== "Nunca" && parseInt(desdeAlta) >= 10) ? 50 : 20;
+
+      // classificação textual
+      let call = "";
+      let cor = "amarelo";
+      if(maxSeqBaixa >= 5){
+        call = "⚠️ Muitas rodadas baixas consecutivas → pode vir rodada média/alta.";
+        cor = "verde";
+      } else if(altos === 0){
+        call = "🔴 Nenhuma explosão detectada nesta janela → tendência baixa.";
+        cor = "vermelho";
+      } else {
+        call = "🟡 Situação equilibrada → chance moderada de rodada média.";
+        cor = "amarelo";
+      }
+
+      // saída principal
       const outBox = document.getElementById("output");
       outBox.innerHTML = `
-        Total de rodadas: <b>${resumo.total}</b><br>
-        Rodadas Baixas (≤2x): <b>${resumo.baixos}</b><br>
-        Rodadas Médias (2–10x): <b>${resumo.medios}</b><br>
-        Rodadas Altas (>10x): <b>${resumo.altos}</b><br><br>
-        🔮 <span class="highlight">Chance estimada próxima rodada:</span><br>
-        Média (2–10x): <b>${resumo.probMedia}%</b><br>
-        Alta (>10x): <b>${resumo.probAlta}%</b>
+        <div class="highlight ${cor}">${call}</div><br>
+        Total analisado: <b>${ultimos.length}</b><br>
+        Baixas (≤2x): <b>${baixos}</b> • Médias (2–10x): <b>${medios}</b> • Altas (>10x): <b>${altos}</b><br>
+        Máx. sequência baixa: <b>${maxSeqBaixa}</b><br>
+        Última explosão (>10x): <b>${desdeAlta}</b><br>
+        Média móvel curta (10): <b>${mediaCurta.toFixed(2)}x</b> • longa (${ultimos.length}): <b>${mediaLonga.toFixed(2)}x</b><br><br>
+        🔮 Próxima rodada estimada:<br>
+        Média (2–10x): <b>${probMedia}%</b><br>
+        Alta (>10x): <b>${probAlta}%</b>
       `;
 
-      // alerta
-      if(resumo.alerta){
+      if(maxSeqBaixa >= 5){
         outBox.classList.add("alerta");
         document.getElementById("beep").play();
       } else {
@@ -91,39 +123,46 @@
       window.grafico = new Chart(ctx, {
         type: "line",
         data: {
-          labels: valores.map((_,i)=>i+1),
+          labels: ultimos.map((_,i)=>i+1),
           datasets: [{
             label: "Histórico de Rodadas",
-            data: valores,
+            data: ultimos,
             borderColor: "#2ea043",
             backgroundColor: "rgba(46,160,67,0.2)",
             tension: 0.3,
-            fill:true
+            fill:true,
+            pointBackgroundColor: ultimos.map(v => v>10 ? "red" : "#2ea043"),
+            pointRadius: ultimos.map(v => v>10 ? 6 : 3)
+          },{
+            label: "Média Móvel",
+            data: Array(ultimos.length).fill(mediaLonga),
+            borderColor: "orange",
+            borderDash: [5,5],
+            pointRadius:0
           }]
         },
-        options: {
-          responsive:true,
-          plugins:{ legend:{labels:{color:"#000"}} },
-          scales:{ x:{ticks:{color:"#000"}}, y:{ticks:{color:"#000"}} }
-        }
+        options: { responsive:true, plugins:{ legend:{labels:{color:"#000"}} }, 
+          scales:{ x:{ticks:{color:"#000"}}, y:{ticks:{color:"#000"}} } }
       });
 
       // salvar no histórico
-      historico.unshift(resumo);
+      historico.unshift({baixos,medios,altos,maxSeqBaixa,desdeAlta,mediaCurta,mediaLonga,probMedia,probAlta,call,cor});
       renderHistorico();
     }
+
+    function media(arr){ return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0; }
 
     function renderHistorico(){
       const histBox = document.getElementById("hist");
       histBox.innerHTML = historico.map((h,i) => `
         <div class="item">
           <b>Análise #${historico.length - i}</b><br>
-          Baixas: ${h.baixos} • Médias: ${h.medios} • Altas: ${h.altos}<br>
-          Próxima rodada → Média: 
-            <span class="badge verde">${h.probMedia}%</span> 
-          Alta: 
-            <span class="badge ${h.alerta ? 'vermelho' : 'verde'}">${h.probAlta}%</span>
-          ${h.alerta ? "<br>⚠️ <b>ALERTA: muitas rodadas baixas!</b>" : ""}
+          <span class="badge ${h.cor}">${h.call}</span><br>
+          Baixas:${h.baixos} • Médias:${h.medios} • Altas:${h.altos}<br>
+          Seq.baixa:${h.maxSeqBaixa} • Última alta:${h.desdeAlta}<br>
+          Estimado → Média:${h.probMedia}% • Alta:${h.probAlta}%<br>
+          <i>(Média curta:${h.mediaCurta.toFixed(2)}x • longa:${h.mediaLonga.toFixed(2)}x)</i><br>
+          Resultado real: <input type="text" placeholder="Ex.: 6.20x" style="width:80px;background:#0d1117;color:#fff;border:1px solid #30363d;border-radius:4px;padding:2px">
         </div>
       `).join("");
     }
