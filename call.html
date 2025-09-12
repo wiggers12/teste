@@ -3,90 +3,130 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Protótipo - App de Calls</title>
+  <title>Robô Aviator - Analisador</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0; padding: 0;
-      background: #111; color: #fff;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: flex-start;
-      height: 100vh;
-    }
-    header {
-      width: 100%; padding: 15px;
-      background: #e63946; text-align: center;
-      font-size: 1.4rem; font-weight: bold;
-    }
-    #calls {
-      flex: 1; width: 100%;
-      max-width: 500px;
-      overflow-y: auto;
-      padding: 15px;
-    }
-    .call {
-      background: #222;
-      border-left: 6px solid #06d6a0;
-      padding: 10px; margin-bottom: 10px;
-      border-radius: 6px;
-      animation: fadeIn 0.6s ease;
-    }
-    @keyframes fadeIn {
-      from {opacity:0; transform:translateY(20px);}
-      to {opacity:1; transform:translateY(0);}
-    }
-    form {
-      width: 100%; max-width: 500px;
-      display: flex; padding: 10px;
-      background: #1d3557;
-    }
-    form input {
-      flex: 1; padding: 10px; border: none;
-      border-radius: 4px 0 0 4px;
-    }
-    form button {
-      padding: 10px; border: none;
-      background: #06d6a0; color: #000;
-      font-weight: bold;
-      border-radius: 0 4px 4px 0;
-      cursor: pointer;
-    }
+    body { font-family: Arial, sans-serif; background:#0d1117; color:#e6edf3; margin:0; padding:20px; }
+    h1 { text-align:center; }
+    textarea { width:100%; height:100px; margin:10px 0; padding:10px; border-radius:8px; border:1px solid #30363d; background:#161b22; color:#fff; }
+    button { padding:10px 20px; border:0; border-radius:8px; background:#238636; color:#fff; cursor:pointer; font-weight:bold; }
+    .result { margin-top:20px; padding:15px; background:#161b22; border-radius:8px; transition: all 0.5s ease; }
+    .highlight { font-size:20px; font-weight:bold; color:#2ea043; }
+    .alerta { border:2px solid #ff0000; background:#400; }
+    canvas { margin-top:20px; background:#fff; border-radius:8px; }
+    h2 { margin-top:30px; }
+    .hist { margin-top:10px; display:grid; gap:10px; }
+    .item { background:#161b22; padding:10px; border-radius:8px; border:1px solid #30363d; }
+    .badge { padding:3px 8px; border-radius:999px; font-size:12px; }
+    .verde { background:#2ea043; color:#000; }
+    .vermelho { background:#da3633; color:#fff; }
   </style>
 </head>
 <body>
-  <header>📢 App de Calls - Protótipo</header>
+  <h1>📊 Robô Aviator</h1>
+  <p>Cole abaixo os últimos resultados (separados por vírgula):</p>
+  <textarea id="input" placeholder="Ex.: 1.10, 1.50, 2.30, 10.00, 1.20"></textarea>
+  <button onclick="analisar()">Analisar</button>
 
-  <div id="calls"></div>
+  <div class="result" id="output"></div>
+  <canvas id="chart" height="120"></canvas>
 
-  <!-- Área do "admin" -->
-  <form id="callForm">
-    <input type="text" id="callInput" placeholder="Digite um novo CALL..." required>
-    <button type="submit">Enviar</button>
-  </form>
+  <!-- Histórico -->
+  <h2>📜 Histórico de Análises</h2>
+  <div class="hist" id="hist"></div>
+
+  <!-- Som de alerta -->
+  <audio id="beep">
+    <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
+  </audio>
 
   <script>
-    const form = document.getElementById("callForm");
-    const input = document.getElementById("callInput");
-    const callsDiv = document.getElementById("calls");
+    let historico = [];
 
-    form.addEventListener("submit", e => {
-      e.preventDefault();
-      const text = input.value.trim();
-      if(text !== ""){
-        addCall(text);
-        input.value = "";
+    function analisar(){
+      const input = document.getElementById("input").value;
+      if(!input.trim()){ alert("Cole os resultados!"); return; }
+
+      const valores = input.split(",").map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
+
+      let baixos = valores.filter(v => v <= 2).length;
+      let medios = valores.filter(v => v > 2 && v <= 10).length;
+      let altos = valores.filter(v => v > 10).length;
+
+      // cálculo simples de probabilidade
+      let probMedia = (baixos >= 3) ? Math.min(85, 40 + baixos*5) : 30;
+      let probAlta = (medios >= 3) ? Math.min(65, 20 + medios*4) : 15;
+
+      // resultado base
+      const resumo = {
+        total: valores.length,
+        baixos, medios, altos,
+        probMedia, probAlta,
+        alerta: baixos >= 5
+      };
+
+      // Mostrar na tela principal
+      const outBox = document.getElementById("output");
+      outBox.innerHTML = `
+        Total de rodadas: <b>${resumo.total}</b><br>
+        Rodadas Baixas (≤2x): <b>${resumo.baixos}</b><br>
+        Rodadas Médias (2–10x): <b>${resumo.medios}</b><br>
+        Rodadas Altas (>10x): <b>${resumo.altos}</b><br><br>
+        🔮 <span class="highlight">Chance estimada próxima rodada:</span><br>
+        Média (2–10x): <b>${resumo.probMedia}%</b><br>
+        Alta (>10x): <b>${resumo.probAlta}%</b>
+      `;
+
+      // alerta
+      if(resumo.alerta){
+        outBox.classList.add("alerta");
+        document.getElementById("beep").play();
+      } else {
+        outBox.classList.remove("alerta");
       }
-    });
 
-    function addCall(text){
-      const div = document.createElement("div");
-      div.className = "call";
-      div.textContent = text;
-      callsDiv.prepend(div); // aparece no topo
+      // gráfico
+      const ctx = document.getElementById("chart").getContext("2d");
+      if(window.grafico){ window.grafico.destroy(); }
+      window.grafico = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: valores.map((_,i)=>i+1),
+          datasets: [{
+            label: "Histórico de Rodadas",
+            data: valores,
+            borderColor: "#2ea043",
+            backgroundColor: "rgba(46,160,67,0.2)",
+            tension: 0.3,
+            fill:true
+          }]
+        },
+        options: {
+          responsive:true,
+          plugins:{ legend:{labels:{color:"#000"}} },
+          scales:{ x:{ticks:{color:"#000"}}, y:{ticks:{color:"#000"}} }
+        }
+      });
+
+      // salvar no histórico
+      historico.unshift(resumo);
+      renderHistorico();
     }
 
-    // Exemplo de call inicial
-    addCall("🔥 CALL: Over 1.5 em até 5 min!");
+    function renderHistorico(){
+      const histBox = document.getElementById("hist");
+      histBox.innerHTML = historico.map((h,i) => `
+        <div class="item">
+          <b>Análise #${historico.length - i}</b><br>
+          Baixas: ${h.baixos} • Médias: ${h.medios} • Altas: ${h.altos}<br>
+          Próxima rodada → Média: 
+            <span class="badge verde">${h.probMedia}%</span> 
+          Alta: 
+            <span class="badge ${h.alerta ? 'vermelho' : 'verde'}">${h.probAlta}%</span>
+          ${h.alerta ? "<br>⚠️ <b>ALERTA: muitas rodadas baixas!</b>" : ""}
+        </div>
+      `).join("");
+    }
   </script>
 </body>
 </html>
