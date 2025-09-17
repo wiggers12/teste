@@ -3,17 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Robô Aviator Premium</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style><!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mago das Bet's</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ===== RESET ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Poppins', sans-serif;
@@ -22,132 +14,85 @@
       min-height: 100vh;
     }
 
-    /* ===== SPLASH ===== */
+    /* Splash */
     #splash {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background: linear-gradient(135deg, #000, #111, #1a1a1a);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
+      display: flex; justify-content: center; align-items: center; flex-direction: column;
       z-index: 9999;
-      animation: fadeOut 1s ease forwards;
-      animation-delay: 3s;
+      animation: fadeOut 1s ease forwards; animation-delay: 3s;
     }
-    #splash h1 {
-      font-size: 2.5rem;
-      color: #ffd700;
-      text-shadow: 0 0 15px #ff0000;
-    }
-    #splash p {
-      color: #ccc;
-      margin-top: 10px;
-    }
-    @keyframes fadeOut {
-      to { opacity: 0; visibility: hidden; }
-    }
+    #splash h1 { font-size: 2.5rem; color: #ffd700; text-shadow: 0 0 15px #ff0000; }
+    #splash p { color: #ccc; margin-top: 10px; }
+    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
-    /* ===== TOPO ===== */
+    /* Topo */
     header {
       background: rgba(0,0,0,0.8);
       padding: 15px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: flex; justify-content: space-between; align-items: center;
       border-bottom: 1px solid #333;
     }
-    header h1 {
-      font-size: 1.5rem;
-      color: #ffd700;
-      text-shadow: 0 0 10px #ff0000;
-    }
+    header h1 { font-size: 1.5rem; color: #ffd700; text-shadow: 0 0 10px #ff0000; }
     nav a {
-      margin-left: 20px;
-      text-decoration: none;
-      color: #fff;
-      font-weight: 500;
-      transition: 0.3s;
+      margin-left: 20px; text-decoration: none; color: #fff;
+      font-weight: 500; transition: 0.3s;
     }
-    nav a:hover {
-      color: #ffd700;
-    }
+    nav a:hover { color: #ffd700; }
 
-    /* ===== CONTEÚDO ===== */
-    main {
-      display: flex;
-      flex-wrap: wrap;
-      padding: 20px;
-      gap: 20px;
-    }
+    /* Dashboard */
+    main { display: flex; flex-wrap: wrap; padding: 20px; gap: 20px; }
     .plataforma {
-      flex: 2;
-      min-width: 300px;
-      background: #111;
-      border-radius: 10px;
-      overflow: hidden;
+      flex: 2; min-width: 300px;
+      background: #111; border-radius: 10px; overflow: hidden;
       box-shadow: 0 0 15px rgba(0,0,0,0.7);
     }
-    .relatorio {
-      flex: 1;
-      min-width: 250px;
+    .plataforma header {
+      display: flex; justify-content: center; gap: 10px;
+      padding: 10px; border-bottom: 1px solid #333;
       background: #1c1c1c;
-      border-radius: 10px;
-      padding: 20px;
+    }
+    .plataforma button {
+      padding: 8px 16px; border: none; border-radius: 6px;
+      cursor: pointer; font-weight: bold;
+      background: #ff0000; color: #fff; transition: 0.3s;
+    }
+    .plataforma button:hover { background: #cc0000; }
+
+    iframe { width: 100%; height: 500px; border: none; }
+
+    .relatorio {
+      flex: 1; min-width: 250px;
+      background: #1c1c1c; border-radius: 10px; padding: 20px;
       box-shadow: 0 0 15px rgba(0,0,0,0.7);
     }
-    .relatorio h2 {
-      color: #ffd700;
-      margin-bottom: 15px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-    }
+    .relatorio h2 { color: #ffd700; margin-bottom: 15px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
     th, td {
-      padding: 8px;
-      text-align: center;
-      border-bottom: 1px solid #333;
+      padding: 8px; text-align: center; border-bottom: 1px solid #333;
     }
-    th {
-      background: #ffd700;
-      color: #000;
-    }
+    th { background: #ffd700; color: #000; }
     tr:hover { background: #222; }
 
-    /* ===== PERFIL ===== */
-    #perfil {
-      display: none;
-      padding: 30px;
-      text-align: center;
-    }
-    #perfil h2 {
-      margin-bottom: 15px;
-      color: #ffd700;
-    }
+    /* Perfil */
+    #perfil { display: none; padding: 30px; text-align: center; }
+    #perfil h2 { margin-bottom: 15px; color: #ffd700; }
     .btn {
-      display: inline-block;
-      padding: 12px 24px;
-      margin-top: 20px;
-      background: #ff0000;
-      color: #fff;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: 0.3s;
+      display: inline-block; padding: 12px 24px; margin-top: 20px;
+      background: #ff0000; color: #fff; border-radius: 6px;
+      text-decoration: none; font-weight: bold; transition: 0.3s;
     }
     .btn:hover { background: #cc0000; }
   </style>
 </head>
 <body>
-  <!-- SPLASH -->
+  <!-- Splash -->
   <div id="splash">
     <h1>✨ Mago das Bet's ✨</h1>
     <p>O poder das análises em suas mãos</p>
   </div>
 
-  <!-- TOPO -->
+  <!-- Topo -->
   <header>
     <h1>Mago das Bet's</h1>
     <nav>
@@ -156,10 +101,14 @@
     </nav>
   </header>
 
-  <!-- DASHBOARD -->
+  <!-- Dashboard -->
   <main id="dashboard">
     <section class="plataforma">
-      <iframe src="https://7xx.vip/?pid=575973404" width="100%" height="500"></iframe>
+      <header>
+        <button onclick="trocarPlataforma('7xx')">7XX</button>
+        <button onclick="trocarPlataforma('lxgo')">LxGo</button>
+      </header>
+      <iframe id="iframePlataforma" src="https://7xx.vip/?pid=575973404"></iframe>
     </section>
     <section class="relatorio">
       <h2>📊 Últimas Rodadas</h2>
@@ -171,14 +120,12 @@
             <th>Status</th>
           </tr>
         </thead>
-        <tbody id="tabelaResultados">
-          <!-- Fake results serão adicionados aqui -->
-        </tbody>
+        <tbody id="tabelaResultados"></tbody>
       </table>
     </section>
   </main>
 
-  <!-- PERFIL -->
+  <!-- Perfil -->
   <section id="perfil">
     <h2>👤 Perfil do Usuário</h2>
     <p>Email: cliente@exemplo.com</p>
@@ -187,10 +134,19 @@
   </section>
 
   <script>
-    // Alternar entre Dashboard e Perfil
     function mostrar(secao) {
       document.getElementById("dashboard").style.display = secao === "dashboard" ? "flex" : "none";
       document.getElementById("perfil").style.display = secao === "perfil" ? "block" : "none";
+    }
+
+    // Trocar plataformas
+    function trocarPlataforma(plataforma) {
+      const iframe = document.getElementById("iframePlataforma");
+      if (plataforma === "7xx") {
+        iframe.src = "https://7xx.vip/?pid=575973404";
+      } else if (plataforma === "lxgo") {
+        iframe.src = "https://lxgo.me/go?brand=bigbet&bta=30211_0253";
+      }
     }
 
     // Gerar resultados fake
@@ -203,95 +159,5 @@
       tabela.innerHTML += row;
     }
   </script>
-</body>
-</html>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #0f0f0f;
-      color: #fff;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-    header {
-      background: #1a1a1a;
-      padding: 15px;
-      font-size: 20px;
-      font-weight: 600;
-      color: #00ff9d;
-    }
-    .screen {
-      display: none;
-      padding: 20px;
-    }
-    .active {
-      display: block;
-    }
-    button, a {
-      display: block;
-      margin: 15px auto;
-      padding: 12px 20px;
-      background: #00ff9d;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      text-decoration: none;
-      color: #000;
-      width: 80%;
-      max-width: 250px;
-    }
-    button:hover, a:hover {
-      background: #00cc7a;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    ul li {
-      background: #1a1a1a;
-      margin: 8px 0;
-      padding: 10px;
-      border-radius: 6px;
-    }
-  </style>
-</head>
-<body>
-
-  <header>🚀 Robô Aviator Premium</header>
-
-  <!-- Tela de login -->
-  <div id="login" class="screen active">
-    <h2>Assine para ter acesso 🔒</h2>
-    <a href="https://mpago.la/27kUsuM" target="_blank">💳 Assinar Agora</a>
-    <button onclick="entrar()">Entrar</button>
-  </div>
-
-  <!-- Dashboard -->
-  <div id="dashboard" class="screen">
-    <h2>📊 Sinais Exclusivos</h2>
-    <ul id="listaSinais">
-      <li>⏰ 17:48 — Entrada até 2x</li>
-      <li>⏰ 17:52 — Buscar 5x</li>
-      <li>⏰ 17:59 — Proteção até 3x</li>
-    </ul>
-
-    <h2>🎮 Plataforma Oficial</h2>
-    <a href="https://goathbet.com/?r=zktgmbwl" target="_blank">▶️ Jogar Agora</a>
-
-    <button onclick="sair()">Sair</button>
-  </div>
-
-  <script>
-    function entrar() {
-      document.getElementById("login").classList.remove("active");
-      document.getElementById("dashboard").classList.add("active");
-    }
-    function sair() {
-      document.getElementById("dashboard").classList.remove("active");
-      document.getElementById("login").classList.add("active");
-    }
-  </script>
-
 </body>
 </html>
