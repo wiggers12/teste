@@ -1,21 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <title>Teste Enviar Lead</title>
+  <meta charset="UTF-8">
+  <title>Formulário de Leads</title>
 </head>
-<body>
-  <h3>Teste Envio de Lead</h3>
+<body style="font-family: Arial, sans-serif; background:#f4f4f4; padding:20px;">
+  <h2>Cadastro de Lead</h2>
+  
   <form id="formLead">
-    <label>Nome: <input type="text" name="nome" /></label><br>
-    <label>Telefone: <input type="text" name="telefone" /></label><br>
-    <label>Mensagem: <textarea name="mensagem"></textarea></label><br>
-    <button type="submit">Enviar</button>
+    <label>Origem: <input type="text" name="origem" /></label><br><br>
+    <label>Perfil: <input type="text" name="perfil" /></label><br><br>
+    <label>Nome: <input type="text" name="nome" required /></label><br><br>
+    <label>Telefone: <input type="text" name="telefone" required /></label><br><br>
+    <label>Email: <input type="email" name="email" /></label><br><br>
+    <label>Cidade: <input type="text" name="cidade" /></label><br><br>
+    <label>Nicho: <input type="text" name="nicho" /></label><br><br>
+    <label>Status: 
+      <select name="status">
+        <option value="novo">Novo</option>
+        <option value="em andamento">Em andamento</option>
+        <option value="fechado">Fechado</option>
+      </select>
+    </label><br><br>
+    <label>Mensagem: <textarea name="mensagem"></textarea></label><br><br>
+    <label>URL: <input type="url" name="url" /></label><br><br>
+    
+    <button type="submit">Enviar Lead</button>
   </form>
 
   <script>
-    const form = document.getElementById('formLead');
-    form.addEventListener('submit', async (e) => {
+    const form = document.getElementById("formLead");
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const formData = new FormData(form);
       const params = new URLSearchParams(formData);
@@ -26,9 +41,10 @@
           body: params
         });
         const json = await resp.json();
-        alert("Resposta: " + JSON.stringify(json));
+        alert("Resposta: " + json.msg);
+        form.reset();
       } catch (err) {
-        alert("Erro: " + err);
+        alert("Erro ao enviar lead: " + err);
       }
     });
   </script>
