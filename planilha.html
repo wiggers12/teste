@@ -1,36 +1,37 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Teste Leads</title>
+  <meta charset="UTF-8">
+  <title>Teste Leads</title>
 </head>
 <body style="font-family: Arial, sans-serif; padding:20px;">
-  <h2>Teste Envio de Lead</h2>
+  <h2>Teste Envio de Lead</h2>
 
-  <form id="formLead">
-    <label>Nome: <input type="text" name="nome" required></label><br><br>
-    <label>Telefone: <input type="text" name="telefone" required></label><br><br>
-    <button type="submit">Enviar</button>
-  </form>
+  <form id="formLead">
+    <label>Nome: <input type="text" name="nome" required></label><br><br>
+    <label>Telefone: <input type="text" name="telefone" required></label><br><br>
+    <label>Email: <input type="email" name="email" required></label><br><br>
+    <button type="submit">Enviar</button>
+  </form>
 
-  <script>
-    const form = document.getElementById("formLead");
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const formData = new FormData(form);
-      const params = new URLSearchParams(formData);
+  <script>
+    const form = document.getElementById("formLead");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const params = new URLSearchParams(formData);
 
-      try {
-        const resp = await fetch("https://script.google.com/macros/s/AKfycbxZnSZsvfuUQgh2HkhSqCpgfi_Zx774w7_FnwebzTNbbi4inYsISeg7SFXPMSJ9FLM2CQ/exec", {
-          method: "POST",
-          body: params
-        });
-        const json = await resp.json();
-        alert("Resposta: " + json.msg);
-      } catch (err) {
-        alert("Erro: " + err);
-      }
-    });
-  </script>
+      try {
+        const resp = await fetch("https://script.google.com/macros/s/AKfycbxZnSZsvfuUQgh2HkhSqCpgfi_Zx774w7_FnwebzTNbbi4inYsISeg7SFXPMSJ9FLM2CQ/exec", {
+          method: "POST",
+          body: params
+        });
+        const json = await resp.json();
+        alert("Resposta: " + json.msg);
+      } catch (err) {
+        alert("Erro: " + err);
+      }
+    });
+  </script>
 </body>
 </html>
