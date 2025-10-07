@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orçamento Profissional - Editável</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:'Poppins',sans-serif;
+      background:#0e1117;
+      color:#f4f6f8;
+      line-height:1.6;
+    }
+
+    header{
+      background:linear-gradient(135deg,#00bfa6,#00695c);
+      padding:40px 20px;
+      text-align:center;
+      position:relative;
+      color:white;
+    }
+    header img{
+      width:70px;
+      border-radius:8px;
+      position:absolute;
+      top:25px;
+      left:25px;
+    }
+    header h1{
+      font-size:2rem;
+      font-weight:700;
+      letter-spacing:1px;
+    }
+    header p{
+      opacity:0.9;
+      margin-top:5px;
+    }
+    .info{
+      text-align:center;
+      margin-top:15px;
+      font-size:0.9rem;
+      opacity:0.8;
+    }
+
+    main{
+      max-width:1000px;
+      margin:40px auto;
+      background:#161b22;
+      border-radius:14px;
+      padding:40px 50px;
+      box-shadow:0 0 25px rgba(0,0,0,0.3);
+    }
+
+    h2{
+      color:#00bfa6;
+      margin-bottom:20px;
+      font-size:1.4rem;
+      border-left:5px solid #00bfa6;
+      padding-left:10px;
+    }
+
+    .card-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+      gap:20px;
+    }
+    .card{
+      background:#1f2630;
+      border-radius:10px;
+      padding:20px;
+      border:1px solid rgba(255,255,255,0.05);
+      transition:0.3s;
+    }
+    .card:hover{
+      transform:translateY(-5px);
+      border-color:#00bfa6;
+    }
+    .card i{
+      font-size:1.8rem;
+      color:#00bfa6;
+      margin-bottom:10px;
+    }
+    .card h3{
+      font-size:1.1rem;
+      margin-bottom:5px;
+    }
+    .card p{
+      font-size:0.9rem;
+      color:#ccc;
+      margin-bottom:8px;
+    }
+    input.valor{
+      width:100%;
+      background:transparent;
+      border:none;
+      border-bottom:1px solid #00bfa6;
+      color:#00ffc3;
+      font-weight:bold;
+      font-size:1rem;
+      padding:4px 2px;
+      outline:none;
+      text-align:right;
+      transition:0.2s;
+    }
+    input.valor:focus{
+      border-color:#00ffc3;
+      background:#0d1a1a;
+    }
+
+    .resumo{
+      background:#112027;
+      padding:30px;
+      border-left:5px solid #00bfa6;
+      border-radius:10px;
+      margin-top:40px;
+    }
+    .resumo h3{
+      color:#00bfa6;
+      margin-bottom:10px;
+    }
+    .total-input{
+      width:100%;
+      background:transparent;
+      border:none;
+      border-bottom:2px solid #00bfa6;
+      color:#fff;
+      font-weight:bold;
+      font-size:1.4rem;
+      padding:6px 2px;
+      outline:none;
+      text-align:right;
+      transition:0.2s;
+    }
+    .total-input:focus{
+      border-color:#00ffc3;
+    }
+
+    ul{
+      margin-top:15px;
+      color:#ccc;
+    }
+
+    footer{
+      text-align:center;
+      margin-top:50px;
+      padding:25px;
+      border-top:1px solid rgba(255,255,255,0.1);
+      font-size:0.9rem;
+      color:#aaa;
+    }
+
+    .btn-aprovar{
+      display:block;
+      text-align:center;
+      background:#00bfa6;
+      color:#fff;
+      font-weight:600;
+      text-decoration:none;
+      padding:15px 20px;
+      border-radius:8px;
+      margin:40px auto 0;
+      width:260px;
+      transition:0.3s;
+    }
+    .btn-aprovar:hover{
+      background:#00ffc3;
+      color:#111;
+    }
+
+    @media(max-width:600px){
+      main{padding:25px;}
+      header img{position:static;display:block;margin:0 auto 10px;}
+      header h1{font-size:1.6rem;}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://i.ibb.co/xJ4VDvT/ww-logo.png" alt="WW Desenvolvedor Web">
+    <h1>Orçamento Profissional de Reforma</h1>
+    <p>Porto Alegre - RS</p>
+    <div class="info">Emitido em <span id="data"></span> • Orçamento nº <strong>0125</strong></div>
+  </header>
+
+  <main>
+    <h2>1. Serviços Incluídos</h2>
+
+    <div class="card-grid">
+      <div class="card">
+        <i class="fa-solid fa-brush"></i>
+        <h3>Forro e Acabamento</h3>
+        <p>Correção, nivelamento, massa e lixamento do forro.</p>
+        <input class="valor" placeholder="Digite o valor..." />
+      </div>
+      <div class="card">
+        <i class="fa-solid fa-paint-roller"></i>
+        <h3>Pintura</h3>
+        <p>Paredes e teto – 100 m², aplicação de 2 demãos.</p>
+        <input class="valor" placeholder="Digite o valor..." />
+      </div>
+      <div class="card">
+        <i class="fa-solid fa-bath"></i>
+        <h3>Revestimento do Box</h3>
+        <p>Instalação de azulejo 1 × 1 m com rejunte e cortes finos.</p>
+        <input class="valor" placeholder="Digite o valor..." />
+      </div>
+      <div class="card">
+        <i class="fa-solid fa-border-all"></i>
+        <h3>Alinhamento de Piso</h3>
+        <p>Aplicação de natinha 3x1 para regularização da base.</p>
+        <input class="valor" placeholder="Digite o valor..." />
+      </div>
+      <div class="card">
+        <i class="fa-solid fa-layer-group"></i>
+        <h3>Piso Vinílico Click</h3>
+        <p>Instalação em 40 m² – sistema click, acabamento fino.</p>
+        <input class="valor" placeholder="Digite o valor..." />
+      </div>
+    </div>
+
+    <div class="resumo">
+      <h3>2. Resumo Financeiro</h3>
+      <p>Preencha os valores acima conforme o orçamento acordado com o cliente. O campo abaixo permite definir o total final.</p>
+      <input class="total-input" placeholder="Digite o total estimado..." />
+    </div>
+
+    <h2>3. Observações Gerais</h2>
+    <ul>
+      <li>Materiais podem ser fornecidos pelo cliente ou incluídos mediante solicitação.</li>
+      <li>Prazo de execução: <strong>10 a 15 dias úteis</strong>, dependendo das condições.</li>
+      <li>Orçamento sujeito a vistoria técnica presencial.</li>
+      <li>Garantia de 90 dias sobre serviços executados.</li>
+    </ul>
+
+    <h2>4. Contato</h2>
+    <p><strong>Responsável:</strong> Dionatan Wiggers<br>
+    <strong>Empresa:</strong> WW Desenvolvedor Web<br>
+    <strong>WhatsApp:</strong> <a href="https://wa.me/5551989378751" style="color:#00ffc3;text-decoration:none;">(51) 98937-8751</a><br>
+    <strong>E-mail:</strong> <a href="mailto:dionegalato1212@gmail.com" style="color:#00ffc3;text-decoration:none;">dionegalato1212@gmail.com</a><br>
+    <strong>Instagram:</strong> <a href="https://instagram.com/wiggers_dionatan" target="_blank" style="color:#00ffc3;text-decoration:none;">@wiggers_dionatan</a></p>
+
+    <a class="btn-aprovar" href="https://wa.me/5551989378751?text=Olá%2C%20estou%20aprovando%20o%20orçamento%20da%20reforma.%20Podemos%20prosseguir!">✅ Aprovar Orçamento via WhatsApp</a>
+  </main>
+
+  <footer>
+    © 2025 WW Desenvolvedor Web • CNPJ: 34.052.070/0001-05 • Todos os direitos reservados.
+  </footer>
+
+  <script>
+    // Atualiza data automaticamente
+    document.getElementById("data").textContent = new Date().toLocaleDateString("pt-BR");
+  </script>
+</body>
+</html>
