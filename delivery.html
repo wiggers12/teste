@@ -1,163 +1,217 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mago das Bet's</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #0f0f0f, #1a1a1a, #000);
-      color: #fff;
-      min-height: 100vh;
-    }
-
-    /* Splash */
-    #splash {
-      position: fixed; inset: 0;
-      background: linear-gradient(135deg, #000, #111, #1a1a1a);
-      display: flex; justify-content: center; align-items: center; flex-direction: column;
-      z-index: 9999;
-      animation: fadeOut 1s ease forwards; animation-delay: 3s;
-    }
-    #splash h1 { font-size: 2.5rem; color: #ffd700; text-shadow: 0 0 15px #ff0000; }
-    #splash p { color: #ccc; margin-top: 10px; }
-    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
-
-    /* Topo */
-    header {
-      background: rgba(0,0,0,0.8);
-      padding: 15px 30px;
-      display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 1px solid #333;
-    }
-    header h1 { font-size: 1.5rem; color: #ffd700; text-shadow: 0 0 10px #ff0000; }
-    nav a {
-      margin-left: 20px; text-decoration: none; color: #fff;
-      font-weight: 500; transition: 0.3s;
-    }
-    nav a:hover { color: #ffd700; }
-
-    /* Dashboard */
-    main { display: flex; flex-wrap: wrap; padding: 20px; gap: 20px; }
-    .plataforma {
-      flex: 2; min-width: 300px;
-      background: #111; border-radius: 10px; overflow: hidden;
-      box-shadow: 0 0 15px rgba(0,0,0,0.7);
-    }
-    .plataforma header {
-      display: flex; justify-content: center; gap: 10px;
-      padding: 10px; border-bottom: 1px solid #333;
-      background: #1c1c1c;
-    }
-    .plataforma button {
-      padding: 8px 16px; border: none; border-radius: 6px;
-      cursor: pointer; font-weight: bold;
-      background: #ff0000; color: #fff; transition: 0.3s;
-    }
-    .plataforma button:hover { background: #cc0000; }
-
-    iframe { width: 100%; height: 500px; border: none; }
-
-    .relatorio {
-      flex: 1; min-width: 250px;
-      background: #1c1c1c; border-radius: 10px; padding: 20px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.7);
-    }
-    .relatorio h2 { color: #ffd700; margin-bottom: 15px; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-    th, td {
-      padding: 8px; text-align: center; border-bottom: 1px solid #333;
-    }
-    th { background: #ffd700; color: #000; }
-    tr:hover { background: #222; }
-
-    /* Perfil */
-    #perfil { display: none; padding: 30px; text-align: center; }
-    #perfil h2 { margin-bottom: 15px; color: #ffd700; }
-    .btn {
-      display: inline-block; padding: 12px 24px; margin-top: 20px;
-      background: #ff0000; color: #fff; border-radius: 6px;
-      text-decoration: none; font-weight: bold; transition: 0.3s;
-    }
-    .btn:hover { background: #cc0000; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel do Campeonato OSS Jiu-Jítsu</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #0d0d0d;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+}
+header {
+  background-color: #111;
+  color: #f8b400;
+  text-align: center;
+  padding: 20px;
+  font-size: 1.8em;
+  font-weight: bold;
+}
+.kpi-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+.kpi {
+  background: linear-gradient(135deg, #f8b400, #c38a00);
+  color: #000;
+  border-radius: 12px;
+  width: 260px;
+  text-align: center;
+  padding: 20px;
+  font-weight: bold;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+canvas {
+  background: #1a1a1a;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 20px auto;
+  display: block;
+  max-width: 700px;
+}
+.table-container {
+  overflow-x: auto;
+  padding: 20px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #111;
+  color: #eee;
+}
+th, td {
+  border: 1px solid #333;
+  padding: 10px;
+  text-align: center;
+}
+th {
+  background-color: #f8b400;
+  color: #000;
+}
+tfoot {
+  font-weight: bold;
+  background-color: #333;
+}
+</style>
 </head>
 <body>
-  <!-- Splash -->
-  <div id="splash">
-    <h1>✨ Mago das Bet's ✨</h1>
-    <p>O poder das análises em suas mãos</p>
-  </div>
+<header>🏆 Painel Interativo - Campeonato OSS Jiu-Jítsu</header>
 
-  <!-- Topo -->
-  <header>
-    <h1>Mago das Bet's</h1>
-    <nav>
-      <a href="#" onclick="mostrar('dashboard')">Dashboard</a>
-      <a href="#" onclick="mostrar('perfil')">Perfil</a>
-    </nav>
-  </header>
+<section class="kpi-container">
+  <div class="kpi" id="kpi-equipes">Equipes: 0</div>
+  <div class="kpi" id="kpi-atletas">Atletas: 0</div>
+  <div class="kpi" id="kpi-torcedores">Torcedores: 0</div>
+  <div class="kpi" id="kpi-receita">Receita Total: R$ 0,00</div>
+</section>
 
-  <!-- Dashboard -->
-  <main id="dashboard">
-    <section class="plataforma">
-      <header>
-        <button onclick="trocarPlataforma('7xx')">7XX</button>
-        <button onclick="trocarPlataforma('lxgo')">LxGo</button>
-      </header>
-      <iframe id="iframePlataforma" src="https://7xx.vip/?pid=575973404"></iframe>
-    </section>
-    <section class="relatorio">
-      <h2>📊 Últimas Rodadas</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Rodada</th>
-            <th>Multiplicador</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="tabelaResultados"></tbody>
-      </table>
-    </section>
-  </main>
+<canvas id="graficoReceitas"></canvas>
+<canvas id="graficoParticipantes"></canvas>
 
-  <!-- Perfil -->
-  <section id="perfil">
-    <h2>👤 Perfil do Usuário</h2>
-    <p>Email: cliente@exemplo.com</p>
-    <p>Status: <strong>Plano Gratuito</strong></p>
-    <a href="#" class="btn">Ativar Plano Premium</a>
-  </section>
+<div class="table-container">
+  <table id="tabela-equipes">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Equipe</th>
+        <th>Atletas Pagantes</th>
+        <th>Faixa-Preta</th>
+        <th>Torcedores</th>
+        <th>Receita (Inscrições)</th>
+        <th>Receita (Torcedores)</th>
+        <th>Estacionamento</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot>
+      <tr>
+        <td colspan="8">TOTAL GERAL</td>
+        <td id="totalGeral"></td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
 
-  <script>
-    function mostrar(secao) {
-      document.getElementById("dashboard").style.display = secao === "dashboard" ? "flex" : "none";
-      document.getElementById("perfil").style.display = secao === "perfil" ? "block" : "none";
+<script>
+// ===============================
+// Dados das equipes fictícias
+// ===============================
+const equipes = [];
+for (let i = 1; i <= 150; i++) {
+  equipes.push({
+    id: i,
+    nome: `Equipe ${i}`,
+    atletasPagantes: 10,
+    faixaPreta: 1,
+    torcedores: 22, // 2 por atleta (10+1=11) × 2 = 22
+    valorAtleta: 200,
+    ingresso: 30,
+    estacionamento: 20
+  });
+}
+
+// ===============================
+// Cálculos gerais
+// ===============================
+const totalEquipes = equipes.length;
+const totalAtletas = equipes.reduce((acc) => acc + 11, 0) * totalEquipes / totalEquipes;
+const totalTorcedores = totalAtletas * 2;
+const receitaInscricao = equipes.length * 10 * 200;
+const receitaTorcedores = totalTorcedores * 30;
+const receitaEstacionamento = totalAtletas * 20;
+const receitaTotal = receitaInscricao + receitaTorcedores + receitaEstacionamento;
+
+// ===============================
+// Atualiza KPIs
+// ===============================
+document.getElementById("kpi-equipes").innerText = `Equipes: ${totalEquipes}`;
+document.getElementById("kpi-atletas").innerText = `Atletas: ${totalAtletas}`;
+document.getElementById("kpi-torcedores").innerText = `Torcedores: ${totalTorcedores}`;
+document.getElementById("kpi-receita").innerText = `Receita Total: R$ ${receitaTotal.toLocaleString('pt-BR')}`;
+
+// ===============================
+// Monta tabela
+// ===============================
+let totalGeral = 0;
+const tbody = document.querySelector("#tabela-equipes tbody");
+
+equipes.forEach(eq => {
+  const receita1 = eq.atletasPagantes * eq.valorAtleta;
+  const receita2 = eq.torcedores * eq.ingresso;
+  const receita3 = (eq.atletasPagantes + eq.faixaPreta) * eq.estacionamento;
+  const total = receita1 + receita2 + receita3;
+  totalGeral += total;
+
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td>${eq.id}</td>
+    <td>${eq.nome}</td>
+    <td>${eq.atletasPagantes}</td>
+    <td>${eq.faixaPreta}</td>
+    <td>${eq.torcedores}</td>
+    <td>R$ ${(receita1).toLocaleString('pt-BR')}</td>
+    <td>R$ ${(receita2).toLocaleString('pt-BR')}</td>
+    <td>R$ ${(receita3).toLocaleString('pt-BR')}</td>
+    <td>R$ ${(total).toLocaleString('pt-BR')}</td>
+  `;
+  tbody.appendChild(tr);
+});
+document.getElementById("totalGeral").innerText = "R$ " + totalGeral.toLocaleString('pt-BR');
+
+// ===============================
+// Gráficos interativos
+// ===============================
+const ctx1 = document.getElementById('graficoReceitas');
+new Chart(ctx1, {
+  type: 'bar',
+  data: {
+    labels: ['Inscrições', 'Ingressos', 'Estacionamento'],
+    datasets: [{
+      label: 'Receita (R$)',
+      data: [receitaInscricao, receitaTorcedores, receitaEstacionamento],
+      backgroundColor: ['#f8b400', '#ffda77', '#c38a00']
+    }]
+  },
+  options: {
+    plugins: { legend: { labels: { color: '#fff' } } },
+    scales: {
+      x: { ticks: { color: '#fff' } },
+      y: { ticks: { color: '#fff' } }
     }
+  }
+});
 
-    // Trocar plataformas
-    function trocarPlataforma(plataforma) {
-      const iframe = document.getElementById("iframePlataforma");
-      if (plataforma === "7xx") {
-        iframe.src = "https://7xx.vip/?pid=575973404";
-      } else if (plataforma === "lxgo") {
-        iframe.src = "https://lxgo.me/go?brand=bigbet&bta=30211_0253";
-      }
-    }
-
-    // Gerar resultados fake
-    const tabela = document.getElementById("tabelaResultados");
-    const status = ["🔥 Green", "❌ Red"];
-    for (let i = 1; i <= 15; i++) {
-      const mult = (Math.random() * 10 + 1).toFixed(2) + "x";
-      const st = status[Math.floor(Math.random() * status.length)];
-      const row = `<tr><td>#${i}</td><td>${mult}</td><td>${st}</td></tr>`;
-      tabela.innerHTML += row;
-    }
-  </script>
+const ctx2 = document.getElementById('graficoParticipantes');
+new Chart(ctx2, {
+  type: 'pie',
+  data: {
+    labels: ['Atletas', 'Torcedores'],
+    datasets: [{
+      data: [totalAtletas, totalTorcedores],
+      backgroundColor: ['#f8b400', '#555']
+    }]
+  },
+  options: {
+    plugins: { legend: { labels: { color: '#fff' } } }
+  }
+});
+</script>
 </body>
 </html>
