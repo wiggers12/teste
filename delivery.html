@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel do Campeonato OSS Jiu-Jítsu</title>
+<title>Pro Sport - Campeonato OSS Jiu-Jítsu</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 body {
@@ -11,8 +11,32 @@ body {
   background-color: #0d0d0d;
   color: #fff;
   margin: 0;
-  padding: 0;
+  overflow-x: hidden;
 }
+
+/* ===== Splash ===== */
+#splash {
+  position: fixed;
+  top:0;left:0;width:100%;height:100%;
+  background: radial-gradient(circle at center,#000 40%,#0d0d0d 100%);
+  display:flex;align-items:center;justify-content:center;
+  z-index:9999;
+  animation:fadeOut 1s ease-in-out 2.5s forwards;
+}
+#splash h1 {
+  font-size:3.5em;
+  text-transform:uppercase;
+  background:linear-gradient(90deg,#f8b400,#ffeb99,#f8b400);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:shine 3s linear infinite;
+  letter-spacing:4px;
+  text-shadow:0 0 25px #f8b40055;
+}
+@keyframes shine { 0%{background-position:0%}100%{background-position:200% center} }
+@keyframes fadeOut { to{opacity:0;visibility:hidden} }
+
+/* ===== Navegação Principal ===== */
 header {
   background-color: #111;
   color: #f8b400;
@@ -21,197 +45,237 @@ header {
   font-size: 1.8em;
   font-weight: bold;
 }
-.kpi-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+section {
+  display:none;
+  animation: fadeIn 0.7s ease;
+}
+@keyframes fadeIn {from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ====== HOME ====== */
+#home {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  height:calc(100vh - 80px);
+}
+.grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 20px;
-  padding: 20px;
+  width:80%;
+  max-width:600px;
+}
+.card {
+  background:#1a1a1a;
+  border:2px solid #333;
+  border-radius:12px;
+  padding:25px 10px;
+  transition:all .3s;
+  box-shadow:0 0 10px rgba(0,0,0,0.4);
+  cursor:pointer;
+}
+.card:hover {
+  border-color:#f8b400;
+  transform:scale(1.05);
+  box-shadow:0 0 20px #f8b40033;
+}
+.card i {
+  font-size:2.5em;
+  color:#f8b400;
+  margin-bottom:10px;
+}
+.card span {
+  display:block;
+  font-size:1.1em;
+  color:#eee;
+}
+
+/* ===== KPIs e Gráficos ===== */
+.kpi-container {
+  display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:20px;
 }
 .kpi {
-  background: linear-gradient(135deg, #f8b400, #c38a00);
-  color: #000;
-  border-radius: 12px;
-  width: 260px;
-  text-align: center;
-  padding: 20px;
-  font-weight: bold;
-  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  background:linear-gradient(135deg,#f8b400,#c38a00);
+  color:#000;border-radius:12px;width:260px;text-align:center;
+  padding:20px;font-weight:bold;
+  box-shadow:0 0 15px rgba(0,0,0,0.3);
 }
 canvas {
-  background: #1a1a1a;
-  border-radius: 10px;
-  padding: 10px;
-  margin: 20px auto;
-  display: block;
-  max-width: 700px;
+  background:#1a1a1a;border-radius:10px;padding:10px;margin:20px auto;
+  display:block;max-width:700px;
 }
-.table-container {
-  overflow-x: auto;
-  padding: 20px;
-}
+
+/* ===== Tabela ===== */
+.table-container {overflow-x:auto;padding:20px;}
 table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #111;
-  color: #eee;
+  width:100%;border-collapse:collapse;background-color:#111;color:#eee;
 }
-th, td {
-  border: 1px solid #333;
-  padding: 10px;
-  text-align: center;
+th,td {border:1px solid #333;padding:10px;text-align:center;}
+th {background-color:#f8b400;color:#000;}
+tfoot {font-weight:bold;background-color:#333;}
+.filtros {
+  display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:10px auto;
 }
-th {
-  background-color: #f8b400;
-  color: #000;
+select,input {
+  padding:10px;border-radius:8px;border:none;font-size:1em;
 }
-tfoot {
-  font-weight: bold;
-  background-color: #333;
+#search {width:300px;text-align:center;}
+#chaveamento {background:#111;border-top:2px solid #f8b400;margin:30px 0;padding:20px;}
+.bracket {display:flex;flex-wrap:wrap;justify-content:center;gap:40px;}
+.round {display:flex;flex-direction:column;gap:20px;}
+.match {
+  background:#222;border-left:4px solid #f8b400;padding:10px 15px;border-radius:6px;width:180px;
 }
+.match span {display:block;padding:5px 0;font-size:0.9em;color:#ddd;}
+h2 {text-align:center;color:#f8b400;margin-top:10px;}
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-<header>🏆 Painel Interativo - Campeonato OSS Jiu-Jítsu</header>
 
-<section class="kpi-container">
-  <div class="kpi" id="kpi-equipes">Equipes: 0</div>
-  <div class="kpi" id="kpi-atletas">Atletas: 0</div>
-  <div class="kpi" id="kpi-torcedores">Torcedores: 0</div>
-  <div class="kpi" id="kpi-receita">Receita Total: R$ 0,00</div>
+<div id="splash"><h1>Pro<span style="color:#fff">Sport</span></h1></div>
+
+<header>🏆 Campeonato OSS Jiu-Jítsu</header>
+
+<!-- HOME PRINCIPAL -->
+<section id="home">
+  <h2 style="color:#f8b400;margin-bottom:20px;">Selecione o que deseja visualizar:</h2>
+  <div class="grid">
+    <div class="card" onclick="abrirSecao('painel')">
+      <i class="fa-solid fa-chart-line"></i><span>Painel Financeiro</span>
+    </div>
+    <div class="card" onclick="abrirSecao('equipes')">
+      <i class="fa-solid fa-users"></i><span>Equipes & Categorias</span>
+    </div>
+    <div class="card" onclick="abrirSecao('chaveamento')">
+      <i class="fa-solid fa-diagram-project"></i><span>Chaveamento</span>
+    </div>
+    <div class="card" onclick="abrirSecao('graficos')">
+      <i class="fa-solid fa-chart-pie"></i><span>Gráficos</span>
+    </div>
+  </div>
 </section>
 
-<canvas id="graficoReceitas"></canvas>
-<canvas id="graficoParticipantes"></canvas>
+<!-- PAINEL -->
+<section id="painel">
+  <button onclick="voltarHome()" style="margin:15px;background:#f8b400;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;">⬅ Voltar</button>
+  <div class="kpi-container">
+    <div class="kpi" id="kpi-equipes">Equipes: 0</div>
+    <div class="kpi" id="kpi-atletas">Atletas: 0</div>
+    <div class="kpi" id="kpi-torcedores">Torcedores: 0</div>
+    <div class="kpi" id="kpi-receita">Receita Total: R$ 0,00</div>
+  </div>
+</section>
 
-<div class="table-container">
-  <table id="tabela-equipes">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Equipe</th>
-        <th>Atletas Pagantes</th>
-        <th>Faixa-Preta</th>
-        <th>Torcedores</th>
-        <th>Receita (Inscrições)</th>
-        <th>Receita (Torcedores)</th>
-        <th>Estacionamento</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-    <tfoot>
-      <tr>
-        <td colspan="8">TOTAL GERAL</td>
-        <td id="totalGeral"></td>
-      </tr>
-    </tfoot>
-  </table>
-</div>
+<!-- EQUIPES -->
+<section id="equipes">
+  <button onclick="voltarHome()" style="margin:15px;background:#f8b400;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;">⬅ Voltar</button>
+  <div class="filtros">
+    <input type="text" id="search" placeholder="🔍 Buscar equipe...">
+    <select id="filtroEquipe"><option value="">Todas as Equipes</option></select>
+    <select id="filtroCategoria"><option value="">Todas as Categorias</option></select>
+    <select id="filtroFaixa"><option value="">Todas as Faixas</option></select>
+  </div>
+  <div class="table-container">
+    <table id="tabela-equipes">
+      <thead>
+        <tr><th>#</th><th>Equipe</th><th>Categoria</th><th>Faixa</th>
+          <th>Atletas</th><th>Torcedores</th><th>R$ Inscrições</th>
+          <th>R$ Ingressos</th><th>R$ Estacionamento</th><th>Total</th></tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot><tr><td colspan="9">TOTAL GERAL</td><td id="totalGeral"></td></tr></tfoot>
+    </table>
+  </div>
+</section>
+
+<!-- GRÁFICOS -->
+<section id="graficos">
+  <button onclick="voltarHome()" style="margin:15px;background:#f8b400;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;">⬅ Voltar</button>
+  <canvas id="graficoReceitas"></canvas>
+  <canvas id="graficoParticipantes"></canvas>
+</section>
+
+<!-- CHAVEAMENTO -->
+<section id="chaveamento">
+  <button onclick="voltarHome()" style="margin:15px;background:#f8b400;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;">⬅ Voltar</button>
+  <h2>🔰 Chaveamento por Categoria</h2>
+  <div id="bracketContainer" class="bracket"></div>
+</section>
 
 <script>
-// ===============================
-// Dados das equipes fictícias
-// ===============================
-const equipes = [];
-for (let i = 1; i <= 150; i++) {
-  equipes.push({
-    id: i,
-    nome: `Equipe ${i}`,
-    atletasPagantes: 10,
-    faixaPreta: 1,
-    torcedores: 22, // 2 por atleta (10+1=11) × 2 = 22
-    valorAtleta: 200,
-    ingresso: 30,
-    estacionamento: 20
-  });
+// ======== Estrutura de Navegação ========
+function abrirSecao(id) {
+  document.querySelectorAll("section").forEach(sec => sec.style.display="none");
+  document.getElementById(id).style.display="block";
 }
+function voltarHome() {
+  document.querySelectorAll("section").forEach(sec => sec.style.display="none");
+  document.getElementById("home").style.display="flex";
+}
+setTimeout(()=>document.getElementById("home").style.display="flex",3000);
 
-// ===============================
-// Cálculos gerais
-// ===============================
-const totalEquipes = equipes.length;
-const totalAtletas = equipes.reduce((acc) => acc + 11, 0) * totalEquipes / totalEquipes;
-const totalTorcedores = totalAtletas * 2;
-const receitaInscricao = equipes.length * 10 * 200;
-const receitaTorcedores = totalTorcedores * 30;
-const receitaEstacionamento = totalAtletas * 20;
-const receitaTotal = receitaInscricao + receitaTorcedores + receitaEstacionamento;
+// ======== Dados ========
+const categorias=["Pré-Mirim","Mirim","Infantil","Infanto-Juvenil","Juvenil","Adulto","Master 1"];
+const faixas=["Branca","Azul","Roxa","Marrom","Preta"];
+const equipes=[]; let totalAtletas=1500;
+for(let i=1;i<=150;i++){
+  const atletas=i<150?Math.floor(Math.random()*15)+5:totalAtletas; totalAtletas-=atletas;
+  equipes.push({id:i,nome:`Equipe ${i}`,categoria:categorias[Math.floor(Math.random()*categorias.length)],
+    faixa:faixas[Math.floor(Math.random()*faixas.length)],atletasPagantes:atletas,faixaPreta:1,
+    torcedores:(atletas+1)*2,valorAtleta:200,ingresso:30,estacionamento:20});
+}
+if(totalAtletas>0)equipes[149].atletasPagantes+=totalAtletas;
+const totalEquipes=equipes.length;
+const totalTorcedores=equipes.reduce((s,e)=>s+e.torcedores,0);
+const receitaInscricao=equipes.reduce((s,e)=>s+e.atletasPagantes*e.valorAtleta,0);
+const receitaTorcedores=equipes.reduce((s,e)=>s+e.torcedores*e.ingresso,0);
+const receitaEstacionamento=equipes.reduce((s,e)=>s+(e.atletasPagantes+1)*e.estacionamento,0);
+const receitaTotal=receitaInscricao+receitaTorcedores+receitaEstacionamento;
+const somaAtletas=equipes.reduce((s,e)=>s+e.atletasPagantes+1,0);
 
-// ===============================
-// Atualiza KPIs
-// ===============================
-document.getElementById("kpi-equipes").innerText = `Equipes: ${totalEquipes}`;
-document.getElementById("kpi-atletas").innerText = `Atletas: ${totalAtletas}`;
-document.getElementById("kpi-torcedores").innerText = `Torcedores: ${totalTorcedores}`;
-document.getElementById("kpi-receita").innerText = `Receita Total: R$ ${receitaTotal.toLocaleString('pt-BR')}`;
+// ======== KPIs ========
+document.getElementById("kpi-equipes").innerText=`Equipes: ${totalEquipes}`;
+document.getElementById("kpi-atletas").innerText=`Atletas: ${somaAtletas}`;
+document.getElementById("kpi-torcedores").innerText=`Torcedores: ${totalTorcedores}`;
+document.getElementById("kpi-receita").innerText=`Receita Total: R$ ${receitaTotal.toLocaleString('pt-BR')}`;
 
-// ===============================
-// Monta tabela
-// ===============================
-let totalGeral = 0;
-const tbody = document.querySelector("#tabela-equipes tbody");
+// ======== Tabela ========
+const tbody=document.querySelector("#tabela-equipes tbody");
+function montarTabela(dados){
+  tbody.innerHTML="";
+  let totalGeral=0;
+  dados.forEach(eq=>{
+    const r1=eq.atletasPagantes*eq.valorAtleta;
+    const r2=eq.torcedores*eq.ingresso;
+    const r3=(eq.atletasPagantes+1)*eq.estacionamento;
+    const total=r1+r2+r3; totalGeral+=total;
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td>${eq.id}</td><td>${eq.nome}</td><td>${eq.categoria}</td><td>${eq.faixa}</td>
+      <td>${eq.atletasPagantes}</td><td>${eq.torcedores}</td>
+      <td>R$ ${r1.toLocaleString('pt-BR')}</td>
+      <td>R$ ${r2.toLocaleString('pt-BR')}</td>
+      <td>R$ ${r3.toLocaleString('pt-BR')}</td>
+      <td>R$ ${total.toLocaleString('pt-BR')}</td>`;
+    tbody.appendChild(tr);
+  });
+  document.getElementById("totalGeral").innerText="R$ "+totalGeral.toLocaleString('pt-BR');
+}
+montarTabela(equipes);
 
-equipes.forEach(eq => {
-  const receita1 = eq.atletasPagantes * eq.valorAtleta;
-  const receita2 = eq.torcedores * eq.ingresso;
-  const receita3 = (eq.atletasPagantes + eq.faixaPreta) * eq.estacionamento;
-  const total = receita1 + receita2 + receita3;
-  totalGeral += total;
-
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td>${eq.id}</td>
-    <td>${eq.nome}</td>
-    <td>${eq.atletasPagantes}</td>
-    <td>${eq.faixaPreta}</td>
-    <td>${eq.torcedores}</td>
-    <td>R$ ${(receita1).toLocaleString('pt-BR')}</td>
-    <td>R$ ${(receita2).toLocaleString('pt-BR')}</td>
-    <td>R$ ${(receita3).toLocaleString('pt-BR')}</td>
-    <td>R$ ${(total).toLocaleString('pt-BR')}</td>
-  `;
-  tbody.appendChild(tr);
-});
-document.getElementById("totalGeral").innerText = "R$ " + totalGeral.toLocaleString('pt-BR');
-
-// ===============================
-// Gráficos interativos
-// ===============================
-const ctx1 = document.getElementById('graficoReceitas');
-new Chart(ctx1, {
-  type: 'bar',
-  data: {
-    labels: ['Inscrições', 'Ingressos', 'Estacionamento'],
-    datasets: [{
-      label: 'Receita (R$)',
-      data: [receitaInscricao, receitaTorcedores, receitaEstacionamento],
-      backgroundColor: ['#f8b400', '#ffda77', '#c38a00']
-    }]
-  },
-  options: {
-    plugins: { legend: { labels: { color: '#fff' } } },
-    scales: {
-      x: { ticks: { color: '#fff' } },
-      y: { ticks: { color: '#fff' } }
-    }
-  }
-});
-
-const ctx2 = document.getElementById('graficoParticipantes');
-new Chart(ctx2, {
-  type: 'pie',
-  data: {
-    labels: ['Atletas', 'Torcedores'],
-    datasets: [{
-      data: [totalAtletas, totalTorcedores],
-      backgroundColor: ['#f8b400', '#555']
-    }]
-  },
-  options: {
-    plugins: { legend: { labels: { color: '#fff' } } }
-  }
-});
+// ======== Gráficos ========
+const ctx1=document.getElementById('graficoReceitas');
+new Chart(ctx1,{type:'bar',data:{labels:['Inscrições','Ingressos','Estacionamento'],
+datasets:[{label:'Receita (R$)',data:[receitaInscricao,receitaTorcedores,receitaEstacionamento],
+backgroundColor:['#f8b400','#ffda77','#c38a00']}]},
+options:{plugins:{legend:{labels:{color:'#fff'}}},
+scales:{x:{ticks:{color:'#fff'}},y:{ticks:{color:'#fff'}}}}});
+const ctx2=document.getElementById('graficoParticipantes');
+new Chart(ctx2,{type:'pie',data:{labels:['Atletas','Torcedores'],
+datasets:[{data:[somaAtletas,totalTorcedores],backgroundColor:['#f8b400','#555']}]},
+options:{plugins:{legend:{labels:{color:'#fff'}}}}});
 </script>
 </body>
 </html>
