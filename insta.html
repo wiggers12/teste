@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aviator Analyzer + Jogo Ao Vivo</title>
+<title>Aviator Analyzer (Mobile)</title>
 
 <style>
     body {
@@ -11,162 +11,149 @@
         background: #0e0e0e;
         color: white;
         margin: 0;
-        padding: 0;
+        padding: 15px;
     }
 
     h1 {
         text-align: center;
-        padding: 15px 0;
+        color: #ff004c;
+        margin-bottom: 10px;
+    }
+
+    .btn-vela {
+        background: #1b1b1b;
+        border: 1px solid #333;
+        padding: 12px;
+        margin: 5px;
+        border-radius: 8px;
+        font-size: 18px;
+        width: 30%;
+        color: white;
+        text-align: center;
+    }
+
+    .btn-vela:active {
         background: #ff004c;
-        margin: 0;
-        font-size: 24px;
     }
 
-    iframe {
-        width: 100%;
-        height: 70vh;
-        border: none;
-    }
-
-    .container {
-        padding: 15px;
-    }
-
-    textarea {
-        width: 100%;
-        height: 120px;
+    .velas-list {
+        background: #111;
         padding: 10px;
         border-radius: 10px;
-        border: none;
-        outline: none;
-        font-size: 16px;
+        margin-top: 10px;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .vela-item {
+        background: #1e1e1e;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 8px;
+        font-size: 18px;
+        display: flex;
+        justify-content: space-between;
     }
 
     button {
+        background: #ff004c;
+        border: none;
         width: 100%;
         padding: 15px;
-        background: #ff004c;
         color: white;
-        border: none;
         border-radius: 10px;
-        margin-top: 15px;
-        font-size: 18px;
+        margin-top: 20px;
+        font-size: 20px;
         cursor: pointer;
     }
 
     .box {
+        margin-top: 25px;
         background: #1b1b1b;
         padding: 20px;
-        margin-top: 25px;
         border-radius: 12px;
     }
 
-    .label {
-        font-weight: bold;
-        color: #ff004c;
-        margin-top: 10px;
-    }
 </style>
 
 </head>
 <body>
 
-<h1>Aviator ao Vivo + Análise Wiggers</h1>
+<h1>📊 Aviator Analyzer</h1>
 
-<!-- JOGO AO VIVO -->
-<iframe src="https://m.big.bet.br/casino/game/3496406?provider=Spribe&from=%2Fcasino"></iframe>
+<h3>Adicionar vela (1 toque):</h3>
 
-<div class="container">
+<div style="display:flex; flex-wrap:wrap; justify-content:center;">
+    <div class="btn-vela" onclick="addVela(1.10)">1.10</div>
+    <div class="btn-vela" onclick="addVela(1.20)">1.20</div>
+    <div class="btn-vela" onclick="addVela(1.30)">1.30</div>
+    <div class="btn-vela" onclick="addVela(1.40)">1.40</div>
+    <div class="btn-vela" onclick="addVela(1.50)">1.50</div>
+    <div class="btn-vela" onclick="addVela(2.00)">2.00</div>
+    <div class="btn-vela" onclick="addVela(5.00)">5.00</div>
+    <div class="btn-vela" onclick="addVela(10.00)">10.00</div>
+    <div class="btn-vela" onclick="addVela(20.00)">20.00</div>
+</div>
 
-    <h2>📊 Digite as velas que já saíram:</h2>
+<h3>Velas adicionadas:</h3>
+<div id="lista" class="velas-list"></div>
 
-    <textarea id="velasInput" placeholder="Ex: 1.21, 1.05, 3.40, 1.10, 1.15"></textarea>
+<button onclick="analisar()">ANALISAR</button>
 
-    <button onclick="analisar()">ANALISAR</button>
-
-    <div id="resultado" class="box" style="display:none;">
-        <h2>🔎 Resultado da Análise</h2>
-
-        <p class="label">Recomendação:</p>
-        <p id="recomendacao"></p>
-
-        <p class="label">Cash-out sugerido:</p>
-        <p id="cashout"></p>
-
-        <p class="label">Padrão detectado:</p>
-        <p id="padrao"></p>
-
-        <p class="label">Risco:</p>
-        <p id="risco"></p>
-
-        <p class="label">Rodadas para esperar:</p>
-        <p id="esperar"></p>
-    </div>
-
+<div id="resultado" class="box" style="display:none;">
+    <h2>Resultado</h2>
+    <p id="recomendacao"></p>
+    <p id="info"></p>
 </div>
 
 <script>
+let velas = [];
+
+function addVela(valor) {
+    velas.push(valor);
+    renderVelas();
+}
+
+function remover(i) {
+    velas.splice(i, 1);
+    renderVelas();
+}
+
+function renderVelas() {
+    let html = "";
+    velas.forEach((v, i) => {
+        html += `
+            <div class="vela-item">
+                <span>${v.toFixed(2)}</span>
+                <span style="color:#ff004c; cursor:pointer;" onclick="remover(${i})">X</span>
+            </div>
+        `;
+    });
+    document.getElementById("lista").innerHTML = html;
+}
+
 function analisar() {
-    let texto = document.getElementById('velasInput').value;
-
-    if (!texto.trim()) {
-        alert("Digite as velas para analisar.");
-        return;
-    }
-
-    let velas = texto.replace(/\n/g, ",").split(",").map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
-
     if (velas.length < 3) {
-        alert("Digite pelo menos 3 velas para análise.");
+        alert("Adicione pelo menos 3 velas!");
         return;
     }
 
-    let ultimas = velas.slice(-5);
-    let media = ultimas.reduce((a,b)=>a+b,0) / ultimas.length;
-    let crashes = ultimas.filter(v => v < 1.30).length;
-    let pico = Math.max(...ultimas);
+    let ultimas = velas.slice(-6);
+    let azuis = ultimas.filter(v => v < 2).length;
+    let roxas = ultimas.filter(v => v >= 2 && v <= 10).length;
+    let rosas = ultimas.filter(v => v > 10).length;
 
-    let recomendacao = "";
-    let padrao = "";
-    let risco = "";
-    let cashout = "";
-    let esperar = "";
+    let rec = "";
 
-    if (crashes >= 4) {
-        recomendacao = "Possível entrada forte na próxima rodada";
-        padrao = "Crash repetitivo — tendência de subida";
-        risco = "Baixo";
-        cashout = "1.30x a 1.50x";
-        esperar = "0";
-    }
-    else if (pico > 5) {
-        recomendacao = "Evite entrar agora";
-        padrao = "Pico recente — forte chance de crash";
-        risco = "Alto";
-        cashout = "1.20x (somente se entrar)";
-        esperar = "2 a 3 rodadas";
-    }
-    else if (media < 1.50) {
-        recomendacao = "Entrada leve recomendada";
-        padrao = "Média baixa — tendência de subida suave";
-        risco = "Médio";
-        cashout = "1.30x";
-        esperar = "0 ou 1 rodada";
-    }
-    else {
-        recomendacao = "Aguardar mais uma rodada";
-        padrao = "Padrão instável";
-        risco = "Médio";
-        cashout = "1.20x - 1.40x";
-        esperar = "1 rodada";
-    }
+    if (azuis >= 4) rec = "🔥 Entrada forte! Muitas velas azuis, tendência de subida próxima.";
+    else if (rosas > 0) rec = "❌ Perigo! Vela rosa recente. Evitar próximas 2 rodadas.";
+    else if (roxas >= 3) rec = "⚠️ Entrada moderada. Padrão médio.";
+    else rec = "Aguarde mais 1 rodada.";
 
     document.getElementById("resultado").style.display = "block";
-    document.getElementById("recomendacao").innerText = recomendacao;
-    document.getElementById("padrao").innerText = padrao;
-    document.getElementById("risco").innerText = risco;
-    document.getElementById("cashout").innerText = cashout;
-    document.getElementById("esperar").innerText = esperar;
+    document.getElementById("recomendacao").innerText = rec;
+    document.getElementById("info").innerText = 
+        `Azuis: ${azuis} | Roxas: ${roxas} | Rosas: ${rosas}`;
 }
 </script>
 
