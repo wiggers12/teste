@@ -32,45 +32,48 @@
         padding: 15px;
     }
 
-    .btn-vela {
-        background: #1b1b1b;
-        border: 1px solid #333;
-        padding: 12px;
-        margin: 5px;
-        border-radius: 8px;
-        font-size: 18px;
-        width: 30%;
+    .btn-cor {
+        width: 32%;
+        padding: 15px;
+        font-size: 20px;
+        border-radius: 10px;
+        margin: 5px 1%;
         color: white;
         text-align: center;
+        border: none;
+        cursor: pointer;
     }
 
-    .btn-vela:active {
-        background: #ff004c;
-    }
+    .azul { background: #007bff; }
+    .roxa { background: #7d00ff; }
+    .rosa { background: #ff2fb9; }
 
-    .velas-list {
+    .lista {
         background: #111;
         padding: 10px;
+        margin-top: 15px;
         border-radius: 10px;
-        margin-top: 10px;
         max-height: 180px;
         overflow-y: auto;
     }
 
-    .vela-item {
-        background: #1e1e1e;
-        padding: 10px;
-        margin-top: 5px;
+    .item {
+        padding: 12px;
+        margin: 5px 0;
         border-radius: 8px;
-        font-size: 18px;
         display: flex;
         justify-content: space-between;
+        font-size: 18px;
     }
 
-    .btn-remove {
+    .a { background: #003b77; }
+    .r { background: #4a0088; }
+    .p { background: #8a005a; }
+
+    .remove {
         color: #ff004c;
-        font-weight: bold;
         cursor: pointer;
+        font-weight: bold;
     }
 
     button {
@@ -95,7 +98,6 @@
     .label {
         font-weight: bold;
         color: #ff004c;
-        margin-top: 10px;
     }
 </style>
 
@@ -104,27 +106,19 @@
 
 <h1>Aviator ao Vivo + Análise Wiggers</h1>
 
-<!-- JOGO AO VIVO -->
+<!-- AVIATOR -->
 <iframe src="https://m.big.bet.br/casino/game/3496406?provider=Spribe&from=%2Fcasino"></iframe>
 
 <div class="container">
 
-    <h2>📊 Adicionar Velas (1 Toque):</h2>
+    <h2>🎨 Adicionar Vela por Cor:</h2>
 
-    <div style="display:flex; flex-wrap:wrap; justify-content:center;">
-        <div class="btn-vela" onclick="addVela(1.10)">1.10</div>
-        <div class="btn-vela" onclick="addVela(1.20)">1.20</div>
-        <div class="btn-vela" onclick="addVela(1.30)">1.30</div>
-        <div class="btn-vela" onclick="addVela(1.40)">1.40</div>
-        <div class="btn-vela" onclick="addVela(1.50)">1.50</div>
-        <div class="btn-vela" onclick="addVela(2.00)">2.00</div>
-        <div class="btn-vela" onclick="addVela(5.00)">5.00</div>
-        <div class="btn-vela" onclick="addVela(10.00)">10.00</div>
-        <div class="btn-vela" onclick="addVela(20.00)">20.00</div>
-    </div>
+    <button class="btn-cor azul" onclick="addVela('azul')">🔵 Azul</button>
+    <button class="btn-cor roxa" onclick="addVela('roxa')">🟣 Roxa</button>
+    <button class="btn-cor rosa" onclick="addVela('rosa')">🌸 Rosa</button>
 
-    <h2>📋 Velas Inseridas:</h2>
-    <div id="lista" class="velas-list"></div>
+    <h3>Velas registradas:</h3>
+    <div id="lista" class="lista"></div>
 
     <button onclick="analisar()">ANALISAR</button>
 
@@ -134,17 +128,14 @@
         <p class="label">Recomendação:</p>
         <p id="recomendacao"></p>
 
-        <p class="label">Cash-out sugerido:</p>
-        <p id="cashout"></p>
-
         <p class="label">Padrão detectado:</p>
         <p id="padrao"></p>
 
-        <p class="label">Risco:</p>
-        <p id="risco"></p>
+        <p class="label">Chance de vela rosa:</p>
+        <p id="chance"></p>
 
-        <p class="label">Rodadas para esperar:</p>
-        <p id="esperar"></p>
+        <p class="label">Tendência:</p>
+        <p id="tendencia"></p>
     </div>
 
 </div>
@@ -152,81 +143,81 @@
 <script>
 let velas = [];
 
-function addVela(valor) {
-    velas.push(valor);
-    renderVelas();
+function addVela(cor) {
+    velas.push(cor);
+    render();
 }
 
 function remover(i) {
     velas.splice(i, 1);
-    renderVelas();
+    render();
 }
 
-function renderVelas() {
+function render() {
     let html = "";
-    velas.forEach((v, i) => {
+
+    velas.forEach((v,i)=>{
+        let classe = v === "azul" ? "a" : v === "roxa" ? "r" : "p";
+        let nome = v === "azul" ? "Azul" : v === "roxa" ? "Roxa" : "Rosa";
+
         html += `
-            <div class="vela-item">
-                <span>${v.toFixed(2)}</span>
-                <span class="btn-remove" onclick="remover(${i})">X</span>
-            </div>
-        `;
+        <div class="item ${classe}">
+            <span>${nome}</span>
+            <span class="remove" onclick="remover(${i})">X</span>
+        </div>`;
     });
+
     document.getElementById("lista").innerHTML = html;
 }
 
 function analisar() {
-    if (velas.length < 3) {
-        alert("Adicione pelo menos 3 velas!");
+    if (velas.length < 4) {
+        alert("Adicione pelo menos 4 velas!");
         return;
     }
 
-    let ultimas = velas.slice(-6);
-    let azuis = ultimas.filter(v => v < 2).length;
-    let roxas = ultimas.filter(v => v >= 2 && v <= 10).length;
-    let rosas = ultimas.filter(v => v > 10).length;
+    let últimas = velas.slice(-6);
 
+    let azuis = últimas.filter(v => v === "azul").length;
+    let roxas = últimas.filter(v => v === "roxa").length;
+    let rosas = últimas.filter(v => v === "rosa").length;
+
+    let chanceRosa = 0;
     let recomendacao = "";
     let padrao = "";
-    let risco = "";
-    let cashout = "";
-    let esperar = "";
+    let tendencia = "";
 
+    // Regras principais
     if (azuis >= 4) {
-        recomendacao = "🔥 Entrada forte na próxima rodada!";
-        padrao = "Muitas velas azuis → tendência de subida.";
-        risco = "Baixo";
-        cashout = "1.30x a 1.60x";
-        esperar = "0";
+        chanceRosa = 90;
+        recomendacao = "🔥 Forte chance de vela ROSA!";
+        padrao = "Muitas velas azuis seguidas — padrão clássico.";
+        tendencia = "Subida forte";
+    }
+    else if (azuis >= 2 && roxas >= 2) {
+        chanceRosa = 80;
+        recomendacao = "🔥 Alta chance de vela rosa";
+        padrao = "Mistura azul + roxa = tendência forte de pico.";
+        tendencia = "Alta instabilidade → explosão possível";
     }
     else if (rosas > 0) {
-        recomendacao = "❌ Evitar entrada agora";
-        padrao = "Vela rosa recente → crash provável.";
-        risco = "Alto";
-        cashout = "—";
-        esperar = "2 rodadas";
-    }
-    else if (roxas >= 3) {
-        recomendacao = "⚠️ Entrada moderada";
-        padrao = "Velas roxas frequentes → instável";
-        risco = "Médio";
-        cashout = "1.20x a 1.40x";
-        esperar = "0 ou 1";
+        chanceRosa = 5;
+        recomendacao = "❌ Evitar entrada!";
+        padrao = "Vela rosa recente → crash forte vindo.";
+        tendencia = "Queda (velas azuis prováveis)";
     }
     else {
-        recomendacao = "Aguardando melhor padrão";
-        padrao = "Padrão fraco";
-        risco = "Médio";
-        cashout = "1.20x";
-        esperar = "1 rodada";
+        chanceRosa = 40;
+        recomendacao = "⚠️ Padrão fraco — aguarde";
+        padrao = "Nenhum padrão forte identificado.";
+        tendencia = "Instável";
     }
 
     document.getElementById("resultado").style.display = "block";
     document.getElementById("recomendacao").innerText = recomendacao;
     document.getElementById("padrao").innerText = padrao;
-    document.getElementById("risco").innerText = risco;
-    document.getElementById("cashout").innerText = cashout;
-    document.getElementById("esperar").innerText = esperar;
+    document.getElementById("chance").innerText = chanceRosa + "%";
+    document.getElementById("tendencia").innerText = tendencia;
 }
 </script>
 
