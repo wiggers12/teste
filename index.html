@@ -614,35 +614,6 @@ grid-template-columns:
     text-align: center !important;
 }
 
-/* === RODAPÉ NOVO — 6 COLUNAS IGUAIS === */
-.stats-footer {
-    position: fixed;
-    bottom: 0; left: 0;
-    width: 100%;
-    background: rgba(10,10,15,0.98);
-    border-top: 2px solid var(--cor-primaria);
-    
-    display: grid;
-    grid-template-columns: repeat(6, 1fr); /* 6 colunas iguais */
-    height: 70px;
-    align-items: center;
-    text-align: center;
-    z-index: 100;
-}
-
-/* Cada KPI */
-.stat-item {
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border-right: 1px solid rgba(255,255,255,0.05);
-}
-
-.stat-item:last-child {
-    border-right: none;
-}
-
 /* Textos internos */
 .stat-label {
     font-size: 0.60rem;
@@ -652,41 +623,6 @@ grid-template-columns:
 .stat-value {
     font-size: 1rem;
     font-weight: 700;
-}
-
-/* Ajuste fino no menor celular (iPhone SE) */
-@media (max-width: 380px) {
-    .stat-label {
-        font-size: 0.55rem;
-    }
-    .stat-value {
-        font-size: 0.9rem;
-    }
-    .stats-footer {
-        height: 68px;
-    }
-}
-
-/* === RODAPÉ ULTRA PREMIUM (MESMA LÓGICA DO CABEÇALHO) === */
-.stats-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-
-    background: rgba(10, 10, 15, 0.98);
-    border-top: 2px solid var(--cor-primaria);
-
-    /* MESMO MODELO DO CABEÇALHO */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    padding: 0 6px;
-    height: 70px;
-
-    z-index: 100;
-    box-sizing: border-box;
 }
 
 /* Cada item do rodapé agora é flexível */
@@ -797,17 +733,6 @@ body.mobile .navbar-top .nav-item {
     font-size: 1rem !important;
 }
 
-/* === FIX ARQUIVO: footer sempre com 6 colunas (MOBILE + DESKTOP) === */
-.stats-footer {
-    grid-template-columns: repeat(6, 1fr) !important;
-    height: 70px !important;
-}
-
-body.mobile .stats-footer {
-    grid-template-columns: repeat(6, 1fr) !important;
-    height: 70px !important;
-    padding: 0 !important;
-}
 }}
 #floatUltimaRosaValor {
     color: #ff4da6 !important;
@@ -835,12 +760,6 @@ iframe {
 body {
     overflow: hidden !important;
     height: 100vh !important;
-}
-.stats-footer {
-    position: fixed !important;
-    bottom: 0 !important;
-    width: 100% !important;
-    z-index: 999999 !important;
 }
 
     </style>
