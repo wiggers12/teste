@@ -724,12 +724,18 @@ body.mobile .navbar-top .nav-item {
     font-size: 1rem !important;
 }
 
-/* Footer mobile reorganizado */
-body.mobile .stats-footer {
-    grid-template-columns: repeat(3, 1fr) !important;
-    height: auto !important;
-    padding: 5px 0 !important;
+/* === FIX ARQUIVO: footer sempre com 6 colunas (MOBILE + DESKTOP) === */
+.stats-footer {
+    grid-template-columns: repeat(6, 1fr) !important;
+    height: 70px !important;
 }
+
+body.mobile .stats-footer {
+    grid-template-columns: repeat(6, 1fr) !important;
+    height: 70px !important;
+    padding: 0 !important;
+}
+}}
 #floatUltimaRosaValor {
     color: #ff4da6 !important;
 }
