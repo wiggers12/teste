@@ -825,7 +825,23 @@ body.mobile .stats-footer {
     font-weight: bold !important;
 }
 
+.game-container,
+iframe {
+    height: calc(100vh - var(--altura-header) - var(--altura-footer)) !important;
+    max-height: calc(100vh - var(--altura-header) - var(--altura-footer)) !important;
+    overflow: hidden !important;
+}
 
+body {
+    overflow: hidden !important;
+    height: 100vh !important;
+}
+.stats-footer {
+    position: fixed !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    z-index: 999999 !important;
+}
 
     </style>
 </head>
