@@ -921,60 +921,311 @@
         <small>VER SINAL</small>
     </button>
 
-    <!-- RODAPÉ -->
-    <footer class="stats-footer">
-        <div class="stat-item">
-            <span class="stat-label">🎯 ASSERTIVIDADE</span>
-            <div class="stat-value" id="valAssertividade">--%</div>
-            <div class="stat-sub" id="placarSession"><span style="color:#00e676">0G</span> • <span style="color:#ff4da6">0R</span></div>
+    <div class="mobile-dashboard">
+    
+    <div class="dash-card hero-card">
+        <div class="hero-header">
+            <span class="dash-icon">🎯</span>
+            <span class="dash-label">ASSERTIVIDADE</span>
         </div>
-        <div class="stat-item">
-            <span class="stat-label">🔮 PREVISÃO IA</span>
-            <div id="listaPrevisao"><span class="text-azul">--</span></div>
+        <div class="hero-content">
+            <div class="big-number" id="valAssertividadeMobile">--%</div>
+            <div class="hero-sub" id="placarSessionMobile">
+                <span style="color:#00e676">0G</span> • <span style="color:#ff4da6">0R</span>
+            </div>
         </div>
-
-                          <!-- 🔥 NOVO KPI: SINAL DE RISCO -->
-                    <div class="stat-item" id="btnRisco">
-    <span class="stat-label">⚠️ SINAL DE RISCO</span>
-
-    <!-- AQUI ENTRA O ELEMENTO CORRETO -->
-    <div class="stat-value" id="listaPrevisaoRisco">
-        <span class="text-azul">--</span>
-        <span class="text-azul">--</span>
     </div>
-</div>
 
+    <div class="dash-card info-card">
+        <span class="dash-label">🔮 PREVISÃO IA</span>
+        <div class="info-value" id="listaPrevisaoMobile"><span class="text-azul">--</span></div>
+    </div>
 
-<!-- PADRÕES IA -->
-<div class="stat-item">
-    <span class="stat-label">📘 PADRÕES IA</span>
-    <div class="stat-value" id="btnPadroesIA">Ver</div>
-</div>
-
-<!-- ESTRATÉGIA IA -->
-<div class="stat-item">
-    <span class="stat-label">🎯 ESTRATÉGIA IA</span>
-    <div class="stat-value" id="btnEstrategiaIA">Ver</div>
-</div>
-
-<!-- DICAS IA -->
-<div class="stat-item">
-    <span class="stat-label">💡 DICAS IA</span>
-    <div class="stat-value" id="btnDicasIA">Ver</div>
-</div>
-
-        
-<div class="stat-item">
-            <span class="stat-label">🌸 ÚLTIMA ROSA</span>
-            <div class="stat-value" id="valUltimaRosa">--</div>
-            <div class="stat-sub" id="horaUltimaRosa">--:--</div>
+    <div class="dash-card info-card warning">
+        <span class="dash-label">⚠️ RISCO</span>
+        <div class="info-value" id="listaPrevisaoRiscoMobile">
+            <span class="text-azul">--</span> <span class="text-azul">--</span>
         </div>
-        <div class="stat-item" id="btnMentoria"
-     style="cursor:pointer;"
-     onclick="window.open('https://wa.me/5551989378751','_blank')">
-    <span class="stat-label">🎓 MENTORIA</span>
-    <div class="stat-value" style="font-size:0.9rem;">Acessar</div>
+    </div>
+
+    <div class="dash-card rosa-card">
+        <span class="dash-label">🌸 ÚLTIMA ROSA</span>
+        <div class="rosa-flex">
+            <div class="rosa-value" id="valUltimaRosaMobile">--</div>
+            <div class="rosa-time" id="horaUltimaRosaMobile">--:--</div>
+        </div>
+    </div>
+
+    <div class="dash-action" onclick="alert('Abrindo Padrões...')">
+        <span class="action-icon">📘</span>
+        <span class="action-label">PADRÕES</span>
+    </div>
+
+    <div class="dash-action" onclick="alert('Abrindo Estratégia...')">
+        <span class="action-icon">🎯</span>
+        <span class="action-label">ESTRATÉGIA</span>
+    </div>
+
+    <div class="dash-action" onclick="alert('Abrindo Dicas...')">
+        <span class="action-icon">💡</span>
+        <span class="action-label">DICAS IA</span>
+    </div>
+
+    <div class="dash-card mentoria-card" onclick="window.open('https://wa.me/5551989378751','_blank')">
+        <span>🎓 ACESSAR MENTORIA VIP</span>
+        <span style="font-size:1.2rem">➔</span>
+    </div>
+
 </div>
+
+<footer class="stats-footer desktop-only">
+    <div style="width:100%; text-align:center; color:#666; font-size:0.8rem;">
+        Painel de Controle Desktop
+    </div>
+</footer>
+
+
+<style>
+    /* ========================================= */
+    /* 🎨 ESTILOS DO DASHBOARD INCRÍVEL (CSS)    */
+    /* ========================================= */
+
+    /* 1. ESCONDE O DASHBOARD NO PC */
+    .mobile-dashboard { display: none; }
+    .desktop-only { display: flex; }
+
+    /* 2. MOSTRA SÓ NO CELULAR */
+    @media screen and (max-width: 768px) {
+        
+        .desktop-only { display: none !important; } /* Esconde rodapé velho */
+        
+        .mobile-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr; /* 3 Colunas */
+            gap: 12px;
+            padding: 20px;
+            padding-bottom: 100px; /* Espaço pro final da tela */
+            background: transparent;
+            margin-top: 10px;
+        }
+
+        /* CARD GENÉRICO */
+        .dash-card {
+            background: linear-gradient(145deg, #1e1e2f, #151525);
+            border-radius: 16px;
+            padding: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* TITULOS PEQUENOS */
+        .dash-label {
+            font-size: 0.65rem;
+            color: #8899a6;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        /* === HERO CARD (ASSERTIVIDADE) === */
+        .hero-card {
+            grid-column: 1 / -1; /* Ocupa largura total */
+            background: linear-gradient(90deg, rgba(0, 230, 118, 0.1), rgba(20, 20, 30, 0.8));
+            border: 1px solid #00e676;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 15px 25px;
+            align-items: center;
+        }
+        .hero-header { display: flex; align-items: center; gap: 8px; }
+        .hero-content { text-align: right; }
+        .big-number { font-size: 2.2rem; font-weight: 800; color: #00e676; line-height: 1; }
+        .hero-sub { font-size: 0.8rem; font-weight: bold; margin-top: 5px; }
+
+        /* === INFO CARDS (PREVISÃO / RISCO) === */
+        .info-card {
+            grid-column: span 1; /* Ocupa 1 espaço */
+            min-height: 80px;
+        }
+        .info-value { font-size: 1.1rem; font-weight: bold; color: white; }
+        
+        .warning { background: rgba(255, 165, 0, 0.08); border-color: rgba(255, 165, 0, 0.3); }
+
+        /* === ROSA CARD (DESTAQUE) === */
+        .rosa-card {
+            grid-column: span 1; /* Ocupa 1 espaço */
+            background: rgba(255, 0, 128, 0.1);
+            border-color: #ff0080;
+        }
+        .rosa-value { font-size: 1.3rem; font-weight: 800; color: #ff0080; }
+        .rosa-time { font-size: 0.7rem; color: #ff80bf; }
+
+        /* === BOTÕES DE AÇÃO (Padrões, etc) === */
+        .dash-action {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 15px 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .dash-action:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
+        .action-icon { display: block; font-size: 1.5rem; margin-bottom: 5px; }
+        .action-label { font-size: 0.6rem; color: #ccc; font-weight: bold; }
+
+        /* === MENTORIA === */
+        .mentoria-card {
+            grid-column: 1 / -1;
+            background: #00e676;
+            color: #000;
+            font-weight: 800;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 15px 20px;
+            margin-top: 10px;
+            box-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
+        }
+    }
+/* ========================================= */
+    /* 🎨 ESTILOS DO DASHBOARD INCRÍVEL (CSS)    */
+    /* ========================================= */
+
+    /* 1. ESCONDE O DASHBOARD NO PC */
+    .mobile-dashboard { display: none; }
+    .desktop-only { display: flex; }
+
+    /* 2. MOSTRA SÓ NO CELULAR */
+    @media screen and (max-width: 768px) {
+        
+        .desktop-only { display: none !important; } /* Esconde rodapé velho */
+        
+        .mobile-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr; /* 3 Colunas */
+            gap: 12px;
+            padding: 20px;
+            padding-bottom: 100px; /* Espaço pro final da tela */
+            background: transparent;
+            margin-top: 10px;
+        }
+
+        /* CARD GENÉRICO */
+        .dash-card {
+            background: linear-gradient(145deg, #1e1e2f, #151525);
+            border-radius: 16px;
+            padding: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* TITULOS PEQUENOS */
+        .dash-label {
+            font-size: 0.65rem;
+            color: #8899a6;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        /* === HERO CARD (ASSERTIVIDADE) === */
+        .hero-card {
+            grid-column: 1 / -1; /* Ocupa largura total */
+            background: linear-gradient(90deg, rgba(0, 230, 118, 0.1), rgba(20, 20, 30, 0.8));
+            border: 1px solid #00e676;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 15px 25px;
+            align-items: center;
+        }
+        .hero-header { display: flex; align-items: center; gap: 8px; }
+        .hero-content { text-align: right; }
+        .big-number { font-size: 2.2rem; font-weight: 800; color: #00e676; line-height: 1; }
+        .hero-sub { font-size: 0.8rem; font-weight: bold; margin-top: 5px; }
+
+        /* === INFO CARDS (PREVISÃO / RISCO) === */
+        .info-card {
+            grid-column: span 1; /* Ocupa 1 espaço */
+            min-height: 80px;
+        }
+        .info-value { font-size: 1.1rem; font-weight: bold; color: white; }
+        
+        .warning { background: rgba(255, 165, 0, 0.08); border-color: rgba(255, 165, 0, 0.3); }
+
+        /* === ROSA CARD (DESTAQUE) === */
+        .rosa-card {
+            grid-column: span 1; /* Ocupa 1 espaço */
+            background: rgba(255, 0, 128, 0.1);
+            border-color: #ff0080;
+        }
+        .rosa-value { font-size: 1.3rem; font-weight: 800; color: #ff0080; }
+        .rosa-time { font-size: 0.7rem; color: #ff80bf; }
+
+        /* === BOTÕES DE AÇÃO (Padrões, etc) === */
+        .dash-action {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 15px 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .dash-action:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
+        .action-icon { display: block; font-size: 1.5rem; margin-bottom: 5px; }
+        .action-label { font-size: 0.6rem; color: #ccc; font-weight: bold; }
+
+        /* === MENTORIA === */
+        .mentoria-card {
+            grid-column: 1 / -1;
+            background: #00e676;
+            color: #000;
+            font-weight: 800;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 15px 20px;
+            margin-top: 10px;
+            box-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
+        }
+    }
+</style>
+
+<script>
+    // SCRIPT PARA CONECTAR OS DADOS DO SEU SISTEMA NO NOVO DASHBOARD
+    // Esse script garante que quando o sistema atualizar o ID antigo, ele atualiza o Mobile também
+    setInterval(() => {
+        try {
+            // Copia Assertividade
+            document.getElementById('valAssertividadeMobile').innerText = document.getElementById('valAssertividade').innerText;
+            document.getElementById('placarSessionMobile').innerHTML = document.getElementById('placarSession').innerHTML;
+            
+            // Copia Previsão
+            document.getElementById('listaPrevisaoMobile').innerHTML = document.getElementById('listaPrevisao').innerHTML;
+            
+            // Copia Risco (Se existir)
+            let riscoOriginal = document.getElementById('listaPrevisaoRisco');
+            if(riscoOriginal) document.getElementById('listaPrevisaoRiscoMobile').innerHTML = riscoOriginal.innerHTML;
+
+            // Copia Rosa
+            document.getElementById('valUltimaRosaMobile').innerText = document.getElementById('valUltimaRosa').innerText;
+            document.getElementById('horaUltimaRosaMobile').innerText = document.getElementById('horaUltimaRosa').innerText;
+        } catch(e) {
+            // Ignora erros se os dados ainda não carregaram
+        }
+    }, 1000);
+</script>
 
     </footer>
 09:23 25/11/2025
