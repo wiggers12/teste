@@ -689,7 +689,7 @@ body.mobile .stats-footer {
         <div class="card-value">Abrir</div>
     </div>
 
-</div>
+</div> <!-- FIM DO DASHBOARD MOBILE -->   <!-- ADICIONE ESTE -->
 
 <!-- VERSÃO DESKTOP COMPLETA -->
 <div class="desktop-only">
@@ -1730,7 +1730,7 @@ function aplicarResetRisco() {
 
 /* ======== DETECÇÃO AUTOMÁTICA ======== */
 function detectarDevice() {
-    const mobile = window.innerWidth <= 900;
+    const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (mobile) {
         document.body.classList.add("mobile");
         document.body.classList.remove("desktop");
