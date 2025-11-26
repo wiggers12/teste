@@ -574,128 +574,127 @@
     align-items: center !important;
     text-align: center !important;
 }
-<style>
-/* ============================================================ */
-/* 📱 TRANSFORMAÇÃO MOBILE - PAINEL DE CONTROLE (GRID SYSTEM) */
-/* ============================================================ */
-@media screen and (max-width: 768px) {
 
-    /* 1. O CONTAINER PRINCIPAL (A barra de baixo) */
-    .stats-footer {
-        /* Transforma em Grade */
-        display: grid !important; 
-        grid-template-columns: 1fr 1fr; /* 2 Colunas Iguais */
-        gap: 12px; /* Espaço entre os cartões */
-        
-        /* Ajustes de Posicionamento */
-        position: relative !important; /* Deixa de ser rodapé fixo e vira conteúdo */
-        height: auto !important;
-        padding: 20px !important;
-        background: transparent !important; /* Remove fundo chapado */
-        overflow-x: visible !important; /* Remove rolagem lateral */
-        margin-bottom: 80px; /* Espaço para não colar no fim da tela */
-    }
 
-    /* 2. ESTILO GERAL DOS CARTÕES */
-    .stat-item {
-        background: linear-gradient(145deg, #1a1a2e, #16213e);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 16px;
-        padding: 15px;
-        
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        
-        min-width: auto !important; /* Reseta largura fixa */
-        min-height: 90px; /* Altura boa para o dedo */
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        transition: transform 0.2s;
-    }
+/* =========== MOBILE ULTRA PREMIUM =========== */
 
-    .stat-item:active {
-        transform: scale(0.97); /* Efeito de clique */
-    }
+/* Mostrar/ocultar automaticamente */
+.mobile-only { display: none; }
+.desktop-only { display: block; }
 
-    /* Títulos dos cartões */
-    .stat-label {
-        font-size: 0.75rem !important;
-        color: #8899a6;
-        margin-bottom: 8px !important;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-    }
+body.mobile .desktop-only { display: none !important; }
+body.mobile .mobile-only { display: block !important; }
 
-    /* Valores dos cartões */
-    .stat-value {
-        font-size: 1.3rem !important;
-        font-weight: 800;
-        color: white;
-    }
-
-    /* ========================================== */
-    /* 3. REGRAS ESPECÍFICAS PARA CADA CARTÃO */
-    /* ========================================== */
-
-    /* 🎯 ASSERTIVIDADE (PRIMEIRO ITEM) - Ocupa largura total */
-    .stats-footer .stat-item:nth-child(1) {
-        grid-column: 1 / -1; /* Ocupa as 2 colunas */
-        background: linear-gradient(90deg, rgba(0, 230, 118, 0.1), rgba(0, 0, 0, 0.4));
-        border: 1px solid #00e676;
-        flex-direction: row; /* Texto lado a lado */
-        justify-content: space-between;
-        padding: 0 25px;
-    }
-    .stats-footer .stat-item:nth-child(1) .stat-value {
-        font-size: 2rem !important;
-        color: #00e676;
-        text-shadow: 0 0 10px rgba(0, 230, 118, 0.4);
-    }
-
-    /* ⚠️ SINAL DE RISCO (Destaque Amarelo/Laranja) */
-    #btnRisco {
-        background: rgba(255, 165, 0, 0.1);
-        border-color: orange;
-    }
-    #listaPrevisaoRisco {
-        display: flex;
-        gap: 10px;
-    }
-
-    /* 🌸 ÚLTIMA ROSA (Destaque Rosa) - Ocupa largura total */
-    .stats-footer .stat-item:nth-last-child(2) { /* Penúltimo item */
-        grid-column: 1 / -1;
-        background: linear-gradient(90deg, rgba(255, 0, 128, 0.15), rgba(0,0,0,0.4));
-        border: 1px solid #ff0080;
-        flex-direction: row;
-        justify-content: space-around;
-    }
-    #valUltimaRosa {
-        color: #ff0080;
-        font-size: 1.8rem !important;
-    }
-
-    /* 🎓 MENTORIA (Último item) */
-    #btnMentoria {
-        grid-column: 1 / -1;
-        background: #333;
-        border: 1px dashed #666;
-    }
-    
-    /* Botões "Ver" (Padrões, Dicas, Estratégia) */
-    #btnPadroesIA, #btnEstrategiaIA, #btnDicasIA {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 5px 15px;
-        border-radius: 20px;
-        font-size: 0.9rem !important;
-    }
+/* Cards Mobile */
+.card-mobile {
+    background: linear-gradient(145deg, #1c1c28, #101018);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 18px;
+    border-radius: 16px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-shadow: 0 0 18px rgba(0,0,0,0.35);
+    animation: cardEnter .35s ease;
 }
-</style>
+
+@keyframes cardEnter {
+    0% { opacity:0; transform: translateY(20px); }
+    100% { opacity:1; transform: translateY(0); }
+}
+
+.card-icon {
+    font-size: 2.1rem;
+    margin-bottom: 4px;
+}
+
+.card-title {
+    font-size: 0.9rem;
+    color: #aaa;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.card-value {
+    font-size: 1.4rem;
+    color: #fff;
+    font-weight: 700;
+    margin-top: 4px;
+}
+
+/* Navbar mobile estilizada */
+body.mobile .navbar-top {
+    height: 65px !important;
+    font-size: 1.3rem !important;
+}
+
+body.mobile .navbar-top .nav-item {
+    font-size: 1rem !important;
+}
+
+/* Footer mobile reorganizado */
+body.mobile .stats-footer {
+    grid-template-columns: repeat(3, 1fr) !important;
+    height: auto !important;
+    padding: 5px 0 !important;
+}
+
     </style>
 </head>
 <body>
+
+<!-- DASHBOARD MOBILE PREMIUM -->
+<div id="dashboardMobile" class="mobile-only" style="display:none; padding:18px;">
+    
+    <!-- CARD 1 – ASSERTIVIDADE -->
+    <div class="card-mobile" onclick="mudarSecao(null, 'historico')">
+        <div class="card-icon">🎯</div>
+        <div class="card-title">Assertividade</div>
+        <div class="card-value" id="dashAssert">--%</div>
+    </div>
+
+    <!-- CARD 2 – PREVISÃO IA -->
+    <div class="card-mobile" onclick="abrirChatIA()">
+        <div class="card-icon">🔮</div>
+        <div class="card-title">Previsão IA</div>
+        <div class="card-value" id="dashPrevisao">--</div>
+    </div>
+
+    <!-- CARD 3 – SINAL DE RISCO -->
+    <div class="card-mobile" onclick="scrollToFooterRisco()">
+        <div class="card-icon">⚠️</div>
+        <div class="card-title">Sinal de Risco</div>
+        <div class="card-value" id="dashRisco">--</div>
+    </div>
+
+    <!-- CARD 4 – ÚLTIMA ROSA -->
+    <div class="card-mobile" onclick="scrollToFooterRosa()">
+        <div class="card-icon">🌸</div>
+        <div class="card-title">Última Rosa</div>
+        <div class="card-value" id="dashUltRosa">--</div>
+    </div>
+
+    <!-- CARD 5 – PADRÕES IA -->
+    <div class="card-mobile" onclick="scrollToFooterPadroes()">
+        <div class="card-icon">📘</div>
+        <div class="card-title">Padrões IA</div>
+        <div class="card-value" id="dashPadroes">Ver</div>
+    </div>
+
+    <!-- CARD 6 – CHAT IA -->
+    <div class="card-mobile" onclick="abrirChatIA()">
+        <div class="card-icon">🤖</div>
+        <div class="card-title">Chat Inteligente</div>
+        <div class="card-value">Abrir</div>
+    </div>
+
+</div>
+
+<!-- VERSÃO DESKTOP COMPLETA -->
+<div class="desktop-only">
+
+
 
 <!-- TELA DE CADASTRO INICIAL (PROFISSIONAL) -->
 <div id="telaCadastroInicial" style="
@@ -844,15 +843,56 @@
     </header>
 
     <section id="home" class="secao ativa">
-    <script>
-        // O código abaixo garante que o navegador seja imediatamente redirecionado para a URL do jogo.
-        // Isso simula o carregamento direto do conteúdo do jogo na tela atual (modo inframe).
-        window.location.replace('https://rn72q.com/subscribeReward?pid=575973404');
-        
-        // Use 'replace' em vez de 'href' para que o usuário não possa usar o botão de 'Voltar' 
-        // para retornar à tela anterior da "Seção Ativa" (opcional, mas mais limpo).
-    </script>
-</section>
+        <div class="game-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 400px; background: #0e0e0e; color: white; text-align: center; padding: 20px;">
+            
+            <div style="font-size: 50px; margin-bottom: 20px;">🔒</div>
+
+            <h3 style="margin: 0 0 10px 0; color: #ff0055;">Acesso Externo Necessário</h3>
+            
+            <p style="font-size: 14px; color: #cccccc; margin-bottom: 25px; max-width: 300px;">
+                Para garantir a segurança da sua conta e evitar bloqueios, o jogo deve ser aberto em uma janela segura.
+            </p>
+
+            <button onclick="abrirJogoSeguro()" 
+                style="
+                    background: linear-gradient(90deg, #00C853, #64DD17);
+                    color: #000;
+                    font-weight: bold;
+                    font-size: 18px;
+                    padding: 15px 40px;
+                    border: none;
+                    border-radius: 50px;
+                    cursor: pointer;
+                    box-shadow: 0 4px 15px rgba(0, 200, 83, 0.4);
+                    transition: transform 0.2s;
+                    text-transform: uppercase;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                "
+                onmouseover="this.style.transform='scale(1.05)'"
+                onmouseout="this.style.transform='scale(1)'">
+                <span>🚀</span> ABRIR JOGO
+            </button>
+
+            <p style="font-size: 12px; color: #666; margin-top: 20px;">
+                Após jogar, volte aqui para ver os sinais.
+            </p>
+        </div>
+
+        <script>
+            function abrirJogoSeguro() {
+                // Abre uma janela estilo "Pop-up" para facilitar a volta ao app
+                // Usa o link DIRETO (sem proxy) pois é o único que funciona 100%
+                window.open(
+                    'https://rn72q.com/subscribeReward?pid=575973404', 
+                    'JanelaJogo', 
+                    'width=400,height=750,resizable=yes,scrollbars=yes,status=yes'
+                );
+            }
+        </script>
+    </section>
+
     <!-- HISTÓRICO -->
     <section id="historico" class="secao">
         <h2 style="text-align:center; margin-top:20px;">📜 Histórico Completo</h2>
@@ -880,311 +920,60 @@
         <small>VER SINAL</small>
     </button>
 
-    <div class="mobile-dashboard">
-    
-    <div class="dash-card hero-card">
-        <div class="hero-header">
-            <span class="dash-icon">🎯</span>
-            <span class="dash-label">ASSERTIVIDADE</span>
+    <!-- RODAPÉ -->
+    <footer class="stats-footer">
+        <div class="stat-item">
+            <span class="stat-label">🎯 ASSERTIVIDADE</span>
+            <div class="stat-value" id="valAssertividade">--%</div>
+            <div class="stat-sub" id="placarSession"><span style="color:#00e676">0G</span> • <span style="color:#ff4da6">0R</span></div>
         </div>
-        <div class="hero-content">
-            <div class="big-number" id="valAssertividadeMobile">--%</div>
-            <div class="hero-sub" id="placarSessionMobile">
-                <span style="color:#00e676">0G</span> • <span style="color:#ff4da6">0R</span>
-            </div>
+        <div class="stat-item">
+            <span class="stat-label">🔮 PREVISÃO IA</span>
+            <div id="listaPrevisao"><span class="text-azul">--</span></div>
         </div>
-    </div>
 
-    <div class="dash-card info-card">
-        <span class="dash-label">🔮 PREVISÃO IA</span>
-        <div class="info-value" id="listaPrevisaoMobile"><span class="text-azul">--</span></div>
-    </div>
+                          <!-- 🔥 NOVO KPI: SINAL DE RISCO -->
+                    <div class="stat-item" id="btnRisco">
+    <span class="stat-label">⚠️ SINAL DE RISCO</span>
 
-    <div class="dash-card info-card warning">
-        <span class="dash-label">⚠️ RISCO</span>
-        <div class="info-value" id="listaPrevisaoRiscoMobile">
-            <span class="text-azul">--</span> <span class="text-azul">--</span>
-        </div>
+    <!-- AQUI ENTRA O ELEMENTO CORRETO -->
+    <div class="stat-value" id="listaPrevisaoRisco">
+        <span class="text-azul">--</span>
+        <span class="text-azul">--</span>
     </div>
-
-    <div class="dash-card rosa-card">
-        <span class="dash-label">🌸 ÚLTIMA ROSA</span>
-        <div class="rosa-flex">
-            <div class="rosa-value" id="valUltimaRosaMobile">--</div>
-            <div class="rosa-time" id="horaUltimaRosaMobile">--:--</div>
-        </div>
-    </div>
-
-    <div class="dash-action" onclick="alert('Abrindo Padrões...')">
-        <span class="action-icon">📘</span>
-        <span class="action-label">PADRÕES</span>
-    </div>
-
-    <div class="dash-action" onclick="alert('Abrindo Estratégia...')">
-        <span class="action-icon">🎯</span>
-        <span class="action-label">ESTRATÉGIA</span>
-    </div>
-
-    <div class="dash-action" onclick="alert('Abrindo Dicas...')">
-        <span class="action-icon">💡</span>
-        <span class="action-label">DICAS IA</span>
-    </div>
-
-    <div class="dash-card mentoria-card" onclick="window.open('https://wa.me/5551989378751','_blank')">
-        <span>🎓 ACESSAR MENTORIA VIP</span>
-        <span style="font-size:1.2rem">➔</span>
-    </div>
-
 </div>
 
-<footer class="stats-footer desktop-only">
-    <div style="width:100%; text-align:center; color:#666; font-size:0.8rem;">
-        Painel de Controle Desktop
-    </div>
-</footer>
 
+<!-- PADRÕES IA -->
+<div class="stat-item">
+    <span class="stat-label">📘 PADRÕES IA</span>
+    <div class="stat-value" id="btnPadroesIA">Ver</div>
+</div>
 
-<style>
-    /* ========================================= */
-    /* 🎨 ESTILOS DO DASHBOARD INCRÍVEL (CSS)    */
-    /* ========================================= */
+<!-- ESTRATÉGIA IA -->
+<div class="stat-item">
+    <span class="stat-label">🎯 ESTRATÉGIA IA</span>
+    <div class="stat-value" id="btnEstrategiaIA">Ver</div>
+</div>
 
-    /* 1. ESCONDE O DASHBOARD NO PC */
-    .mobile-dashboard { display: none; }
-    .desktop-only { display: flex; }
+<!-- DICAS IA -->
+<div class="stat-item">
+    <span class="stat-label">💡 DICAS IA</span>
+    <div class="stat-value" id="btnDicasIA">Ver</div>
+</div>
 
-    /* 2. MOSTRA SÓ NO CELULAR */
-    @media screen and (max-width: 768px) {
         
-        .desktop-only { display: none !important; } /* Esconde rodapé velho */
-        
-        .mobile-dashboard {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr; /* 3 Colunas */
-            gap: 12px;
-            padding: 20px;
-            padding-bottom: 100px; /* Espaço pro final da tela */
-            background: transparent;
-            margin-top: 10px;
-        }
-
-        /* CARD GENÉRICO */
-        .dash-card {
-            background: linear-gradient(145deg, #1e1e2f, #151525);
-            border-radius: 16px;
-            padding: 15px;
-            border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        /* TITULOS PEQUENOS */
-        .dash-label {
-            font-size: 0.65rem;
-            color: #8899a6;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-
-        /* === HERO CARD (ASSERTIVIDADE) === */
-        .hero-card {
-            grid-column: 1 / -1; /* Ocupa largura total */
-            background: linear-gradient(90deg, rgba(0, 230, 118, 0.1), rgba(20, 20, 30, 0.8));
-            border: 1px solid #00e676;
-            flex-direction: row;
-            justify-content: space-between;
-            padding: 15px 25px;
-            align-items: center;
-        }
-        .hero-header { display: flex; align-items: center; gap: 8px; }
-        .hero-content { text-align: right; }
-        .big-number { font-size: 2.2rem; font-weight: 800; color: #00e676; line-height: 1; }
-        .hero-sub { font-size: 0.8rem; font-weight: bold; margin-top: 5px; }
-
-        /* === INFO CARDS (PREVISÃO / RISCO) === */
-        .info-card {
-            grid-column: span 1; /* Ocupa 1 espaço */
-            min-height: 80px;
-        }
-        .info-value { font-size: 1.1rem; font-weight: bold; color: white; }
-        
-        .warning { background: rgba(255, 165, 0, 0.08); border-color: rgba(255, 165, 0, 0.3); }
-
-        /* === ROSA CARD (DESTAQUE) === */
-        .rosa-card {
-            grid-column: span 1; /* Ocupa 1 espaço */
-            background: rgba(255, 0, 128, 0.1);
-            border-color: #ff0080;
-        }
-        .rosa-value { font-size: 1.3rem; font-weight: 800; color: #ff0080; }
-        .rosa-time { font-size: 0.7rem; color: #ff80bf; }
-
-        /* === BOTÕES DE AÇÃO (Padrões, etc) === */
-        .dash-action {
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 15px 5px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .dash-action:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
-        .action-icon { display: block; font-size: 1.5rem; margin-bottom: 5px; }
-        .action-label { font-size: 0.6rem; color: #ccc; font-weight: bold; }
-
-        /* === MENTORIA === */
-        .mentoria-card {
-            grid-column: 1 / -1;
-            background: #00e676;
-            color: #000;
-            font-weight: 800;
-            flex-direction: row;
-            justify-content: space-between;
-            padding: 15px 20px;
-            margin-top: 10px;
-            box-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
-        }
-    }
-/* ========================================= */
-    /* 🎨 ESTILOS DO DASHBOARD INCRÍVEL (CSS)    */
-    /* ========================================= */
-
-    /* 1. ESCONDE O DASHBOARD NO PC */
-    .mobile-dashboard { display: none; }
-    .desktop-only { display: flex; }
-
-    /* 2. MOSTRA SÓ NO CELULAR */
-    @media screen and (max-width: 768px) {
-        
-        .desktop-only { display: none !important; } /* Esconde rodapé velho */
-        
-        .mobile-dashboard {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr; /* 3 Colunas */
-            gap: 12px;
-            padding: 20px;
-            padding-bottom: 100px; /* Espaço pro final da tela */
-            background: transparent;
-            margin-top: 10px;
-        }
-
-        /* CARD GENÉRICO */
-        .dash-card {
-            background: linear-gradient(145deg, #1e1e2f, #151525);
-            border-radius: 16px;
-            padding: 15px;
-            border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        /* TITULOS PEQUENOS */
-        .dash-label {
-            font-size: 0.65rem;
-            color: #8899a6;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-
-        /* === HERO CARD (ASSERTIVIDADE) === */
-        .hero-card {
-            grid-column: 1 / -1; /* Ocupa largura total */
-            background: linear-gradient(90deg, rgba(0, 230, 118, 0.1), rgba(20, 20, 30, 0.8));
-            border: 1px solid #00e676;
-            flex-direction: row;
-            justify-content: space-between;
-            padding: 15px 25px;
-            align-items: center;
-        }
-        .hero-header { display: flex; align-items: center; gap: 8px; }
-        .hero-content { text-align: right; }
-        .big-number { font-size: 2.2rem; font-weight: 800; color: #00e676; line-height: 1; }
-        .hero-sub { font-size: 0.8rem; font-weight: bold; margin-top: 5px; }
-
-        /* === INFO CARDS (PREVISÃO / RISCO) === */
-        .info-card {
-            grid-column: span 1; /* Ocupa 1 espaço */
-            min-height: 80px;
-        }
-        .info-value { font-size: 1.1rem; font-weight: bold; color: white; }
-        
-        .warning { background: rgba(255, 165, 0, 0.08); border-color: rgba(255, 165, 0, 0.3); }
-
-        /* === ROSA CARD (DESTAQUE) === */
-        .rosa-card {
-            grid-column: span 1; /* Ocupa 1 espaço */
-            background: rgba(255, 0, 128, 0.1);
-            border-color: #ff0080;
-        }
-        .rosa-value { font-size: 1.3rem; font-weight: 800; color: #ff0080; }
-        .rosa-time { font-size: 0.7rem; color: #ff80bf; }
-
-        /* === BOTÕES DE AÇÃO (Padrões, etc) === */
-        .dash-action {
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 15px 5px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .dash-action:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
-        .action-icon { display: block; font-size: 1.5rem; margin-bottom: 5px; }
-        .action-label { font-size: 0.6rem; color: #ccc; font-weight: bold; }
-
-        /* === MENTORIA === */
-        .mentoria-card {
-            grid-column: 1 / -1;
-            background: #00e676;
-            color: #000;
-            font-weight: 800;
-            flex-direction: row;
-            justify-content: space-between;
-            padding: 15px 20px;
-            margin-top: 10px;
-            box-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
-        }
-    }
-</style>
-
-<script>
-    // SCRIPT PARA CONECTAR OS DADOS DO SEU SISTEMA NO NOVO DASHBOARD
-    // Esse script garante que quando o sistema atualizar o ID antigo, ele atualiza o Mobile também
-    setInterval(() => {
-        try {
-            // Copia Assertividade
-            document.getElementById('valAssertividadeMobile').innerText = document.getElementById('valAssertividade').innerText;
-            document.getElementById('placarSessionMobile').innerHTML = document.getElementById('placarSession').innerHTML;
-            
-            // Copia Previsão
-            document.getElementById('listaPrevisaoMobile').innerHTML = document.getElementById('listaPrevisao').innerHTML;
-            
-            // Copia Risco (Se existir)
-            let riscoOriginal = document.getElementById('listaPrevisaoRisco');
-            if(riscoOriginal) document.getElementById('listaPrevisaoRiscoMobile').innerHTML = riscoOriginal.innerHTML;
-
-            // Copia Rosa
-            document.getElementById('valUltimaRosaMobile').innerText = document.getElementById('valUltimaRosa').innerText;
-            document.getElementById('horaUltimaRosaMobile').innerText = document.getElementById('horaUltimaRosa').innerText;
-        } catch(e) {
-            // Ignora erros se os dados ainda não carregaram
-        }
-    }, 1000);
-</script>
+<div class="stat-item">
+            <span class="stat-label">🌸 ÚLTIMA ROSA</span>
+            <div class="stat-value" id="valUltimaRosa">--</div>
+            <div class="stat-sub" id="horaUltimaRosa">--:--</div>
+        </div>
+        <div class="stat-item" id="btnMentoria"
+     style="cursor:pointer;"
+     onclick="window.open('https://wa.me/5551989378751','_blank')">
+    <span class="stat-label">🎓 MENTORIA</span>
+    <div class="stat-value" style="font-size:0.9rem;">Acessar</div>
+</div>
 
     </footer>
 09:23 25/11/2025
@@ -1938,7 +1727,57 @@ function aplicarResetRisco() {
         <span class="text-azul">--</span>
     `;
 }
+
+/* ======== DETECÇÃO AUTOMÁTICA ======== */
+function detectarDevice() {
+    const mobile = window.innerWidth <= 900;
+    if (mobile) {
+        document.body.classList.add("mobile");
+        document.body.classList.remove("desktop");
+    } else {
+        document.body.classList.add("desktop");
+        document.body.classList.remove("mobile");
+    }
+}
+window.addEventListener("resize", detectarDevice);
+window.addEventListener("load", detectarDevice);
+
+/* ======== ATUALIZAR CARDS MOBILE ======== */
+function atualizarDashboardMobile() {
+    document.getElementById("dashAssert").innerText =
+        document.getElementById("valAssertividade").innerText;
+
+    const prev = document.getElementById("listaPrevisao");
+    if (prev) document.getElementById("dashPrevisao").innerHTML = prev.innerHTML;
+
+    const risco = document.getElementById("listaPrevisaoRisco");
+    if (risco) document.getElementById("dashRisco").innerHTML = risco.innerHTML;
+
+    document.getElementById("dashUltRosa").innerText =
+        document.getElementById("valUltimaRosa").innerText;
+
+    document.getElementById("dashPadroes").innerText = "Ver";
+}
+
+/* Atualiza a cada 3 segundos */
+setInterval(atualizarDashboardMobile, 3000);
+
+/* ===== Scrolls ===== */
+window.scrollToFooterRisco = () => {
+    document.getElementById("btnRisco").scrollIntoView({ behavior: "smooth" });
+};
+
+window.scrollToFooterRosa = () => {
+    document.getElementById("valUltimaRosa").scrollIntoView({ behavior: "smooth" });
+};
+
+window.scrollToFooterPadroes = () => {
+    document.getElementById("btnPadroesIA").scrollIntoView({ behavior: "smooth" });
+};
+
  
     </script>
+</div> <!-- FIM DESKTOP-ONLY -->
+
 </body>
 </html>
