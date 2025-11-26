@@ -574,88 +574,125 @@
     align-items: center !important;
     text-align: center !important;
 }
-
-/* ================================================== */
-/* MELHORIAS APENAS PARA CELULAR (Telas até 768px) */
-/* ================================================== */
+<style>
+/* ============================================================ */
+/* 📱 TRANSFORMAÇÃO MOBILE - PAINEL DE CONTROLE (GRID SYSTEM) */
+/* ============================================================ */
 @media screen and (max-width: 768px) {
 
-    /* 1. O Container Principal dos ícones inferiores */
-    /* TROQUE '.sua-classe-do-container-inferior' pelo nome real da div que segura todos os ícones */
-    .sua-classe-do-container-inferior {
-        display: grid;
-        /* Cria 2 colunas de tamanho igual */
-        grid-template-columns: 1fr 1fr; 
-        /* Espaço entre os cartões */
-        gap: 15px;
-        padding: 20px;
-        /* Garante que use a largura total */
-        width: 100%;
-        box-sizing: border-box;
-        /* Uma cor de fundo sutil para separar do resto */
-        background-color: rgba(255, 255, 255, 0.05);
-        border-radius: 20px 20px 0 0;
+    /* 1. O CONTAINER PRINCIPAL (A barra de baixo) */
+    .stats-footer {
+        /* Transforma em Grade */
+        display: grid !important; 
+        grid-template-columns: 1fr 1fr; /* 2 Colunas Iguais */
+        gap: 12px; /* Espaço entre os cartões */
+        
+        /* Ajustes de Posicionamento */
+        position: relative !important; /* Deixa de ser rodapé fixo e vira conteúdo */
+        height: auto !important;
+        padding: 20px !important;
+        background: transparent !important; /* Remove fundo chapado */
+        overflow-x: visible !important; /* Remove rolagem lateral */
+        margin-bottom: 80px; /* Espaço para não colar no fim da tela */
     }
 
-    /* 2. Estilo Geral dos Cartões (os quadradinhos) */
-    /* TROQUE '.sua-classe-do-cartao' pelo nome da div de cada item individual */
-    .sua-classe-do-cartao {
-        background: rgba(15, 25, 35, 0.8); /* Fundo mais escuro */
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
+    /* 2. ESTILO GERAL DOS CARTÕES */
+    .stat-item {
+        background: linear-gradient(145deg, #1a1a2e, #16213e);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
         padding: 15px;
+        
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
-        min-height: 100px; /* Altura mínima para ficarem maiores */
+        
+        min-width: auto !important; /* Reseta largura fixa */
+        min-height: 90px; /* Altura boa para o dedo */
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        transition: transform 0.2s;
     }
 
-    /* --- DESTAQUES ESPECÍFICOS --- */
-
-    /* 3. Assertividade (O primeiro card) - Fica GIGANTE no topo */
-    /* Use ':first-child' se ele for o primeiro, ou a classe específica dele */
-    .sua-classe-do-container-inferior > div:first-child {
-        grid-column: 1 / -1; /* Faz ele ocupar as duas colunas (largura total) */
-        background: linear-gradient(45deg, rgba(0, 255, 127, 0.1), transparent);
-        border-color: #00ff7f;
+    .stat-item:active {
+        transform: scale(0.97); /* Efeito de clique */
     }
 
-    /* Aumenta a fonte da porcentagem no mobile */
-    .sua-classe-do-container-inferior > div:first-child h2, 
-    .sua-classe-do-container-inferior > div:first-child .porcentagem-grande {
-        font-size: 2.5em !important; /* Letra bem grande */
-        margin: 10px 0;
+    /* Títulos dos cartões */
+    .stat-label {
+        font-size: 0.75rem !important;
+        color: #8899a6;
+        margin-bottom: 8px !important;
+        letter-spacing: 1px;
+        text-transform: uppercase;
     }
 
-    /* 4. Última Rosa (O penúltimo card) - Destaque também */
-    /* Ajuste o seletor para pegar o card da Rosa */
-    .card-ultima-rosa {
-         grid-column: 1 / -1; /* Largura total também */
-         background: linear-gradient(45deg, rgba(255, 0, 85, 0.1), transparent);
-         border-color: #ff0055;
-         flex-direction: row; /* Mostra os dados lado a lado */
-         justify-content: space-around;
-    }
-    .card-ultima-rosa div {
-        font-size: 1.5em;
-        font-weight: bold;
+    /* Valores dos cartões */
+    .stat-value {
+        font-size: 1.3rem !important;
+        font-weight: 800;
+        color: white;
     }
 
-    /* 5. Melhorando os botões "Ver" e "Acessar" para toque */
-    /* Se eles forem links <a> ou botões <button> */
-    .sua-classe-do-cartao a,
-    .sua-classe-do-cartao button {
-        margin-top: 10px;
-        padding: 10px 20px;
-        width: 80%; /* Botão mais largo para facilitar o toque */
-        background-color: rgba(255, 255, 255, 0.1);
+    /* ========================================== */
+    /* 3. REGRAS ESPECÍFICAS PARA CADA CARTÃO */
+    /* ========================================== */
+
+    /* 🎯 ASSERTIVIDADE (PRIMEIRO ITEM) - Ocupa largura total */
+    .stats-footer .stat-item:nth-child(1) {
+        grid-column: 1 / -1; /* Ocupa as 2 colunas */
+        background: linear-gradient(90deg, rgba(0, 230, 118, 0.1), rgba(0, 0, 0, 0.4));
+        border: 1px solid #00e676;
+        flex-direction: row; /* Texto lado a lado */
+        justify-content: space-between;
+        padding: 0 25px;
+    }
+    .stats-footer .stat-item:nth-child(1) .stat-value {
+        font-size: 2rem !important;
+        color: #00e676;
+        text-shadow: 0 0 10px rgba(0, 230, 118, 0.4);
+    }
+
+    /* ⚠️ SINAL DE RISCO (Destaque Amarelo/Laranja) */
+    #btnRisco {
+        background: rgba(255, 165, 0, 0.1);
+        border-color: orange;
+    }
+    #listaPrevisaoRisco {
+        display: flex;
+        gap: 10px;
+    }
+
+    /* 🌸 ÚLTIMA ROSA (Destaque Rosa) - Ocupa largura total */
+    .stats-footer .stat-item:nth-last-child(2) { /* Penúltimo item */
+        grid-column: 1 / -1;
+        background: linear-gradient(90deg, rgba(255, 0, 128, 0.15), rgba(0,0,0,0.4));
+        border: 1px solid #ff0080;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+    #valUltimaRosa {
+        color: #ff0080;
+        font-size: 1.8rem !important;
+    }
+
+    /* 🎓 MENTORIA (Último item) */
+    #btnMentoria {
+        grid-column: 1 / -1;
+        background: #333;
+        border: 1px dashed #666;
+    }
+    
+    /* Botões "Ver" (Padrões, Dicas, Estratégia) */
+    #btnPadroesIA, #btnEstrategiaIA, #btnDicasIA {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 5px 15px;
         border-radius: 20px;
-        text-decoration: none;
-        font-weight: bold;
+        font-size: 0.9rem !important;
     }
 }
+</style>
     </style>
 </head>
 <body>
