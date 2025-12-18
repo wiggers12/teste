@@ -2,145 +2,212 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<title>Caixa Premiada</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Escolha a Caixa</title>
 
 <style>
 body {
-    margin: 0;
-    background: linear-gradient(160deg, #020617, #0f172a);
-    color: #fff;
-    font-family: Arial, Helvetica, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle, #111, #000);
+  color: #fff;
+  text-align: center;
+  padding: 20px;
 }
 
-.app {
-    width: 100%;
-    max-width: 480px;
-    padding: 20px;
-    text-align: center;
+#instrucoes {
+  background: #1c1c1c;
+  border-radius: 10px;
+  padding: 15px;
+  max-width: 520px;
+  margin: 10px auto 20px;
+  font-size: 14px;
 }
 
-h1 { margin-bottom: 8px; }
-p { opacity: 0.85; }
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 🔥 30 caixas = 5x6 */
-    gap: 12px;
-    margin-top: 25px;
+/* 🔥 CONTAINER GERAL */
+#game {
+  position: relative;
+  width: 520px;
+  margin: auto;
 }
 
-.caixa {
-    height: 70px;
-    border-radius: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.2s;
-    color: #fff;
+/* TABULEIRO */
+#board {
+  position: relative;
+  width: 520px;
+  height: 420px;
+  margin: auto;
+  z-index: 1;
 }
 
-/* Paleta de cores (repete automaticamente) */
-.caixa:nth-child(6n+1) { background: #ef4444; }
-.caixa:nth-child(6n+2) { background: #22c55e; }
-.caixa:nth-child(6n+3) { background: #3b82f6; }
-.caixa:nth-child(6n+4) { background: #f59e0b; }
-.caixa:nth-child(6n+5) { background: #a855f7; }
-.caixa:nth-child(6n)   { background: #14b8a6; }
-
-.caixa:hover { opacity: 0.85; }
-
-.desativada {
-    opacity: 0.35;
-    pointer-events: none;
+/* STATUS SEMPRE NA FRENTE */
+#status {
+  position: relative;
+  z-index: 10;
+  margin-top: 15px;
+  font-size: 16px;
+  min-height: 40px;
 }
 
-.ganhou { box-shadow: 0 0 20px #22c55e; }
-.perdeu { box-shadow: 0 0 20px #ef4444; }
-
-.resultado {
-    margin-top: 25px;
-    font-size: 22px;
-    font-weight: bold;
+/* CAIXAS */
+.box {
+  position: absolute;
+  width: 90px;
+  height: 80px;
+  background: linear-gradient(135deg, #ff9800, #ff5722);
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: left 0.6s ease, top 0.6s ease, opacity 0.3s;
+  z-index: 2;
 }
+
+.box:hover { transform: scale(1.05); }
+.box.disabled { pointer-events: none; opacity: 0.4; }
+.box.win { background: linear-gradient(135deg, #00e676, #00c853); }
+.box.empty { background: #333; }
 </style>
 </head>
 
 <body>
 
-<div class="app">
-    <h1>🎁 Escolha uma Caixa</h1>
-    <p>Prêmio: <b>R$ 1,00</b> • Apenas <b>1 chance</b></p>
+<h1>🎁 Caixa Premiada</h1>
 
-    <div class="grid" id="caixas"></div>
+<div id="instrucoes">
+👀 Observe os prêmios por <b>3 segundos</b><br>
+🙈 Depois as caixas fecham e <b>se movem de verdade</b><br>
+🧠 Use a memória e escolha <b>1 caixa</b><br>
+💸 Prêmios: <b>R$1 • R$5 • R$10 • R$20 • R$50 • R$100</b>
+</div>
 
-    <div class="resultado" id="resultado"></div>
+<div id="game">
+  <div id="board"></div>
+  <div id="status">Memorize os prêmios...</div>
 </div>
 
 <script>
-// ===== CONFIGURAÇÃO DO JOGO =====
-const TOTAL_CAIXAS = 30;          // 🔥 AGORA 30
-const CAIXA_PREMIADA = 17;       // 👈 você escolhe
-const PREMIO = "R$ 1,00";
+/* ================= CONFIG ================= */
+const COLS = 5;
+const TOTAL = 30;
+const BOX_W = 100;
+const BOX_H = 90;
 
-// Para novo jogo, altere o número final
-const BLOQUEIO_KEY = "jogo_caixa_jogou_30_v1";
-// ===============================
+/* ================= ESTADO ================= */
+let caixas = [];
+let jogou = false;
 
-let jogou = localStorage.getItem(BLOQUEIO_KEY) === "true";
+const board = document.getElementById("board");
+const status = document.getElementById("status");
 
-function criarCaixas() {
-    const area = document.getElementById("caixas");
-    area.innerHTML = "";
-
-    for (let i = 1; i <= TOTAL_CAIXAS; i++) {
-        const c = document.createElement("div");
-        c.className = "caixa";
-        c.innerText = i;
-
-        if (jogou) {
-            c.classList.add("desativada");
-        } else {
-            c.onclick = () => escolher(c, i);
-        }
-
-        area.appendChild(c);
-    }
-
-    if (jogou) {
-        document.getElementById("resultado").innerText =
-            "❌ Você já jogou. Aguarde o próximo jogo.";
-    }
+/* ================= POSIÇÃO ================= */
+function posicao(index) {
+  return {
+    x: (index % COLS) * BOX_W,
+    y: Math.floor(index / COLS) * BOX_H
+  };
 }
 
-function escolher(elemento, numero) {
-    if (jogou) return;
+/* ================= GERAR CAIXAS ================= */
+function gerarCaixas() {
+  caixas = Array(TOTAL).fill(null);
 
-    jogou = true;
-    localStorage.setItem(BLOQUEIO_KEY, "true");
+  const premios = ["R$1","R$5","R$10","R$20","R$50","R$100"];
+  const posicoes = [...Array(TOTAL).keys()].sort(() => Math.random() - 0.5);
 
-    document.querySelectorAll(".caixa")
-        .forEach(c => c.classList.add("desativada"));
-
-    if (numero === CAIXA_PREMIADA) {
-        elemento.classList.add("ganhou");
-        document.getElementById("resultado").innerHTML =
-            `🎉 PARABÉNS!<br>Você ganhou <b>${PREMIO}</b>`;
-    } else {
-        elemento.classList.add("perdeu");
-        document.getElementById("resultado").innerText =
-            "❌ ERROU! JÁ ERAS";
-    }
+  premios.forEach((premio, i) => {
+    caixas[posicoes[i]] = premio;
+  });
 }
 
-criarCaixas();
+/* ================= CRIAR ELEMENTOS ================= */
+function criarElementos() {
+  board.innerHTML = "";
+
+  caixas.forEach((valor, index) => {
+    const box = document.createElement("div");
+    box.className = "box";
+    box.dataset.index = index;
+
+    const p = posicao(index);
+    box.style.left = p.x + "px";
+    box.style.top = p.y + "px";
+
+    box.innerText = valor ? valor : "🎁";
+    box.onclick = () => escolher(box);
+
+    board.appendChild(box);
+  });
+}
+
+/* ================= MOSTRAR / ESCONDER ================= */
+function mostrarPremios() {
+  document.querySelectorAll(".box").forEach((box, i) => {
+    box.innerText = caixas[i] ? caixas[i] : "🎁";
+  });
+}
+
+function esconderPremios() {
+  document.querySelectorAll(".box").forEach(box => {
+    box.innerText = "🎁";
+  });
+}
+
+/* ================= EMBARALHAR COM MOVIMENTO REAL ================= */
+function embaralhar() {
+  const novaOrdem = [...Array(TOTAL).keys()].sort(() => Math.random() - 0.5);
+
+  novaOrdem.forEach((oldIndex, newPos) => {
+    const box = document.querySelector(`.box[data-index='${oldIndex}']`);
+    const p = posicao(newPos);
+    box.style.left = p.x + "px";
+    box.style.top = p.y + "px";
+    box.dataset.index = newPos;
+  });
+
+  caixas = novaOrdem.map(i => caixas[i]);
+}
+
+/* ================= ESCOLHER ================= */
+function escolher(box) {
+  if (jogou) return;
+  jogou = true;
+
+  document.querySelectorAll(".box").forEach(b => b.classList.add("disabled"));
+
+  const idx = Number(box.dataset.index);
+  const valor = caixas[idx];
+
+  if (valor) {
+    box.classList.add("win");
+    box.innerText = "💰";
+    status.innerHTML =
+      `🎉 <b>PARABÉNS!</b><br>Você ganhou <b>${valor}</b><br>Receba seu Pix 💸`;
+  } else {
+    box.classList.add("empty");
+    status.innerText = "😈 Não foi dessa vez…";
+  }
+}
+
+/* ================= START ================= */
+function start() {
+  jogou = false;
+  gerarCaixas();
+  criarElementos();
+
+  status.innerText = "Memorize os prêmios...";
+  mostrarPremios();
+
+  setTimeout(() => {
+    esconderPremios();
+    embaralhar();
+    status.innerText = "Escolha uma caixa 👇";
+  }, 3000);
+}
+
+start();
 </script>
 
 </body>
