@@ -3,72 +3,92 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pix Rápido</title>
+<title>Escolha a Caixa</title>
 
 <style>
-* { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
-
 body {
-    background: linear-gradient(160deg, #0f172a, #020617);
+    margin: 0;
+    background: linear-gradient(160deg, #020617, #0f172a);
     color: #fff;
-    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
 .app {
     width: 100%;
     max-width: 420px;
-    background: #020617;
-    border-radius: 16px;
     padding: 20px;
+    text-align: center;
 }
 
-.hidden { display: none; }
-
-h1, p { text-align: center; margin-bottom: 15px; }
-
-input, button {
-    width: 100%;
-    padding: 14px;
-    border-radius: 10px;
-    border: none;
-    font-size: 16px;
-}
-
-button {
-    background: #22c55e;
-    font-weight: bold;
-    cursor: pointer;
-}
+h1 { margin-bottom: 8px; }
+p { opacity: 0.85; }
 
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-top: 20px;
+    gap: 14px;
+    margin-top: 25px;
 }
 
 .caixa {
     height: 90px;
-    background: #1e293b;
-    border-radius: 12px;
+    border-radius: 14px;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     font-size: 22px;
     font-weight: bold;
     cursor: pointer;
     transition: 0.2s;
+    color: #fff;
 }
 
-.caixa:hover { background: #334155; }
+/* CORES */
+.caixa:nth-child(1) { background: #ef4444; }
+.caixa:nth-child(2) { background: #22c55e; }
+.caixa:nth-child(3) { background: #3b82f6; }
+.caixa:nth-child(4) { background: #f59e0b; }
+.caixa:nth-child(5) { background: #a855f7; }
+.caixa:nth-child(6) { background: #ec4899; }
+.caixa:nth-child(7) { background: #14b8a6; }
+.caixa:nth-child(8) { background: #e11d48; }
+.caixa:nth-child(9) { background: #0ea5e9; }
+
+.caixa:hover { opacity: 0.85; }
+
+.desativada {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.ganhou {
+    box-shadow: 0 0 20px #22c55e;
+}
+
+.perdeu {
+    box-shadow: 0 0 20px #ef4444;
+}
 
 .resultado {
+    margin-top: 25px;
     font-size: 22px;
-    text-align: center;
+    font-weight: bold;
+}
+
+button {
     margin-top: 20px;
+    padding: 12px;
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    background: #22c55e;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
 }
 </style>
 </head>
@@ -76,85 +96,61 @@ button {
 <body>
 
 <div class="app">
+    <h1>🎁 Escolha uma Caixa</h1>
+    <p>Prêmio: <b>R$ 1,00</b> • Apenas <b>1 chance</b></p>
 
-<div id="inicio">
-    <h1>💰 PIX RÁPIDO</h1>
-    <p>Escolha uma caixa e tente a sorte</p>
-    <button onclick="ir('inicio','cadastro')">COMEÇAR</button>
-</div>
-
-<div id="cadastro" class="hidden">
-    <h1>Seus dados</h1>
-    <input id="nome" placeholder="Nome">
-    <input id="whats” placeholder="WhatsApp">
-    <button onclick="irCadastro()">CONTINUAR</button>
-</div>
-
-<div id="jogo" class="hidden">
-    <h1>Escolha uma Caixa</h1>
     <div class="grid" id="caixas"></div>
-</div>
 
-<div id="pix" class="hidden">
-    <h1>Pagamento</h1>
-    <p>Valor: <b>R$ 5,00</b></p>
-    <p>Pix: <b>SUA_CHAVE_PIX</b></p>
-    <button onclick="revelar()">JÁ PAGUEI</button>
-</div>
+    <div class="resultado" id="resultado"></div>
 
-<div id="final" class="hidden">
-    <h1>Resultado</h1>
-    <div class="resultado" id="res"></div>
-    <button onclick="location.reload()">JOGAR NOVAMENTE</button>
-</div>
-
+    <button onclick="reiniciar()">JOGAR NOVAMENTE</button>
 </div>
 
 <script>
-// ===== CONFIGURAÇÕES =====
-const TOTAL_CAIXAS = 9; // 🔥 MUDE AQUI (5, 9, 12, 20...)
-const PREMIO = "R$ 10,00";
+// ===== CONFIGURAÇÃO =====
+const TOTAL_CAIXAS = 9;        // quantidade de caixas
+const CAIXA_PREMIADA = 6;     // 👈 você escolhe
+const PREMIO = "R$ 1,00";
+// ========================
 
-// ADMIN (true = você define / false = aleatório)
-const CONTROLE_MANUAL = true;
-const CAIXA_PREMIADA_ADMIN = 7; // só vale se manual=true
-// =========================
+let jogou = false;
 
-let escolhida = null;
-let premiada = CONTROLE_MANUAL 
-    ? CAIXA_PREMIADA_ADMIN 
-    : Math.floor(Math.random() * TOTAL_CAIXAS) + 1;
-
-function ir(a,b){
-    document.getElementById(a).classList.add("hidden");
-    document.getElementById(b).classList.remove("hidden");
-}
-
-function irCadastro(){
-    if(!nome.value || !whats.value) return alert("Preencha tudo");
-    ir('cadastro','jogo');
-    criarCaixas();
-}
-
-function criarCaixas(){
+function criarCaixas() {
     const area = document.getElementById("caixas");
     area.innerHTML = "";
-    for(let i=1;i<=TOTAL_CAIXAS;i++){
+
+    for (let i = 1; i <= TOTAL_CAIXAS; i++) {
         const c = document.createElement("div");
         c.className = "caixa";
         c.innerText = i;
-        c.onclick = ()=>{ escolhida=i; ir('jogo','pix'); };
+        c.onclick = () => escolher(c, i);
         area.appendChild(c);
     }
 }
 
-function revelar(){
-    ir('pix','final');
-    document.getElementById("res").innerHTML =
-        escolhida === premiada
-        ? `🎉 VOCÊ GANHOU <br><b>${PREMIO}</b>`
-        : "❌ Não foi dessa vez";
+function escolher(elemento, numero) {
+    if (jogou) return;
+    jogou = true;
+
+    document.querySelectorAll(".caixa")
+        .forEach(c => c.classList.add("desativada"));
+
+    if (numero === CAIXA_PREMIADA) {
+        elemento.classList.add("ganhou");
+        document.getElementById("resultado").innerHTML =
+            `🎉 PARABÉNS!<br>Você ganhou <b>${PREMIO}</b>`;
+    } else {
+        elemento.classList.add("perdeu");
+        document.getElementById("resultado").innerText =
+            "❌ ERROU! JÁ ERAS";
+    }
 }
+
+function reiniciar() {
+    location.reload();
+}
+
+criarCaixas();
 </script>
 
 </body>
