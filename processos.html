@@ -19,7 +19,7 @@ body {
 
 .app {
     width: 100%;
-    max-width: 420px;
+    max-width: 480px;
     padding: 20px;
     text-align: center;
 }
@@ -29,66 +29,46 @@ p { opacity: 0.85; }
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
+    grid-template-columns: repeat(5, 1fr); /* 🔥 30 caixas = 5x6 */
+    gap: 12px;
     margin-top: 25px;
 }
 
 .caixa {
-    height: 90px;
-    border-radius: 14px;
+    height: 70px;
+    border-radius: 12px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 22px;
+    font-size: 18px;
     font-weight: bold;
     cursor: pointer;
     transition: 0.2s;
     color: #fff;
 }
 
-/* CORES */
-.caixa:nth-child(1) { background: #ef4444; }
-.caixa:nth-child(2) { background: #22c55e; }
-.caixa:nth-child(3) { background: #3b82f6; }
-.caixa:nth-child(4) { background: #f59e0b; }
-.caixa:nth-child(5) { background: #a855f7; }
-.caixa:nth-child(6) { background: #ec4899; }
-.caixa:nth-child(7) { background: #14b8a6; }
-.caixa:nth-child(8) { background: #e11d48; }
-.caixa:nth-child(9) { background: #0ea5e9; }
+/* Paleta de cores (repete automaticamente) */
+.caixa:nth-child(6n+1) { background: #ef4444; }
+.caixa:nth-child(6n+2) { background: #22c55e; }
+.caixa:nth-child(6n+3) { background: #3b82f6; }
+.caixa:nth-child(6n+4) { background: #f59e0b; }
+.caixa:nth-child(6n+5) { background: #a855f7; }
+.caixa:nth-child(6n)   { background: #14b8a6; }
 
 .caixa:hover { opacity: 0.85; }
 
 .desativada {
-    opacity: 0.4;
+    opacity: 0.35;
     pointer-events: none;
 }
 
-.ganhou {
-    box-shadow: 0 0 20px #22c55e;
-}
-
-.perdeu {
-    box-shadow: 0 0 20px #ef4444;
-}
+.ganhou { box-shadow: 0 0 20px #22c55e; }
+.perdeu { box-shadow: 0 0 20px #ef4444; }
 
 .resultado {
     margin-top: 25px;
     font-size: 22px;
     font-weight: bold;
-}
-
-button {
-    margin-top: 20px;
-    padding: 12px;
-    width: 100%;
-    border: none;
-    border-radius: 10px;
-    background: #22c55e;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
 }
 </style>
 </head>
@@ -102,18 +82,19 @@ button {
     <div class="grid" id="caixas"></div>
 
     <div class="resultado" id="resultado"></div>
-
-    <button onclick="reiniciar()">JOGAR NOVAMENTE</button>
 </div>
 
 <script>
-// ===== CONFIGURAÇÃO =====
-const TOTAL_CAIXAS = 9;        // quantidade de caixas
-const CAIXA_PREMIADA = 6;     // 👈 você escolhe
+// ===== CONFIGURAÇÃO DO JOGO =====
+const TOTAL_CAIXAS = 30;          // 🔥 AGORA 30
+const CAIXA_PREMIADA = 17;       // 👈 você escolhe
 const PREMIO = "R$ 1,00";
-// ========================
 
-let jogou = false;
+// Para novo jogo, altere o número final
+const BLOQUEIO_KEY = "jogo_caixa_jogou_30_v1";
+// ===============================
+
+let jogou = localStorage.getItem(BLOQUEIO_KEY) === "true";
 
 function criarCaixas() {
     const area = document.getElementById("caixas");
@@ -123,14 +104,27 @@ function criarCaixas() {
         const c = document.createElement("div");
         c.className = "caixa";
         c.innerText = i;
-        c.onclick = () => escolher(c, i);
+
+        if (jogou) {
+            c.classList.add("desativada");
+        } else {
+            c.onclick = () => escolher(c, i);
+        }
+
         area.appendChild(c);
+    }
+
+    if (jogou) {
+        document.getElementById("resultado").innerText =
+            "❌ Você já jogou. Aguarde o próximo jogo.";
     }
 }
 
 function escolher(elemento, numero) {
     if (jogou) return;
+
     jogou = true;
+    localStorage.setItem(BLOQUEIO_KEY, "true");
 
     document.querySelectorAll(".caixa")
         .forEach(c => c.classList.add("desativada"));
@@ -144,10 +138,6 @@ function escolher(elemento, numero) {
         document.getElementById("resultado").innerText =
             "❌ ERROU! JÁ ERAS";
     }
-}
-
-function reiniciar() {
-    location.reload();
 }
 
 criarCaixas();
