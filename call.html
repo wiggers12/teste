@@ -5,104 +5,62 @@
 <title>Vitória Fotografia | Niterói - RJ</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="description" content="Vitória Resinente - Fotógrafa profissional em Niterói RJ. Ensaios, casamentos e eventos.">
-
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
-:root{
-  --primary:#111;
-  --accent:#c49b63;
-  --bg:#f7f7f7;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:#333}
-
-/* HERO */
+body{margin:0;font-family:'Inter',sans-serif;background:#f7f7f7}
 header{
-  background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+  background:linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.6)),
   url('https://images.unsplash.com/photo-1493863641943-9b68992a8d07?auto=format&fit=crop&w=1600&q=80');
-  background-size:cover;
-  background-position:center;
-  color:#fff;
-  padding:100px 20px;
-  text-align:center;
+  color:#fff;text-align:center;padding:90px 20px
 }
-header h1{font-family:'Playfair Display',serif;font-size:48px}
-header p{margin:20px auto;max-width:700px;font-size:18px}
-.cta{
-  display:inline-block;
-  padding:15px 30px;
-  background:var(--accent);
-  color:#fff;
-  text-decoration:none;
-  border-radius:50px;
-  font-weight:600;
-}
-
-/* SECTIONS */
-section{padding:80px 20px;max-width:1100px;margin:auto}
-.section-title{text-align:center;margin-bottom:40px}
-.section-title h2{font-family:'Playfair Display',serif;font-size:36px}
-
-.services{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:30px}
-.service{background:#fff;padding:30px;border-radius:12px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.05)}
-
-.portfolio{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
-.portfolio img{width:100%;border-radius:12px}
-
-.about{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
-.about img{width:100%;border-radius:12px}
-
-.testimonials{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px}
-.testimonial{background:#fff;padding:25px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.05)}
-
-.contact{text-align:center;background:#111;color:#fff;padding:80px 20px}
+h1{font-family:'Playfair Display',serif;font-size:42px}
+.cta{background:#c49b63;color:#fff;padding:14px 28px;border-radius:40px;text-decoration:none;font-weight:600}
+section{padding:70px 20px;max-width:1100px;margin:auto}
 footer{background:#000;color:#aaa;text-align:center;padding:20px}
 
-/* WHATSAPP */
+/* WhatsApp */
 .whatsapp{
   position:fixed;right:20px;bottom:20px;
   background:#25d366;color:#fff;
-  padding:15px 18px;border-radius:50%;
-  font-size:22px;text-decoration:none;
+  padding:15px;border-radius:50%;
+  font-size:22px;text-decoration:none;z-index:999
 }
 
-/* POPUP */
-.popup-bg{
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  background:rgba(0,0,0,.6);
-  display:none;align-items:center;justify-content:center;
-  z-index:9999;
+/* CHAT */
+.chat-btn{
+  position:fixed;left:20px;bottom:20px;
+  background:#111;color:#fff;
+  padding:15px;border-radius:50%;
+  cursor:pointer;z-index:999
 }
-.popup{
-  background:#fff;
-  padding:30px;
-  max-width:400px;
-  width:90%;
-  border-radius:15px;
-  text-align:center;
+.chat-box{
+  position:fixed;left:20px;bottom:90px;
+  width:320px;background:#fff;
+  border-radius:15px;box-shadow:0 10px 40px rgba(0,0,0,.3);
+  display:none;flex-direction:column;overflow:hidden;z-index:999
 }
-.popup h3{font-family:'Playfair Display',serif;margin-bottom:10px}
-.popup input{
-  width:100%;
-  padding:12px;
-  margin:10px 0;
-  border-radius:8px;
-  border:1px solid #ccc;
+.chat-header{
+  background:#111;color:#fff;padding:15px;font-weight:600
 }
-.popup button{
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:50px;
-  background:var(--accent);
-  color:#fff;
-  font-size:16px;
-  cursor:pointer;
+.chat-body{
+  padding:15px;height:260px;overflow-y:auto;font-size:14px
 }
-.popup small{display:block;margin-top:10px;color:#777}
-.close{margin-top:15px;cursor:pointer;color:#999}
+.chat-msg.bot{background:#f1f1f1;padding:10px;border-radius:10px;margin-bottom:10px}
+.chat-msg.user{background:#c49b63;color:#fff;padding:10px;border-radius:10px;margin-bottom:10px;text-align:right}
+.chat-input{
+  display:flex;border-top:1px solid #ddd
+}
+.chat-input input{
+  flex:1;border:none;padding:12px
+}
+.chat-input button{
+  border:none;background:#c49b63;color:#fff;padding:12px
+}
+.options button{
+  width:100%;margin:5px 0;padding:8px;border:none;
+  border-radius:20px;background:#111;color:#fff;cursor:pointer
+}
 </style>
 </head>
 
@@ -110,89 +68,94 @@ footer{background:#000;color:#aaa;text-align:center;padding:20px}
 
 <header>
   <h1>Vitória Fotografia</h1>
-  <p>Capturando momentos especiais com qualidade e profissionalismo em Niterói – RJ</p>
-  <a class="cta" href="#" onclick="abrirPopup()">Quero orçamento</a>
+  <p>Fotografia profissional em Niterói – RJ</p><br>
+  <a class="cta" href="https://wa.me/5521997092332" target="_blank">Quero orçamento</a>
 </header>
 
 <section>
-  <div class="section-title"><h2>Serviços</h2></div>
-  <div class="services">
-    <div class="service"><h3>Ensaios</h3><p>Feminino, gestante e profissional.</p></div>
-    <div class="service"><h3>Casamentos</h3><p>Registro completo do seu grande dia.</p></div>
-    <div class="service"><h3>Eventos</h3><p>Cobertura social e corporativa.</p></div>
-  </div>
+  <h2>Serviços</h2>
+  <p>Ensaios • Casamentos • Eventos</p>
 </section>
 
-<section>
-  <div class="section-title"><h2>Portfólio</h2></div>
-  <div class="portfolio">
-    <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91">
-    <img src="https://images.unsplash.com/photo-1520857014576-2c4f4c972b57">
-    <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee">
-  </div>
-</section>
-
-<section>
-  <div class="section-title"><h2>Sobre Mim</h2></div>
-  <div class="about">
-    <p>Sou Vitória Resinente, fotógrafa profissional apaixonada por registrar histórias reais com sensibilidade e qualidade.</p>
-    <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e">
-  </div>
-</section>
-
-<section>
-  <div class="section-title"><h2>Depoimentos</h2></div>
-  <div class="testimonials">
-    <div class="testimonial">“Fotos incríveis e atendimento maravilhoso.”</div>
-    <div class="testimonial">“Trabalho impecável, recomendo!”</div>
-  </div>
-</section>
-
-<section class="contact">
-  <h2>Vamos conversar?</h2>
-  <p>Atendimento em Niterói e região</p>
-  <p><strong>WhatsApp:</strong> (21) 99709-2332</p>
-</section>
-
-<footer>© 2025 Vitória Resinente – Fotografia Profissional</footer>
+<footer>© 2025 Vitória Resinente</footer>
 
 <a class="whatsapp" href="https://wa.me/5521997092332" target="_blank">💬</a>
 
-<!-- POPUP -->
-<div class="popup-bg" id="popup">
-  <div class="popup">
-    <h3>Bem-vinda 💛</h3>
-    <p>Posso te ajudar a escolher o ensaio ideal?</p>
-    <input id="nome" placeholder="Seu nome">
-    <input id="whats" placeholder="Seu WhatsApp">
-    <button onclick="enviarWhats()">Quero orçamento</button>
-    <div class="close" onclick="fecharPopup()">Fechar</div>
-    <small>Atendimento rápido pelo WhatsApp</small>
+<!-- CHAT -->
+<div class="chat-btn" onclick="toggleChat()">🤖</div>
+
+<div class="chat-box" id="chat">
+  <div class="chat-header">Assistente Virtual</div>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="chat-input">
+    <input id="chatInput" placeholder="Digite aqui..." />
+    <button onclick="sendMsg()">Enviar</button>
   </div>
 </div>
 
 <script>
-const popup = document.getElementById('popup');
+let etapa = 0;
+let nomeUser = '';
+let servico = '';
 
-setTimeout(()=>{
-  if(!sessionStorage.getItem('popupVisto')){
-    popup.style.display='flex';
-    sessionStorage.setItem('popupVisto',true);
+function toggleChat(){
+  const chat = document.getElementById('chat');
+  chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+  if(etapa === 0){
+    botMsg('Olá 👋 Eu sou a assistente virtual da Vitória 😊 Qual é o seu nome?');
+    etapa = 1;
   }
-},5000);
+}
 
-function abrirPopup(){popup.style.display='flex'}
-function fecharPopup(){popup.style.display='none'}
+function botMsg(text){
+  const div = document.createElement('div');
+  div.className = 'chat-msg bot';
+  div.innerText = text;
+  chatBody.appendChild(div);
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
 
-function enviarWhats(){
-  const nome = document.getElementById('nome').value;
-  const whats = document.getElementById('whats').value;
-  if(!nome || !whats){
-    alert('Preencha nome e WhatsApp');
-    return;
+function userMsg(text){
+  const div = document.createElement('div');
+  div.className = 'chat-msg user';
+  div.innerText = text;
+  chatBody.appendChild(div);
+}
+
+function sendMsg(){
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if(!msg) return;
+  userMsg(msg);
+  input.value = '';
+
+  if(etapa === 1){
+    nomeUser = msg;
+    botMsg(`Prazer, ${nomeUser}! Qual tipo de ensaio você procura?`);
+    showOptions();
+    etapa = 2;
   }
-  const msg = `Olá, meu nome é ${nome}. Meu WhatsApp é ${whats}. Gostaria de informações sobre ensaio fotográfico.`;
-  window.open(`https://wa.me/5521997092332?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+function showOptions(){
+  const body = document.getElementById('chatBody');
+  const div = document.createElement('div');
+  div.className = 'options';
+  ['Ensaio Fotográfico','Casamento','Evento'].forEach(op=>{
+    const btn = document.createElement('button');
+    btn.innerText = op;
+    btn.onclick = ()=>{
+      servico = op;
+      userMsg(op);
+      botMsg('Perfeito! Vou te direcionar para o WhatsApp 😊');
+      setTimeout(()=>{
+        const texto = `Olá, meu nome é ${nomeUser}. Tenho interesse em ${servico}.`;
+        window.open(`https://wa.me/5521997092332?text=${encodeURIComponent(texto)}`,'_blank');
+      },1200);
+    };
+    div.appendChild(btn);
+  });
+  body.appendChild(div);
 }
 </script>
 
