@@ -1,225 +1,538 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aviator Analyzer + Jogo Ao Vivo</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Stranger Things: Deluxe Edition</title>
+    <style>
+        body {
+            background-color: #050505;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+            cursor: none; 
+        }
+        
+        #ui {
+            position: absolute;
+            top: 20px; left: 20px;
+            width: 95%;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+        }
 
-<style>
-    body {
-        font-family: Arial;
-        background: #0e0e0e;
-        color: white;
-        margin: 0;
-        padding: 0;
-    }
+        .player-card {
+            background: linear-gradient(180deg, rgba(30,30,30,0.9), rgba(10,10,10,0.9));
+            padding: 10px;
+            border: 2px solid #444;
+            border-radius: 12px;
+            width: 300px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
 
-    h1 {
-        text-align: center;
-        padding: 15px 0;
-        background: #ff004c;
-        margin: 0;
-        font-size: 24px;
-    }
+        .titulo { 
+            font-size: 14px; margin-bottom: 5px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;
+        }
+        .barra-vida-bg { width: 100%; height: 12px; background: #222; border-radius: 6px; overflow: hidden; border: 1px solid #555; }
+        .vida-fill { height: 100%; transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        #vida-p1 { background: linear-gradient(90deg, #00ffff, #0088ff); box-shadow: 0 0 10px cyan; }
+        #vida-p2 { background: linear-gradient(90deg, #00ff00, #008800); box-shadow: 0 0 10px lime; }
 
-    iframe {
-        width: 100%;
-        height: 60vh;
-        border: none;
-    }
+        #score-box {
+            position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
+            text-align: center; color: white; z-index: 100;
+            text-shadow: 0 0 15px #ff0000;
+        }
+        #score-val { font-size: 40px; font-weight: bold; font-family: 'Impact', sans-serif; letter-spacing: 2px; }
 
-    .container {
-        padding: 15px;
-    }
+        #mira {
+            position: absolute; width: 40px; height: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.8); border-radius: 50%;
+            transform: translate(-50%, -50%); pointer-events: none; z-index: 1000;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+            transition: transform 0.1s;
+        }
+        #mira::after {
+            content: ''; position: absolute; top: 50%; left: 50%; width: 4px; height: 4px;
+            background: #ff0000; transform: translate(-50%, -50%); border-radius: 50%;
+            box-shadow: 0 0 5px red;
+        }
 
-    .btn-cor {
-        width: 32%;
-        padding: 15px;
-        font-size: 20px;
-        border-radius: 10px;
-        margin: 5px 1%;
-        color: white;
-        text-align: center;
-        border: none;
-        cursor: pointer;
-    }
+        /* Vinheta cinematográfica */
+        #vignette {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 60%, black 100%);
+            pointer-events: none; z-index: 50;
+        }
 
-    .azul { background: #007bff; }
-    .roxa { background: #7d00ff; }
-    .rosa { background: #ff2fb9; }
-
-    .lista {
-        background: #111;
-        padding: 10px;
-        margin-top: 15px;
-        border-radius: 10px;
-        max-height: 180px;
-        overflow-y: auto;
-    }
-
-    .item {
-        padding: 12px;
-        margin: 5px 0;
-        border-radius: 8px;
-        display: flex;
-        justify-content: space-between;
-        font-size: 18px;
-    }
-
-    .a { background: #003b77; }
-    .r { background: #4a0088; }
-    .p { background: #8a005a; }
-
-    .remove {
-        color: #ff004c;
-        cursor: pointer;
-        font-weight: bold;
-    }
-
-    button {
-        width: 100%;
-        padding: 15px;
-        background: #ff004c;
-        color: white;
-        border: none;
-        border-radius: 10px;
-        margin-top: 15px;
-        font-size: 18px;
-        cursor: pointer;
-    }
-
-    .box {
-        background: #1b1b1b;
-        padding: 20px;
-        margin-top: 25px;
-        border-radius: 12px;
-    }
-
-    .label {
-        font-weight: bold;
-        color: #ff004c;
-    }
-</style>
-
+        canvas { display: block; }
+    </style>
 </head>
 <body>
 
-<h1>Aviator ao Vivo + Análise Wiggers</h1>
+    <div id="vignette"></div>
+    <div id="mira"></div>
 
-<!-- AVIATOR -->
-<iframe src="https://m.big.bet.br/casino/game/3496406?provider=Spribe&from=%2Fcasino"></iframe>
-
-<div class="container">
-
-    <h2>🎨 Adicionar Vela por Cor:</h2>
-
-    <button class="btn-cor azul" onclick="addVela('azul')">🔵 Azul</button>
-    <button class="btn-cor roxa" onclick="addVela('roxa')">🟣 Roxa</button>
-    <button class="btn-cor rosa" onclick="addVela('rosa')">🌸 Rosa</button>
-
-    <h3>Velas registradas:</h3>
-    <div id="lista" class="lista"></div>
-
-    <button onclick="analisar()">ANALISAR</button>
-
-    <div id="resultado" class="box" style="display:none;">
-        <h2>🔎 Resultado da Análise</h2>
-
-        <p class="label">Recomendação:</p>
-        <p id="recomendacao"></p>
-
-        <p class="label">Padrão detectado:</p>
-        <p id="padrao"></p>
-
-        <p class="label">Chance de vela rosa:</p>
-        <p id="chance"></p>
-
-        <p class="label">Tendência:</p>
-        <p id="tendencia"></p>
+    <div id="score-box">
+        <div style="font-size: 14px; color: #aaa; letter-spacing: 3px;">STRANGER THINGS</div>
+        <div id="score-val">0</div>
     </div>
 
-</div>
+    <div id="ui">
+        <div class="player-card" style="border-color: cyan;">
+            <div class="titulo" style="color:cyan; text-shadow: 0 0 5px cyan;">ONZE</div>
+            <div class="barra-vida-bg"><div id="vida-p1" class="vida-fill" style="width: 100%;"></div></div>
+        </div>
+        <div class="player-card" style="border-color: lime;">
+            <div class="titulo" style="color:lime; text-shadow: 0 0 5px lime;">WILL</div>
+            <div class="barra-vida-bg"><div id="vida-p2" class="vida-fill" style="width: 100%;"></div></div>
+        </div>
+    </div>
 
-<script>
-let velas = [];
+    <canvas id="gameCanvas"></canvas>
 
-function addVela(cor) {
-    velas.push(cor);
-    render();
-}
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const mira = document.getElementById("mira");
 
-function remover(i) {
-    velas.splice(i, 1);
-    render();
-}
+        function ajustar() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', ajustar);
+        ajustar();
 
-function render() {
-    let html = "";
+        let mouse = { x: canvas.width/2, y: canvas.height/2 };
+        let chaoY = canvas.height - 80;
+        let frame = 0;
+        let score = 0;
+        let gameRunning = true;
+        let shake = 0; // Variável para tremer a tela
 
-    velas.forEach((v,i)=>{
-        let classe = v === "azul" ? "a" : v === "roxa" ? "r" : "p";
-        let nome = v === "azul" ? "Azul" : v === "roxa" ? "Roxa" : "Rosa";
+        const p1 = { x: 200, y: chaoY, vida: 100, vivo: true, cooldown: 0 }; 
+        const p2 = { x: 250, y: chaoY, vida: 100, vivo: true, cooldown: 0 }; 
 
-        html += `
-        <div class="item ${classe}">
-            <span>${nome}</span>
-            <span class="remove" onclick="remover(${i})">X</span>
-        </div>`;
-    });
+        let monstros = [];
+        let tiros = [];
+        let particles = [];
+        let nuvens = []; // Elementos do fundo
+        
+        // Criar cenário
+        for(let i=0; i<30; i++) nuvens.push({
+            x: Math.random()*canvas.width, 
+            y: Math.random()*canvas.height/2, 
+            v: Math.random()*0.5+0.1, 
+            size: Math.random()*2
+        });
 
-    document.getElementById("lista").innerHTML = html;
-}
+        // Controles
+        function updateMouse(x, y) {
+            mouse.x = x; mouse.y = y;
+            mira.style.left = x + 'px'; mira.style.top = y + 'px';
+        }
+        window.addEventListener("mousemove", e => updateMouse(e.clientX, e.clientY));
+        window.addEventListener("touchmove", e => { e.preventDefault(); updateMouse(e.touches[0].clientX, e.touches[0].clientY); }, {passive:false});
 
-function analisar() {
-    if (velas.length < 4) {
-        alert("Adicione pelo menos 4 velas!");
-        return;
-    }
+        function atirar() {
+            if(!gameRunning) return;
+            if(p1.vivo && p1.cooldown <= 0) {
+                tiros.push({x: p1.x+30, y: p1.y-50, vx: 20, vy: 0, dono: 1});
+                p1.cooldown = 10;
+                shake = 2; // Pequeno recuo
+            }
+            if(p2.vivo && p2.cooldown <= 0) {
+                tiros.push({x: p2.x+30, y: p2.y-50, vx: 18, vy: 0, dono: 2});
+                p2.cooldown = 10;
+                shake = 2;
+            }
+            mira.style.transform = "translate(-50%, -50%) scale(0.8)";
+            setTimeout(() => mira.style.transform = "translate(-50%, -50%) scale(1)", 100);
+        }
+        window.addEventListener("mousedown", atirar);
+        window.addEventListener("touchstart", atirar);
 
-    let últimas = velas.slice(-6);
+        function moverEsquadrao() {
+            let alvoY = mouse.y;
+            if(alvoY > chaoY) alvoY = chaoY; if(alvoY < 50) alvoY = 50;
 
-    let azuis = últimas.filter(v => v === "azul").length;
-    let roxas = últimas.filter(v => v === "roxa").length;
-    let rosas = últimas.filter(v => v === "rosa").length;
+            if(p1.vivo) {
+                let alvoX_P1 = mouse.x - 40; 
+                p1.x += (alvoX_P1 - p1.x) * 0.1; p1.y += (alvoY - p1.y) * 0.1;
+                if(p1.cooldown > 0) p1.cooldown--;
+            }
+            if(p2.vivo) {
+                let alvoX_P2 = mouse.x + 40;
+                p2.x += (alvoX_P2 - p2.x) * 0.08; p2.y += (alvoY - p2.y) * 0.08;
+                if(p2.cooldown > 0) p2.cooldown--;
+            }
+        }
 
-    let chanceRosa = 0;
-    let recomendacao = "";
-    let padrao = "";
-    let tendencia = "";
+        // --- SISTEMA DE PARTÍCULAS (GOSMA/EXPLOSÃO) ---
+        function criarExplosao(x, y, cor) {
+            for(let i=0; i<15; i++) {
+                particles.push({
+                    x: x, y: y,
+                    vx: (Math.random()-0.5) * 15,
+                    vy: (Math.random()-0.5) * 15,
+                    life: 30 + Math.random()*20,
+                    color: cor,
+                    size: Math.random() * 5 + 2,
+                    gravity: 0.5
+                });
+            }
+        }
 
-    // Regras principais
-    if (azuis >= 4) {
-        chanceRosa = 90;
-        recomendacao = "🔥 Forte chance de vela ROSA!";
-        padrao = "Muitas velas azuis seguidas — padrão clássico.";
-        tendencia = "Subida forte";
-    }
-    else if (azuis >= 2 && roxas >= 2) {
-        chanceRosa = 80;
-        recomendacao = "🔥 Alta chance de vela rosa";
-        padrao = "Mistura azul + roxa = tendência forte de pico.";
-        tendencia = "Alta instabilidade → explosão possível";
-    }
-    else if (rosas > 0) {
-        chanceRosa = 5;
-        recomendacao = "❌ Evitar entrada!";
-        padrao = "Vela rosa recente → crash forte vindo.";
-        tendencia = "Queda (velas azuis prováveis)";
-    }
-    else {
-        chanceRosa = 40;
-        recomendacao = "⚠️ Padrão fraco — aguarde";
-        padrao = "Nenhum padrão forte identificado.";
-        tendencia = "Instável";
-    }
+        // --- DESENHOS MELHORADOS ---
 
-    document.getElementById("resultado").style.display = "block";
-    document.getElementById("recomendacao").innerText = recomendacao;
-    document.getElementById("padrao").innerText = padrao;
-    document.getElementById("chance").innerText = chanceRosa + "%";
-    document.getElementById("tendencia").innerText = tendencia;
-}
-</script>
+        function desenharOnze(p) {
+            if(!p.vivo) return;
+            ctx.save(); ctx.translate(p.x, p.y);
+            
+            // Aura de poder
+            if(p.cooldown > 5) { 
+                ctx.shadowBlur=30; ctx.shadowColor="cyan"; 
+                ctx.globalAlpha = 0.8 + Math.random()*0.2; // Cintilar
+            }
+            
+            // Sombra no chão
+            ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.beginPath(); ctx.ellipse(0, chaoY-p.y, 25, 6, 0, 0, Math.PI*2); ctx.fill();
+            
+            // Animação de caminhada (Senoide)
+            let isMoving = Math.abs(mouse.x - p.x) > 5;
+            let walk = isMoving ? Math.sin(frame*0.4)*10 : 0;
+            let bob = isMoving ? Math.abs(Math.sin(frame*0.4))*5 : 0; // Corpo sobe e desce
 
+            // Pernas
+            ctx.fillStyle = "#1a2b45"; 
+            ctx.fillRect(-10, -30, 8, 30+walk); 
+            ctx.fillRect(2, -30, 8, 30-walk);
+
+            // Corpo (Sobe e desce com o bob)
+            ctx.translate(0, -bob);
+
+            // Jaqueta
+            ctx.fillStyle = "#2a3b55"; ctx.fillRect(-13, -60, 26, 32); 
+            ctx.fillStyle = "#3a4b65"; ctx.fillRect(-13, -60, 26, 6); // Detalhe Ombro
+            
+            // Cabeça
+            ctx.shadowBlur=0; ctx.globalAlpha=1;
+            ctx.fillStyle="#ffdbac"; ctx.beginPath(); ctx.arc(0, -65, 11, 0, Math.PI*2); ctx.fill(); // Rosto
+            ctx.fillStyle="#432"; ctx.beginPath(); ctx.arc(0, -67, 12, Math.PI, 0); ctx.fill(); // Cabelo
+            
+            // Detalhes Rosto
+            ctx.fillStyle="#210"; ctx.fillRect(-4, -66, 2, 2); ctx.fillRect(3, -66, 2, 2); // Olhos
+            ctx.fillStyle="#900"; ctx.fillRect(1, -63, 1, 4); // Sangue
+
+            // Braço (Apontando para a mira)
+            let angle = Math.atan2(mouse.y - p.y, mouse.x - p.x);
+            ctx.save();
+            ctx.translate(5, -55);
+            ctx.rotate(angle * 0.5); // Rotação sutil
+            ctx.fillStyle="#2a3b55"; ctx.fillRect(0, -3, 20, 6);
+            ctx.fillStyle="#ffdbac"; ctx.fillRect(20, -3, 6, 6); // Mão
+            ctx.restore();
+
+            ctx.restore();
+        }
+
+        function desenharWill(p) {
+            if(!p.vivo) return;
+            ctx.save(); ctx.translate(p.x, p.y);
+            
+            if(p.cooldown > 5) { ctx.shadowBlur=30; ctx.shadowColor="lime"; }
+            
+            ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.beginPath(); ctx.ellipse(0, chaoY-p.y, 25, 6, 0, 0, Math.PI*2); ctx.fill();
+
+            let isMoving = Math.abs(mouse.x - p.x) > 5;
+            let walk = isMoving ? Math.sin(frame*0.4 + 1)*10 : 0; // +1 para descompassar da Onze
+            let bob = isMoving ? Math.abs(Math.sin(frame*0.4 + 1))*5 : 0;
+
+            // Pernas
+            ctx.fillStyle = "#432"; ctx.fillRect(-10, -30, 8, 30+walk); ctx.fillRect(2, -30, 8, 30-walk);
+
+            ctx.translate(0, -bob);
+
+            // Colete e Camisa
+            ctx.fillStyle = "#b00"; ctx.fillRect(-13, -60, 26, 32); 
+            ctx.fillStyle = "#ddd"; ctx.fillRect(-13, -60, 8, 32); ctx.fillRect(5, -60, 8, 32); 
+
+            // Cabeça
+            ctx.shadowBlur=0; 
+            ctx.fillStyle="#e8cda2"; ctx.beginPath(); ctx.arc(0, -65, 11, 0, Math.PI*2); ctx.fill(); 
+            ctx.fillStyle="#543"; ctx.beginPath(); ctx.arc(0, -67, 12, Math.PI, 0); ctx.fill(); 
+            ctx.fillRect(-12, -67, 24, 12); // Franja
+            
+            ctx.fillStyle="#210"; ctx.fillRect(-4, -66, 2, 2); ctx.fillRect(3, -66, 2, 2);
+
+            // Braço
+            let angle = Math.atan2(mouse.y - p.y, mouse.x - p.x);
+            ctx.save();
+            ctx.translate(5, -55);
+            ctx.rotate(angle * 0.5);
+            ctx.fillStyle="#b00"; ctx.fillRect(0, -3, 20, 6);
+            ctx.fillStyle="#e8cda2"; ctx.fillRect(20, -3, 6, 6);
+            ctx.restore();
+
+            ctx.restore();
+        }
+
+        function desenharMonstro(m) {
+            ctx.save();
+            
+            // Pulo
+            let jumpY = 0;
+            if(m.tipo === 'gorgon' && m.estado === 'pulando') {
+                jumpY = Math.sin(m.puloTime * 0.1) * -180;
+                m.puloTime++;
+                if(m.puloTime > 32) { m.estado = 'andando'; m.puloTime = 0; }
+            }
+
+            ctx.translate(m.x, m.y + jumpY);
+            
+            // Animação de andar do monstro (agressiva)
+            let anim = Math.sin(frame*0.3 + m.id)*12; 
+            let breathe = Math.sin(frame*0.15)*3; 
+
+            // Baba
+            if(frame % 15 === 0) particles.push({x: m.x-10, y: m.y-70+jumpY, vx: -2, vy: 2, life: 30, color: "#0f0", size: 3, gravity: 0.2});
+
+            if(m.tipo === 'dog') {
+                // DEMO-CAO (Animado)
+                let runAnim = Math.sin(frame*0.8)*15;
+                
+                ctx.fillStyle = "#111"; // Corpo
+                ctx.beginPath();
+                ctx.moveTo(-30, -20 + breathe); 
+                ctx.quadraticCurveTo(0, -45 + breathe, 35, -20 + breathe); // Costas arqueadas
+                ctx.lineTo(25, -10); ctx.lineTo(-25, -10); 
+                ctx.fill();
+
+                // Brilho viscoso
+                ctx.strokeStyle = "#444"; ctx.lineWidth = 2; 
+                ctx.beginPath(); ctx.moveTo(-20, -25+breathe); ctx.quadraticCurveTo(0, -40+breathe, 20, -25+breathe); ctx.stroke();
+
+                // Patas rápidas
+                ctx.strokeStyle = "#111"; ctx.lineWidth = 6;
+                ctx.beginPath(); ctx.moveTo(-25, -20); ctx.lineTo(-35, -10); ctx.lineTo(-45+runAnim, 0); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(25, -20); ctx.lineTo(35, -10); ctx.lineTo(45-runAnim, 0); ctx.stroke();
+
+                // Cabeça (Esquerda)
+                ctx.translate(-30, -25 + breathe); ctx.rotate(Math.PI - 0.3); 
+                
+                // Boca aberta
+                ctx.fillStyle = "#500"; ctx.beginPath(); ctx.arc(0, 0, 8, 0, Math.PI*2); ctx.fill();
+                
+                // Pétalas que abrem e fecham levemente
+                let bite = Math.sin(frame*0.5)*2;
+                let petalLen = 12 + bite;
+                for(let i=0; i<5; i++) {
+                    ctx.save(); ctx.rotate((i/5)*Math.PI*2);
+                    ctx.fillStyle = "#666"; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(4, -3); ctx.lineTo(petalLen, 0); ctx.lineTo(4, 3); ctx.fill(); // Externa
+                    ctx.fillStyle = "#900"; ctx.beginPath(); ctx.moveTo(1,0); ctx.lineTo(petalLen-1, 0); ctx.lineTo(3, 1.5); ctx.fill(); // Interna
+                    ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.moveTo(petalLen-2, 0); ctx.lineTo(petalLen-5, -1); ctx.lineTo(petalLen-5, 1); ctx.fill(); // Dente
+                    ctx.restore();
+                }
+
+            } else {
+                // DEMOGORGON CLÁSSICO
+                let skinColor = "#1a1a1a";
+                // Corpo
+                ctx.fillStyle = skinColor; ctx.beginPath(); ctx.moveTo(-15,-90+breathe); ctx.lineTo(15,-85+breathe); ctx.lineTo(8,-40); ctx.lineTo(-8,-40); ctx.fill();
+                // Musculatura
+                ctx.fillStyle = "#222"; ctx.beginPath(); ctx.arc(0, -70+breathe, 7, 0, Math.PI*2); ctx.fill();
+
+                ctx.strokeStyle = skinColor; ctx.lineWidth = 9; ctx.lineCap = "round";
+                ctx.beginPath(); ctx.moveTo(5, -40); ctx.lineTo(25, 0-anim); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(-5, -40); ctx.lineTo(-25, 0+anim); ctx.stroke();
+                
+                // Braços com garras
+                let armY = (m.estado === 'pulando') ? -110 : -45+anim;
+                ctx.lineWidth = 7;
+                ctx.beginPath(); ctx.moveTo(-10, -80+breathe); ctx.lineTo(-45, armY); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(10, -80+breathe); ctx.lineTo(45, armY); ctx.stroke();
+                
+                ctx.fillStyle = "#ccc"; ctx.beginPath(); ctx.arc(-45, armY, 4, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(45, armY, 4, 0, Math.PI*2); ctx.fill();
+
+                // Cabeça Flor
+                ctx.translate(0, -95 + breathe);
+                ctx.fillStyle = "#400"; ctx.beginPath(); ctx.arc(0, 0, 10, 0, Math.PI*2); ctx.fill();
+                
+                let petalLen = 18 + Math.abs(Math.sin(frame*0.2))*5;
+                for(let i=0; i<5; i++) {
+                    ctx.save(); ctx.rotate((i/5)*Math.PI*2);
+                    ctx.fillStyle = "#666"; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(7, -5); ctx.lineTo(petalLen, 0); ctx.lineTo(7, 5); ctx.fill();
+                    ctx.fillStyle = "#800"; ctx.beginPath(); ctx.moveTo(2,0); ctx.lineTo(petalLen-2, 0); ctx.lineTo(5, 2); ctx.fill(); 
+                    ctx.restore();
+                }
+            }
+            ctx.restore();
+        }
+
+        function loop() {
+            if(!gameRunning) return;
+            
+            // Screen Shake
+            let dx = 0, dy = 0;
+            if(shake > 0) {
+                dx = (Math.random()-0.5)*shake;
+                dy = (Math.random()-0.5)*shake;
+                shake *= 0.9;
+                if(shake < 0.5) shake = 0;
+            }
+
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(dx, dy);
+
+            // Fundo Dinâmico (Parallax)
+            let grad = ctx.createLinearGradient(0,0,0,canvas.height);
+            grad.addColorStop(0, "#150000"); grad.addColorStop(1, "#000");
+            ctx.fillStyle = grad; ctx.fillRect(0,0,canvas.width, canvas.height);
+
+            // Devorador de Mentes
+            ctx.save(); 
+            ctx.translate(canvas.width/2, canvas.height/2);
+            ctx.globalAlpha = 0.3;
+            ctx.fillStyle = "#200";
+            let pulso = Math.sin(frame*0.02)*20;
+            ctx.beginPath(); ctx.ellipse(0, -100, 250+pulso, 120, 0, 0, Math.PI*2); ctx.fill();
+            ctx.lineWidth=50; ctx.strokeStyle="#150000";
+            ctx.beginPath(); ctx.moveTo(-100,-100); ctx.lineTo(-400, canvas.height); ctx.moveTo(100,-100); ctx.lineTo(400, canvas.height); ctx.stroke();
+            ctx.restore();
+
+            // Partículas de poeira do fundo
+            ctx.fillStyle = "rgba(255,255,255,0.1)";
+            for(let n of nuvens) {
+                n.x -= n.v; if(n.x < 0) n.x = canvas.width;
+                ctx.beginPath(); ctx.arc(n.x, n.y, n.size, 0, Math.PI*2); ctx.fill();
+            }
+
+            // Chão com textura
+            ctx.fillStyle = "#111"; ctx.fillRect(0, chaoY, canvas.width, 100);
+            ctx.strokeStyle = "#333"; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(0, chaoY); ctx.lineTo(canvas.width, chaoY); ctx.stroke();
+
+            // Renderizar Jogadores
+            moverEsquadrao();
+            if(p1.y < p2.y) { desenharOnze(p1); desenharWill(p2); } else { desenharWill(p2); desenharOnze(p1); }
+
+            // SPAWN INTELIGENTE (Aumenta com score)
+            let spawnRate = Math.max(20, 60 - Math.floor(score/5));
+            if(frame % spawnRate === 0) {
+                let rand = Math.random();
+                let type = rand < 0.4 ? 'dog' : 'gorgon'; // 40% Cães, 60% Gorgons
+                let speed = type === 'dog' ? 6 + (score/20) : 2.5 + (score/30);
+                let hp = type === 'dog' ? 1 : 2;
+
+                monstros.push({
+                    x: canvas.width + 50, y: chaoY, v: speed, 
+                    id: Math.random(), tipo: type, hp: hp, 
+                    estado: 'andando', puloTime: 0
+                });
+            }
+
+            // Lógica Monstros
+            for(let i=monstros.length-1; i>=0; i--) {
+                let m = monstros[i];
+                m.x -= m.v;
+                
+                // Pulo se estiver perto
+                if(m.tipo === 'gorgon' && m.estado === 'andando' && m.x - Math.max(p1.x, p2.x) < 250 && Math.random() < 0.03) {
+                    m.estado = 'pulando';
+                }
+
+                desenharMonstro(m);
+
+                let hitP1 = p1.vivo && Math.abs(m.x - p1.x) < 35 && Math.abs(m.y - p1.y) < 55;
+                let hitP2 = p2.vivo && Math.abs(m.x - p2.x) < 35 && Math.abs(m.y - p2.y) < 55;
+
+                if(hitP1 || hitP2) {
+                    shake = 10; // Batida forte
+                    if(hitP1) { p1.vida -= 20; }
+                    if(hitP2) { p2.vida -= 20; }
+                    criarExplosao(m.x, m.y-50, "#fff"); // Flash de impacto
+                    m.x = -1000;
+                }
+                if(m.x < -50) monstros.splice(i, 1);
+            }
+
+            // Tiros
+            for(let i=tiros.length-1; i>=0; i--) {
+                let t = tiros[i]; t.x += t.vx; 
+                ctx.save(); ctx.translate(t.x, t.y);
+                ctx.fillStyle = t.dono===1?"cyan":"lime"; 
+                ctx.shadowBlur=15; ctx.shadowColor=ctx.fillStyle;
+                ctx.beginPath(); ctx.arc(0, 0, 8, 0, Math.PI*2); ctx.fill(); 
+                
+                // Rastro do tiro
+                ctx.globalAlpha=0.5; ctx.fillRect(-20, -2, 20, 4);
+                ctx.restore();
+
+                for(let m=monstros.length-1; m>=0; m--) {
+                    let mon = monstros[m];
+                    // Hitbox maior no pulo
+                    let hitY = mon.estado === 'pulando' ? mon.y - 100 : mon.y - 40;
+                    
+                    if(Math.abs(t.x - mon.x) < 50 && Math.abs(t.y - hitY) < 60) {
+                        mon.hp--;
+                        let bloodColor = mon.tipo === 'dog' ? "#0f0" : "#500"; // Gosma verde ou sangue
+                        
+                        criarExplosao(mon.x, hitY, bloodColor);
+                        
+                        tiros.splice(i, 1);
+                        if(mon.hp <= 0) { 
+                            monstros.splice(m, 1); 
+                            score++; 
+                            shake = 5; // Treme ao matar
+                        }
+                        break;
+                    }
+                }
+                if(t.x > canvas.width) tiros.splice(i, 1);
+            }
+
+            // Atualizar Partículas
+            for(let i=particles.length-1; i>=0; i--) {
+                let p = particles[i]; 
+                p.x += p.vx; 
+                p.y += p.vy; 
+                p.vy += p.gravity || 0; // Gravidade
+                p.life--;
+                
+                ctx.globalAlpha = p.life / 30;
+                ctx.fillStyle = p.color; 
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+                ctx.globalAlpha = 1;
+
+                if(p.life<=0) particles.splice(i,1);
+            }
+
+            ctx.restore(); // Fim do Shake
+
+            // Game Over Check
+            if(p1.vida <= 0) p1.vivo = false;
+            if(p2.vida <= 0) p2.vivo = false;
+            
+            // Atualizar UI HTML
+            document.getElementById("score-val").innerText = score;
+            document.getElementById("vida-p1").style.width = Math.max(0, p1.vida) + "%";
+            document.getElementById("vida-p2").style.width = Math.max(0, p2.vida) + "%";
+
+            if(!p1.vivo && !p2.vivo) {
+                gameRunning = false;
+                setTimeout(() => { 
+                    if(confirm("HAWKINS CAIU! Score Final: " + score + "\nJogar de novo?")) location.reload();
+                }, 100);
+            }
+
+            frame++; requestAnimationFrame(loop);
+        }
+        loop();
+    </script>
 </body>
 </html>
