@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Stranger Things: Deluxe Edition</title>
+    <title>Stranger Squad Mobile</title>
     <style>
         body {
             background-color: #050505;
@@ -11,84 +11,78 @@
             overflow: hidden;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             user-select: none;
-            cursor: none; 
+            /* Desabilita gestos padrão do celular (rolagem/zoom) */
+            touch-action: none; 
+            -webkit-touch-callout: none;
         }
         
         #ui {
-            position: absolute;
-            top: 20px; left: 20px;
-            width: 95%;
-            z-index: 100;
-            display: flex;
-            justify-content: space-between;
-            pointer-events: none;
+            position: absolute; top: 10px; left: 2%; width: 96%;
+            z-index: 100; display: flex; justify-content: space-between; pointer-events: none;
         }
 
         .player-card {
-            background: linear-gradient(180deg, rgba(30,30,30,0.9), rgba(10,10,10,0.9));
-            padding: 10px;
-            border: 2px solid #444;
-            border-radius: 12px;
-            width: 300px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            background: linear-gradient(180deg, rgba(30,30,30,0.8), rgba(10,10,10,0.8));
+            padding: 5px; border: 1px solid #444; border-radius: 8px;
+            width: 45%; /* Responsivo */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
-        .titulo { 
-            font-size: 14px; margin-bottom: 5px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;
-        }
-        .barra-vida-bg { width: 100%; height: 12px; background: #222; border-radius: 6px; overflow: hidden; border: 1px solid #555; }
-        .vida-fill { height: 100%; transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .titulo { font-size: 10px; margin-bottom: 2px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; color:white;}
+        .barra-vida-bg { width: 100%; height: 8px; background: #222; border-radius: 4px; overflow: hidden; }
+        .vida-fill { height: 100%; transition: width 0.1s; }
         
-        #vida-p1 { background: linear-gradient(90deg, #00ffff, #0088ff); box-shadow: 0 0 10px cyan; }
-        #vida-p2 { background: linear-gradient(90deg, #00ff00, #008800); box-shadow: 0 0 10px lime; }
+        #vida-p1 { background: linear-gradient(90deg, #00ffff, #0088ff); box-shadow: 0 0 5px cyan; }
+        #vida-p2 { background: linear-gradient(90deg, #00ff00, #008800); box-shadow: 0 0 5px lime; }
 
         #score-box {
             position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
-            text-align: center; color: white; z-index: 100;
-            text-shadow: 0 0 15px #ff0000;
+            text-align: center; color: white; z-index: 100; text-shadow: 0 0 10px #ff0000;
         }
-        #score-val { font-size: 40px; font-weight: bold; font-family: 'Impact', sans-serif; letter-spacing: 2px; }
+        #score-val { font-size: 30px; font-weight: bold; font-family: 'Impact', sans-serif; }
 
+        /* Mira (Visual apenas, ajuda a ver onde está tocando) */
         #mira {
             position: absolute; width: 40px; height: 40px;
-            border: 2px solid rgba(255, 255, 255, 0.8); border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.5); border-radius: 50%;
             transform: translate(-50%, -50%); pointer-events: none; z-index: 1000;
-            box-shadow: 0 0 10px rgba(255,255,255,0.5);
-            transition: transform 0.1s;
+            display: none; /* Escondido no celular para não atrapalhar, ativado no PC */
         }
-        #mira::after {
-            content: ''; position: absolute; top: 50%; left: 50%; width: 4px; height: 4px;
-            background: #ff0000; transform: translate(-50%, -50%); border-radius: 50%;
-            box-shadow: 0 0 5px red;
-        }
+        @media (hover: hover) { #mira { display: block; } } /* Só mostra em telas com mouse */
 
-        /* Vinheta cinematográfica */
         #vignette {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 60%, black 100%);
-            pointer-events: none; z-index: 50;
+            background: radial-gradient(circle, transparent 50%, black 100%); pointer-events: none; z-index: 50;
         }
+        
+        /* Aviso de rotação */
+        #rotate-msg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 9999;
+            color: white; display: none; align-items: center; justify-content: center; text-align: center; font-size: 20px;
+        }
+        @media screen and (orientation:portrait) { #rotate-msg { display: flex; } }
 
         canvas { display: block; }
     </style>
 </head>
 <body>
 
+    <div id="rotate-msg">🔄 POR FAVOR, VIRE O CELULAR<br>(JOGUE DEITADO)</div>
     <div id="vignette"></div>
     <div id="mira"></div>
 
     <div id="score-box">
-        <div style="font-size: 14px; color: #aaa; letter-spacing: 3px;">STRANGER THINGS</div>
+        <div style="font-size: 10px; color: #aaa; letter-spacing: 2px;">STRANGER MOBILE</div>
         <div id="score-val">0</div>
     </div>
 
     <div id="ui">
         <div class="player-card" style="border-color: cyan;">
-            <div class="titulo" style="color:cyan; text-shadow: 0 0 5px cyan;">ONZE</div>
+            <div class="titulo" style="color:cyan;">ONZE</div>
             <div class="barra-vida-bg"><div id="vida-p1" class="vida-fill" style="width: 100%;"></div></div>
         </div>
         <div class="player-card" style="border-color: lime;">
-            <div class="titulo" style="color:lime; text-shadow: 0 0 5px lime;">WILL</div>
+            <div class="titulo" style="color:lime;">WILL</div>
             <div class="barra-vida-bg"><div id="vida-p2" class="vida-fill" style="width: 100%;"></div></div>
         </div>
     </div>
@@ -100,19 +94,23 @@
         const ctx = canvas.getContext("2d");
         const mira = document.getElementById("mira");
 
+        // Ajuste de tela responsivo
         function ajustar() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            chaoY = canvas.height - (canvas.height * 0.15); // Chão proporcional
         }
         window.addEventListener('resize', ajustar);
+        
+        let chaoY;
         ajustar();
 
+        // Estado do Jogo
         let mouse = { x: canvas.width/2, y: canvas.height/2 };
-        let chaoY = canvas.height - 80;
         let frame = 0;
         let score = 0;
         let gameRunning = true;
-        let shake = 0; // Variável para tremer a tela
+        let shake = 0;
 
         const p1 = { x: 200, y: chaoY, vida: 100, vivo: true, cooldown: 0 }; 
         const p2 = { x: 250, y: chaoY, vida: 100, vivo: true, cooldown: 0 }; 
@@ -120,122 +118,129 @@
         let monstros = [];
         let tiros = [];
         let particles = [];
-        let nuvens = []; // Elementos do fundo
+        let nuvens = []; 
         
-        // Criar cenário
-        for(let i=0; i<30; i++) nuvens.push({
+        for(let i=0; i<20; i++) nuvens.push({
             x: Math.random()*canvas.width, 
             y: Math.random()*canvas.height/2, 
             v: Math.random()*0.5+0.1, 
             size: Math.random()*2
         });
 
-        // Controles
-        function updateMouse(x, y) {
-            mouse.x = x; mouse.y = y;
-            mira.style.left = x + 'px'; mira.style.top = y + 'px';
-        }
-        window.addEventListener("mousemove", e => updateMouse(e.clientX, e.clientY));
-        window.addEventListener("touchmove", e => { e.preventDefault(); updateMouse(e.touches[0].clientX, e.touches[0].clientY); }, {passive:false});
+        // --- SISTEMA DE CONTROLES HÍBRIDO (TOUCH E MOUSE) ---
 
-        function atirar() {
+        function updateInput(x, y) {
+            mouse.x = x;
+            mouse.y = y;
+            if(mira) { mira.style.left = x + 'px'; mira.style.top = y + 'px'; }
+        }
+
+        function acaoAtirar() {
             if(!gameRunning) return;
             if(p1.vivo && p1.cooldown <= 0) {
                 tiros.push({x: p1.x+30, y: p1.y-50, vx: 20, vy: 0, dono: 1});
-                p1.cooldown = 10;
-                shake = 2; // Pequeno recuo
+                p1.cooldown = 12; shake = 2;
             }
             if(p2.vivo && p2.cooldown <= 0) {
                 tiros.push({x: p2.x+30, y: p2.y-50, vx: 18, vy: 0, dono: 2});
-                p2.cooldown = 10;
-                shake = 2;
+                p2.cooldown = 12; shake = 2;
             }
-            mira.style.transform = "translate(-50%, -50%) scale(0.8)";
-            setTimeout(() => mira.style.transform = "translate(-50%, -50%) scale(1)", 100);
         }
-        window.addEventListener("mousedown", atirar);
-        window.addEventListener("touchstart", atirar);
+
+        // Mouse (PC)
+        window.addEventListener("mousemove", e => updateInput(e.clientX, e.clientY));
+        window.addEventListener("mousedown", acaoAtirar);
+
+        // Touch (Celular)
+        canvas.addEventListener("touchmove", e => {
+            e.preventDefault(); // Impede rolagem
+            let touch = e.touches[0];
+            updateInput(touch.clientX, touch.clientY);
+        }, {passive: false});
+
+        canvas.addEventListener("touchstart", e => {
+            e.preventDefault(); // Impede zoom duplo
+            let touch = e.touches[0];
+            updateInput(touch.clientX, touch.clientY);
+            acaoAtirar();
+        }, {passive: false});
+
 
         function moverEsquadrao() {
             let alvoY = mouse.y;
-            if(alvoY > chaoY) alvoY = chaoY; if(alvoY < 50) alvoY = 50;
+            // Limites verticais
+            if(alvoY > chaoY) alvoY = chaoY; 
+            if(alvoY < canvas.height * 0.1) alvoY = canvas.height * 0.1;
 
             if(p1.vivo) {
-                let alvoX_P1 = mouse.x - 40; 
+                let alvoX_P1 = mouse.x - 35; 
                 p1.x += (alvoX_P1 - p1.x) * 0.1; p1.y += (alvoY - p1.y) * 0.1;
                 if(p1.cooldown > 0) p1.cooldown--;
+                // Limites laterais
+                if(p1.x < 0) p1.x = 0; if(p1.x > canvas.width) p1.x = canvas.width;
             }
             if(p2.vivo) {
-                let alvoX_P2 = mouse.x + 40;
+                let alvoX_P2 = mouse.x + 35;
                 p2.x += (alvoX_P2 - p2.x) * 0.08; p2.y += (alvoY - p2.y) * 0.08;
                 if(p2.cooldown > 0) p2.cooldown--;
+                if(p2.x < 0) p2.x = 0; if(p2.x > canvas.width) p2.x = canvas.width;
             }
         }
 
-        // --- SISTEMA DE PARTÍCULAS (GOSMA/EXPLOSÃO) ---
+        // --- SISTEMA DE PARTÍCULAS ---
         function criarExplosao(x, y, cor) {
-            for(let i=0; i<15; i++) {
+            for(let i=0; i<10; i++) {
                 particles.push({
                     x: x, y: y,
-                    vx: (Math.random()-0.5) * 15,
-                    vy: (Math.random()-0.5) * 15,
-                    life: 30 + Math.random()*20,
+                    vx: (Math.random()-0.5) * 12,
+                    vy: (Math.random()-0.5) * 12,
+                    life: 20 + Math.random()*10,
                     color: cor,
-                    size: Math.random() * 5 + 2,
-                    gravity: 0.5
+                    size: Math.random() * 4 + 1
                 });
             }
         }
 
-        // --- DESENHOS MELHORADOS ---
+        // --- DESENHOS ---
 
         function desenharOnze(p) {
             if(!p.vivo) return;
             ctx.save(); ctx.translate(p.x, p.y);
             
-            // Aura de poder
-            if(p.cooldown > 5) { 
-                ctx.shadowBlur=30; ctx.shadowColor="cyan"; 
-                ctx.globalAlpha = 0.8 + Math.random()*0.2; // Cintilar
-            }
+            // Aura
+            if(p.cooldown > 5) { ctx.shadowBlur=20; ctx.shadowColor="cyan"; }
             
-            // Sombra no chão
-            ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.beginPath(); ctx.ellipse(0, chaoY-p.y, 25, 6, 0, 0, Math.PI*2); ctx.fill();
-            
-            // Animação de caminhada (Senoide)
+            // Sombra
+            ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.beginPath(); ctx.ellipse(0, chaoY-p.y, 20, 5, 0, 0, Math.PI*2); ctx.fill();
+
+            // Animação de andar
             let isMoving = Math.abs(mouse.x - p.x) > 5;
-            let walk = isMoving ? Math.sin(frame*0.4)*10 : 0;
-            let bob = isMoving ? Math.abs(Math.sin(frame*0.4))*5 : 0; // Corpo sobe e desce
+            let walk = isMoving ? Math.sin(frame*0.4)*8 : 0;
+            let bob = isMoving ? Math.abs(Math.sin(frame*0.4))*3 : 0;
+
+            ctx.translate(0, -bob);
 
             // Pernas
             ctx.fillStyle = "#1a2b45"; 
-            ctx.fillRect(-10, -30, 8, 30+walk); 
-            ctx.fillRect(2, -30, 8, 30-walk);
+            ctx.fillRect(-10, -30, 8, 30+walk); ctx.fillRect(2, -30, 8, 30-walk);
 
-            // Corpo (Sobe e desce com o bob)
-            ctx.translate(0, -bob);
-
-            // Jaqueta
+            // Jaqueta (Detalhada)
             ctx.fillStyle = "#2a3b55"; ctx.fillRect(-13, -60, 26, 32); 
-            ctx.fillStyle = "#3a4b65"; ctx.fillRect(-13, -60, 26, 6); // Detalhe Ombro
-            
-            // Cabeça
-            ctx.shadowBlur=0; ctx.globalAlpha=1;
-            ctx.fillStyle="#ffdbac"; ctx.beginPath(); ctx.arc(0, -65, 11, 0, Math.PI*2); ctx.fill(); // Rosto
-            ctx.fillStyle="#432"; ctx.beginPath(); ctx.arc(0, -67, 12, Math.PI, 0); ctx.fill(); // Cabelo
-            
-            // Detalhes Rosto
-            ctx.fillStyle="#210"; ctx.fillRect(-4, -66, 2, 2); ctx.fillRect(3, -66, 2, 2); // Olhos
-            ctx.fillStyle="#900"; ctx.fillRect(1, -63, 1, 4); // Sangue
+            ctx.fillStyle = "#3a4b65"; ctx.fillRect(-13, -60, 26, 6); 
+            ctx.fillStyle = "#0a1b35"; ctx.fillRect(-13, -60, 3, 32); ctx.fillRect(10, -60, 3, 32); 
 
-            // Braço (Apontando para a mira)
-            let angle = Math.atan2(mouse.y - p.y, mouse.x - p.x);
-            ctx.save();
-            ctx.translate(5, -55);
-            ctx.rotate(angle * 0.5); // Rotação sutil
-            ctx.fillStyle="#2a3b55"; ctx.fillRect(0, -3, 20, 6);
-            ctx.fillStyle="#ffdbac"; ctx.fillRect(20, -3, 6, 6); // Mão
-            ctx.restore();
+            // Cabeça
+            ctx.shadowBlur=0; 
+            ctx.fillStyle="#ffdbac"; ctx.beginPath(); ctx.arc(0, -65, 11, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle="#432"; ctx.beginPath(); ctx.arc(0, -67, 12, Math.PI, 0); ctx.fill();
+            
+            // Rosto e Sangue
+            ctx.fillStyle="#210"; ctx.fillRect(-4, -66, 2, 2); ctx.fillRect(3, -66, 2, 2);
+            ctx.fillStyle="#900"; ctx.fillRect(1, -63, 1, 4); 
+
+            // Braço (Segue o tiro)
+            ctx.fillStyle="#2a3b55"; ctx.fillRect(12, -60, 15, 8);
+            ctx.fillStyle="#ffdbac"; ctx.fillRect(27, -60, 5, 8);
 
             ctx.restore();
         }
@@ -244,129 +249,106 @@
             if(!p.vivo) return;
             ctx.save(); ctx.translate(p.x, p.y);
             
-            if(p.cooldown > 5) { ctx.shadowBlur=30; ctx.shadowColor="lime"; }
+            if(p.cooldown > 5) { ctx.shadowBlur=20; ctx.shadowColor="lime"; }
             
-            ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.beginPath(); ctx.ellipse(0, chaoY-p.y, 25, 6, 0, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.beginPath(); ctx.ellipse(0, chaoY-p.y, 20, 5, 0, 0, Math.PI*2); ctx.fill();
 
             let isMoving = Math.abs(mouse.x - p.x) > 5;
-            let walk = isMoving ? Math.sin(frame*0.4 + 1)*10 : 0; // +1 para descompassar da Onze
-            let bob = isMoving ? Math.abs(Math.sin(frame*0.4 + 1))*5 : 0;
+            let walk = isMoving ? Math.sin(frame*0.4+1)*8 : 0;
+            let bob = isMoving ? Math.abs(Math.sin(frame*0.4+1))*3 : 0;
+
+            ctx.translate(0, -bob);
 
             // Pernas
             ctx.fillStyle = "#432"; ctx.fillRect(-10, -30, 8, 30+walk); ctx.fillRect(2, -30, 8, 30-walk);
 
-            ctx.translate(0, -bob);
-
-            // Colete e Camisa
+            // Roupas
             ctx.fillStyle = "#b00"; ctx.fillRect(-13, -60, 26, 32); 
             ctx.fillStyle = "#ddd"; ctx.fillRect(-13, -60, 8, 32); ctx.fillRect(5, -60, 8, 32); 
 
-            // Cabeça
+            // Cabeça (BEGE CORRETO)
             ctx.shadowBlur=0; 
             ctx.fillStyle="#e8cda2"; ctx.beginPath(); ctx.arc(0, -65, 11, 0, Math.PI*2); ctx.fill(); 
             ctx.fillStyle="#543"; ctx.beginPath(); ctx.arc(0, -67, 12, Math.PI, 0); ctx.fill(); 
-            ctx.fillRect(-12, -67, 24, 12); // Franja
-            
+            ctx.fillRect(-12, -67, 24, 12); 
             ctx.fillStyle="#210"; ctx.fillRect(-4, -66, 2, 2); ctx.fillRect(3, -66, 2, 2);
 
             // Braço
-            let angle = Math.atan2(mouse.y - p.y, mouse.x - p.x);
-            ctx.save();
-            ctx.translate(5, -55);
-            ctx.rotate(angle * 0.5);
-            ctx.fillStyle="#b00"; ctx.fillRect(0, -3, 20, 6);
-            ctx.fillStyle="#e8cda2"; ctx.fillRect(20, -3, 6, 6);
-            ctx.restore();
+            ctx.fillStyle="#b00"; ctx.fillRect(15, -60, 15, 8);
+            ctx.fillStyle="#e8cda2"; ctx.fillRect(30, -60, 5, 8);
 
             ctx.restore();
         }
 
         function desenharMonstro(m) {
             ctx.save();
-            
-            // Pulo
             let jumpY = 0;
             if(m.tipo === 'gorgon' && m.estado === 'pulando') {
-                jumpY = Math.sin(m.puloTime * 0.1) * -180;
+                jumpY = Math.sin(m.puloTime * 0.1) * -150;
                 m.puloTime++;
-                if(m.puloTime > 32) { m.estado = 'andando'; m.puloTime = 0; }
+                if(m.puloTime > 30) { m.estado = 'andando'; m.puloTime = 0; }
             }
-
             ctx.translate(m.x, m.y + jumpY);
+            let anim = Math.sin(frame*0.2 + m.id)*10;
             
-            // Animação de andar do monstro (agressiva)
-            let anim = Math.sin(frame*0.3 + m.id)*12; 
-            let breathe = Math.sin(frame*0.15)*3; 
-
             // Baba
-            if(frame % 15 === 0) particles.push({x: m.x-10, y: m.y-70+jumpY, vx: -2, vy: 2, life: 30, color: "#0f0", size: 3, gravity: 0.2});
+            if(frame % 20 === 0) particles.push({x: m.x-10, y: m.y-70+jumpY, vx: -1, vy: 2, life: 25, color: "#0f0", size: 2});
 
             if(m.tipo === 'dog') {
-                // DEMO-CAO (Animado)
+                // DEMO-CAO (Cabeça na Esquerda - CORRIGIDO)
                 let runAnim = Math.sin(frame*0.8)*15;
-                
-                ctx.fillStyle = "#111"; // Corpo
+                let breathe = Math.sin(frame*0.1)*2;
+
+                // Corpo
+                ctx.fillStyle = "#1a1a1a"; 
                 ctx.beginPath();
-                ctx.moveTo(-30, -20 + breathe); 
-                ctx.quadraticCurveTo(0, -45 + breathe, 35, -20 + breathe); // Costas arqueadas
-                ctx.lineTo(25, -10); ctx.lineTo(-25, -10); 
-                ctx.fill();
+                ctx.moveTo(-30, -20 + breathe); ctx.quadraticCurveTo(0, -40 + breathe, 30, -25 + breathe); 
+                ctx.lineTo(25, -10); ctx.lineTo(-25, -10); ctx.fill();
 
-                // Brilho viscoso
-                ctx.strokeStyle = "#444"; ctx.lineWidth = 2; 
-                ctx.beginPath(); ctx.moveTo(-20, -25+breathe); ctx.quadraticCurveTo(0, -40+breathe, 20, -25+breathe); ctx.stroke();
+                // Brilho
+                ctx.strokeStyle = "#3a3a3a"; ctx.lineWidth = 2; ctx.lineCap = "round";
+                ctx.beginPath(); ctx.moveTo(-25, -22+breathe); ctx.quadraticCurveTo(0, -38+breathe, 25, -27+breathe); ctx.stroke();
 
-                // Patas rápidas
-                ctx.strokeStyle = "#111"; ctx.lineWidth = 6;
-                ctx.beginPath(); ctx.moveTo(-25, -20); ctx.lineTo(-35, -10); ctx.lineTo(-45+runAnim, 0); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(25, -20); ctx.lineTo(35, -10); ctx.lineTo(45-runAnim, 0); ctx.stroke();
+                // Patas
+                ctx.strokeStyle = "#1a1a1a"; ctx.lineWidth = 6;
+                ctx.beginPath(); ctx.moveTo(-25, -20); ctx.lineTo(-35, -10); ctx.lineTo(-40+runAnim, 0); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(25, -20); ctx.lineTo(35, -10); ctx.lineTo(40-runAnim, 0); ctx.stroke();
 
-                // Cabeça (Esquerda)
-                ctx.translate(-30, -25 + breathe); ctx.rotate(Math.PI - 0.3); 
+                // Cabeça
+                ctx.translate(-30, -25 + breathe); ctx.rotate(Math.PI - 0.2); 
+                ctx.fillStyle = "#500"; ctx.beginPath(); ctx.arc(0, 0, 7, 0, Math.PI*2); ctx.fill();
                 
-                // Boca aberta
-                ctx.fillStyle = "#500"; ctx.beginPath(); ctx.arc(0, 0, 8, 0, Math.PI*2); ctx.fill();
-                
-                // Pétalas que abrem e fecham levemente
-                let bite = Math.sin(frame*0.5)*2;
-                let petalLen = 12 + bite;
+                let petalLen = 10;
                 for(let i=0; i<5; i++) {
                     ctx.save(); ctx.rotate((i/5)*Math.PI*2);
-                    ctx.fillStyle = "#666"; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(4, -3); ctx.lineTo(petalLen, 0); ctx.lineTo(4, 3); ctx.fill(); // Externa
-                    ctx.fillStyle = "#900"; ctx.beginPath(); ctx.moveTo(1,0); ctx.lineTo(petalLen-1, 0); ctx.lineTo(3, 1.5); ctx.fill(); // Interna
-                    ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.moveTo(petalLen-2, 0); ctx.lineTo(petalLen-5, -1); ctx.lineTo(petalLen-5, 1); ctx.fill(); // Dente
+                    ctx.fillStyle = "#777"; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(4, -3); ctx.lineTo(petalLen, 0); ctx.lineTo(4, 3); ctx.fill();
+                    ctx.fillStyle = "#700"; ctx.beginPath(); ctx.moveTo(1,0); ctx.lineTo(petalLen-1, 0); ctx.lineTo(3, 1.5); ctx.fill();
+                    ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(petalLen-1, 0, 1, 0, Math.PI*2); ctx.fill();
                     ctx.restore();
                 }
 
             } else {
-                // DEMOGORGON CLÁSSICO
+                // DEMOGORGON
                 let skinColor = "#1a1a1a";
-                // Corpo
-                ctx.fillStyle = skinColor; ctx.beginPath(); ctx.moveTo(-15,-90+breathe); ctx.lineTo(15,-85+breathe); ctx.lineTo(8,-40); ctx.lineTo(-8,-40); ctx.fill();
-                // Musculatura
-                ctx.fillStyle = "#222"; ctx.beginPath(); ctx.arc(0, -70+breathe, 7, 0, Math.PI*2); ctx.fill();
-
-                ctx.strokeStyle = skinColor; ctx.lineWidth = 9; ctx.lineCap = "round";
+                ctx.fillStyle = skinColor; ctx.beginPath(); ctx.moveTo(-15,-85); ctx.lineTo(15,-80); ctx.lineTo(10,-40); ctx.lineTo(-10,-40); ctx.fill();
+                ctx.strokeStyle = skinColor; ctx.lineWidth = 8; ctx.lineCap = "round";
                 ctx.beginPath(); ctx.moveTo(5, -40); ctx.lineTo(25, 0-anim); ctx.stroke();
                 ctx.beginPath(); ctx.moveTo(-5, -40); ctx.lineTo(-25, 0+anim); ctx.stroke();
                 
-                // Braços com garras
-                let armY = (m.estado === 'pulando') ? -110 : -45+anim;
-                ctx.lineWidth = 7;
-                ctx.beginPath(); ctx.moveTo(-10, -80+breathe); ctx.lineTo(-45, armY); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(10, -80+breathe); ctx.lineTo(45, armY); ctx.stroke();
+                let armY = (m.estado === 'pulando') ? -100 : -40+anim;
+                ctx.lineWidth = 6;
+                ctx.beginPath(); ctx.moveTo(-10, -75); ctx.lineTo(-40, armY); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(10, -75); ctx.lineTo(40, armY); ctx.stroke();
                 
-                ctx.fillStyle = "#ccc"; ctx.beginPath(); ctx.arc(-45, armY, 4, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(45, armY, 4, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = "#aaa"; ctx.beginPath(); ctx.arc(-40, armY, 3, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(40, armY, 3, 0, Math.PI*2); ctx.fill();
 
-                // Cabeça Flor
-                ctx.translate(0, -95 + breathe);
-                ctx.fillStyle = "#400"; ctx.beginPath(); ctx.arc(0, 0, 10, 0, Math.PI*2); ctx.fill();
-                
-                let petalLen = 18 + Math.abs(Math.sin(frame*0.2))*5;
+                ctx.translate(0, -90);
+                ctx.fillStyle = "#500"; ctx.beginPath(); ctx.arc(0, 0, 10, 0, Math.PI*2); ctx.fill();
+                let petalLength = 16 + Math.abs(Math.sin(frame*0.15))*5;
                 for(let i=0; i<5; i++) {
                     ctx.save(); ctx.rotate((i/5)*Math.PI*2);
-                    ctx.fillStyle = "#666"; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(7, -5); ctx.lineTo(petalLen, 0); ctx.lineTo(7, 5); ctx.fill();
-                    ctx.fillStyle = "#800"; ctx.beginPath(); ctx.moveTo(2,0); ctx.lineTo(petalLen-2, 0); ctx.lineTo(5, 2); ctx.fill(); 
+                    ctx.fillStyle = "#777"; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(8, -5); ctx.lineTo(petalLength, 0); ctx.lineTo(8, 5); ctx.fill();
+                    ctx.fillStyle = "#700"; ctx.beginPath(); ctx.moveTo(2,0); ctx.lineTo(petalLength-2, 0); ctx.lineTo(5, 2); ctx.fill(); 
                     ctx.restore();
                 }
             }
@@ -378,156 +360,113 @@
             
             // Screen Shake
             let dx = 0, dy = 0;
-            if(shake > 0) {
-                dx = (Math.random()-0.5)*shake;
-                dy = (Math.random()-0.5)*shake;
-                shake *= 0.9;
-                if(shake < 0.5) shake = 0;
-            }
+            if(shake > 0) { dx = (Math.random()-0.5)*shake; dy = (Math.random()-0.5)*shake; shake*=0.9; }
 
             ctx.clearRect(0,0,canvas.width, canvas.height);
-            ctx.save();
-            ctx.translate(dx, dy);
+            ctx.save(); ctx.translate(dx, dy);
 
-            // Fundo Dinâmico (Parallax)
+            // Fundo
             let grad = ctx.createLinearGradient(0,0,0,canvas.height);
-            grad.addColorStop(0, "#150000"); grad.addColorStop(1, "#000");
+            grad.addColorStop(0, "#200505"); grad.addColorStop(1, "#000");
             ctx.fillStyle = grad; ctx.fillRect(0,0,canvas.width, canvas.height);
 
-            // Devorador de Mentes
-            ctx.save(); 
-            ctx.translate(canvas.width/2, canvas.height/2);
-            ctx.globalAlpha = 0.3;
-            ctx.fillStyle = "#200";
+            // Devorador
+            ctx.save(); ctx.translate(canvas.width/2, canvas.height/2);
+            ctx.fillStyle = "rgba(40,0,0,0.2)";
             let pulso = Math.sin(frame*0.02)*20;
             ctx.beginPath(); ctx.ellipse(0, -100, 250+pulso, 120, 0, 0, Math.PI*2); ctx.fill();
-            ctx.lineWidth=50; ctx.strokeStyle="#150000";
+            ctx.lineWidth=40; ctx.strokeStyle="rgba(40,0,0,0.15)";
             ctx.beginPath(); ctx.moveTo(-100,-100); ctx.lineTo(-400, canvas.height); ctx.moveTo(100,-100); ctx.lineTo(400, canvas.height); ctx.stroke();
             ctx.restore();
 
-            // Partículas de poeira do fundo
+            // Poeira Fundo
             ctx.fillStyle = "rgba(255,255,255,0.1)";
             for(let n of nuvens) {
                 n.x -= n.v; if(n.x < 0) n.x = canvas.width;
                 ctx.beginPath(); ctx.arc(n.x, n.y, n.size, 0, Math.PI*2); ctx.fill();
             }
 
-            // Chão com textura
-            ctx.fillStyle = "#111"; ctx.fillRect(0, chaoY, canvas.width, 100);
+            // Chão
+            ctx.fillStyle = "#111"; ctx.fillRect(0, chaoY, canvas.width, canvas.height);
             ctx.strokeStyle = "#333"; ctx.lineWidth = 2;
             ctx.beginPath(); ctx.moveTo(0, chaoY); ctx.lineTo(canvas.width, chaoY); ctx.stroke();
 
-            // Renderizar Jogadores
             moverEsquadrao();
             if(p1.y < p2.y) { desenharOnze(p1); desenharWill(p2); } else { desenharWill(p2); desenharOnze(p1); }
 
-            // SPAWN INTELIGENTE (Aumenta com score)
-            let spawnRate = Math.max(20, 60 - Math.floor(score/5));
-            if(frame % spawnRate === 0) {
+            // SPAWN (60% Demogorgons / 40% Cães)
+            if(frame % 50 === 0) {
                 let rand = Math.random();
-                let type = rand < 0.4 ? 'dog' : 'gorgon'; // 40% Cães, 60% Gorgons
-                let speed = type === 'dog' ? 6 + (score/20) : 2.5 + (score/30);
+                let type = rand < 0.4 ? 'dog' : 'gorgon';
+                let speed = type === 'dog' ? 7 : 3;
                 let hp = type === 'dog' ? 1 : 2;
 
                 monstros.push({
-                    x: canvas.width + 50, y: chaoY, v: speed, 
+                    x: canvas.width + 100, y: chaoY, v: speed, 
                     id: Math.random(), tipo: type, hp: hp, 
                     estado: 'andando', puloTime: 0
                 });
             }
 
-            // Lógica Monstros
             for(let i=monstros.length-1; i>=0; i--) {
-                let m = monstros[i];
-                m.x -= m.v;
-                
-                // Pulo se estiver perto
+                let m = monstros[i]; m.x -= m.v;
                 if(m.tipo === 'gorgon' && m.estado === 'andando' && m.x - Math.max(p1.x, p2.x) < 250 && Math.random() < 0.03) {
                     m.estado = 'pulando';
                 }
-
                 desenharMonstro(m);
 
                 let hitP1 = p1.vivo && Math.abs(m.x - p1.x) < 35 && Math.abs(m.y - p1.y) < 55;
                 let hitP2 = p2.vivo && Math.abs(m.x - p2.x) < 35 && Math.abs(m.y - p2.y) < 55;
 
                 if(hitP1 || hitP2) {
-                    shake = 10; // Batida forte
-                    if(hitP1) { p1.vida -= 20; }
-                    if(hitP2) { p2.vida -= 20; }
-                    criarExplosao(m.x, m.y-50, "#fff"); // Flash de impacto
+                    if(hitP1) p1.vida -= 20; if(hitP2) p2.vida -= 20;
+                    shake = 10;
+                    criarExplosao(m.x, m.y-50, "#fff"); // Flash impacto
                     m.x = -1000;
                 }
-                if(m.x < -50) monstros.splice(i, 1);
+                if(m.x < -100) monstros.splice(i, 1);
             }
 
-            // Tiros
             for(let i=tiros.length-1; i>=0; i--) {
                 let t = tiros[i]; t.x += t.vx; 
                 ctx.save(); ctx.translate(t.x, t.y);
-                ctx.fillStyle = t.dono===1?"cyan":"lime"; 
-                ctx.shadowBlur=15; ctx.shadowColor=ctx.fillStyle;
-                ctx.beginPath(); ctx.arc(0, 0, 8, 0, Math.PI*2); ctx.fill(); 
-                
-                // Rastro do tiro
-                ctx.globalAlpha=0.5; ctx.fillRect(-20, -2, 20, 4);
-                ctx.restore();
+                ctx.fillStyle = t.dono===1?"cyan":"lime"; ctx.shadowBlur=15; ctx.shadowColor=ctx.fillStyle;
+                ctx.beginPath(); ctx.arc(0, 0, 8, 0, Math.PI*2); ctx.fill(); ctx.restore();
 
                 for(let m=monstros.length-1; m>=0; m--) {
                     let mon = monstros[m];
                     // Hitbox maior no pulo
                     let hitY = mon.estado === 'pulando' ? mon.y - 100 : mon.y - 40;
-                    
                     if(Math.abs(t.x - mon.x) < 50 && Math.abs(t.y - hitY) < 60) {
                         mon.hp--;
-                        let bloodColor = mon.tipo === 'dog' ? "#0f0" : "#500"; // Gosma verde ou sangue
-                        
+                        let bloodColor = mon.tipo === 'dog' ? "#0f0" : "#500";
                         criarExplosao(mon.x, hitY, bloodColor);
-                        
                         tiros.splice(i, 1);
-                        if(mon.hp <= 0) { 
-                            monstros.splice(m, 1); 
-                            score++; 
-                            shake = 5; // Treme ao matar
-                        }
+                        if(mon.hp <= 0) { monstros.splice(m, 1); score++; }
                         break;
                     }
                 }
                 if(t.x > canvas.width) tiros.splice(i, 1);
             }
 
-            // Atualizar Partículas
             for(let i=particles.length-1; i>=0; i--) {
-                let p = particles[i]; 
-                p.x += p.vx; 
-                p.y += p.vy; 
-                p.vy += p.gravity || 0; // Gravidade
-                p.life--;
-                
-                ctx.globalAlpha = p.life / 30;
-                ctx.fillStyle = p.color; 
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
-                ctx.globalAlpha = 1;
-
+                let p = particles[i]; p.life--; p.x+=p.vx; p.y+=p.vy;
+                ctx.globalAlpha = p.life/30; ctx.fillStyle = p.color; 
+                ctx.fillRect(p.x, p.y, p.size, p.size); ctx.globalAlpha=1;
                 if(p.life<=0) particles.splice(i,1);
             }
 
-            ctx.restore(); // Fim do Shake
+            ctx.restore();
 
-            // Game Over Check
-            if(p1.vida <= 0) p1.vivo = false;
-            if(p2.vida <= 0) p2.vivo = false;
-            
-            // Atualizar UI HTML
+            // UI
+            if(p1.vida <= 0) p1.vivo = false; if(p2.vida <= 0) p2.vivo = false;
             document.getElementById("score-val").innerText = score;
             document.getElementById("vida-p1").style.width = Math.max(0, p1.vida) + "%";
             document.getElementById("vida-p2").style.width = Math.max(0, p2.vida) + "%";
 
             if(!p1.vivo && !p2.vivo) {
                 gameRunning = false;
-                setTimeout(() => { 
-                    if(confirm("HAWKINS CAIU! Score Final: " + score + "\nJogar de novo?")) location.reload();
-                }, 100);
+                setTimeout(() => { if(confirm("FIM DE JOGO! Score: "+score+"\nJogar de novo?")) location.reload(); }, 100);
             }
 
             frame++; requestAnimationFrame(loop);
