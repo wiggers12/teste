@@ -1,37 +1,166 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Teste Leads</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Robô Celular</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.5s;
+        }
+
+        /* O Rosto do Robô */
+        .rosto {
+            display: flex;
+            gap: 40px;
+            position: relative;
+        }
+
+        .olho {
+            width: 80px;
+            height: 120px;
+            background-color: white;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .pupila {
+            width: 30px;
+            height: 30px;
+            background-color: black;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.1s ease-out; /* Movimento suave */
+        }
+
+        .status {
+            color: white;
+            margin-top: 50px;
+            font-size: 18px;
+            opacity: 0.7;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #00E676;
+            border: none;
+            border-radius: 20px;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; padding:20px;">
-  <h2>Teste Envio de Lead</h2>
+<body>
 
-  <form id="formLead">
-    <label>Nome: <input type="text" name="nome" required></label><br><br>
-    <label>Telefone: <input type="text" name="telefone" required></label><br><br>
-    <label>Email: <input type="email" name="email" required></label><br><br>
-    <button type="submit">Enviar</button>
-  </form>
+    <div class="rosto">
+        <div class="olho"><div class="pupila" id="pupila-esq"></div></div>
+        <div class="olho"><div class="pupila" id="pupila-dir"></div></div>
+    </div>
 
-  <script>
-    const form = document.getElementById("formLead");
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const formData = new FormData(form);
-      const params = new URLSearchParams(formData);
+    <div class="status" id="texto-status">Toque no botão para falar...</div>
+    <button onclick="iniciarOuvidos()">🎤 Dar Ordem</button>
 
-      try {
-        const resp = await fetch("https://script.google.com/macros/s/AKfycbxZnSZsvfuUQgh2HkhSqCpgfi_Zx774w7_FnwebzTNbbi4inYsISeg7SFXPMSJ9FLM2CQ/exec", {
-          method: "POST",
-          body: params
-        });
-        const json = await resp.json();
-        alert("Resposta: " + json.msg);
-      } catch (err) {
-        alert("Erro: " + err);
-      }
-    });
-  </script>
+    <script>
+        // 1. CÓDIGO DOS OLHOS (Seguir Movimento do Celular/Giroscópio)
+        // Isso faz as pupilas se mexerem quando você inclina o celular
+        window.addEventListener('deviceorientation', function(event) {
+            let x = event.gamma; // Inclinação esquerda/direita
+            let y = event.beta;  // Inclinação frente/trás
+
+            // Limitar o movimento para a pupila não sair do olho
+            if (x > 30) x = 30;
+            if (x < -30) x = -30;
+            if (y > 30) y = 30;
+            if (y < -30) y = -30;
+
+            const pupilas = document.querySelectorAll('.pupila');
+            pupilas.forEach(p => {
+                // Movemos a pupila baseado na inclinação
+                p.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+            });
+        });
+
+        // Para testar no computador (segue o mouse) caso não tenha giroscópio
+        document.addEventListener('mousemove', function(event) {
+            let x = (event.clientX / window.innerWidth - 0.5) * 60;
+            let y = (event.clientY / window.innerHeight - 0.5) * 60;
+            const pupilas = document.querySelectorAll('.pupila');
+            pupilas.forEach(p => {
+                p.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+            });
+        });
+
+        // 2. CÓDIGO DA VOZ (Reconhecimento de Fala)
+        function iniciarOuvidos() {
+            const status = document.getElementById('texto-status');
+            
+            // Verifica se o navegador suporta
+            if (!('webkitSpeechRecognition' in window)) {
+                status.innerText = "Seu navegador não suporta voz :(";
+                return;
+            }
+
+            const reconhecimento = new webkitSpeechRecognition();
+            reconhecimento.lang = 'pt-BR';
+            reconhecimento.start();
+
+            status.innerText = "Ouvindo...";
+
+            reconhecimento.onresult = function(event) {
+                const ordem = event.results[0][0].transcript.toLowerCase();
+                status.innerText = "Entendi: " + ordem;
+                executarOrdem(ordem);
+            };
+
+            reconhecimento.onerror = function(event) {
+                status.innerText = "Não entendi, tente de novo.";
+            };
+        }
+
+        // 3. O CÉREBRO (Processar as ordens)
+        function executarOrdem(ordem) {
+            const corpo = document.body;
+            
+            if (ordem.includes("vermelho") || ordem.includes("bravo")) {
+                corpo.style.backgroundColor = "#D32F2F"; // Vermelho
+            }
+            else if (ordem.includes("azul") || ordem.includes("triste")) {
+                corpo.style.backgroundColor = "#1976D2"; // Azul
+            }
+            else if (ordem.includes("verde") || ordem.includes("feliz")) {
+                corpo.style.backgroundColor = "#388E3C"; // Verde
+            }
+            else if (ordem.includes("pisca") || ordem.includes("piscar")) {
+                piscar();
+            }
+            else if (ordem.includes("normal") || ordem.includes("limpar")) {
+                corpo.style.backgroundColor = "#1a1a1a"; // Preto original
+            }
+        }
+
+        function piscar() {
+            const olhos = document.querySelectorAll('.olho');
+            olhos.forEach(o => o.style.height = "2px"); // Fecha
+            setTimeout(() => {
+                olhos.forEach(o => o.style.height = "120px"); // Abre
+            }, 200);
+        }
+    </script>
 </body>
 </html>
