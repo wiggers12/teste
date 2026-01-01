@@ -1,205 +1,167 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Currículo - Dionatan Wiggers</title>
-    <!-- Tailwind CSS CDN para estilização rápida e responsiva -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Fonte Inter do Google Fonts para um visual moderno e limpo -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Estilos globais para o corpo da página */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* Cor de fundo suave */
-            color: #333; /* Cor de texto padrão */
-            line-height: 1.6; /* Altura da linha para melhor legibilidade */
-        }
-        /* Container principal para centralizar o conteúdo e limitar a largura */
-        .container {
-            max-width: 900px; /* Largura máxima para o conteúdo do currículo */
-            margin: 2rem auto; /* Centraliza e adiciona margem superior/inferior */
-            padding: 1.5rem; /* Espaçamento interno */
-            background-color: #ffffff; /* Fundo branco para o currículo */
-            border-radius: 0.75rem; /* Cantos arredondados */
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* Sombra suave para destacar */
-        }
-        /* Estilo para títulos de seção */
-        .section-title {
-            font-size: 1.875rem; /* text-3xl */
-            font-weight: 700; /* font-bold */
-            color: #1f2937; /* Cor escura para títulos */
-            margin-bottom: 1.5rem; /* Espaçamento abaixo do título */
-            padding-bottom: 0.5rem; /* Pequeno padding na parte inferior */
-            border-bottom: 2px solid #e5e7eb; /* Linha divisória */
-            text-align: left; /* Alinha o texto à esquerda */
-        }
-        /* Estilo para sub-títulos de experiência/formação */
-        .subsection-title {
-            font-size: 1.25rem; /* text-xl */
-            font-weight: 600; /* font-semibold */
-            color: #374151; /* Cor um pouco mais clara que o título principal */
-            margin-bottom: 0.5rem; /* Espaçamento abaixo do sub-título */
-        }
-        /* Estilo para textos destacados (habilidades, nomes de empresas) */
-        .highlight {
-            font-weight: 600; /* semi-bold */
-            color: #1d4ed8; /* Azul escuro para destaque */
-        }
-        /* Estilo para listas de itens (experiência, habilidades) */
-        ul {
-            list-style: none; /* Remove marcadores padrão */
-            padding-left: 0; /* Remove padding padrão */
-        }
-        ul li {
-            margin-bottom: 0.5rem; /* Espaçamento entre itens da lista */
-            position: relative;
-            padding-left: 1.5rem; /* Espaço para marcador customizado */
-        }
-        ul li::before {
-            content: '•'; /* Marcador de lista customizado (ponto) */
-            color: #3b82f6; /* Cor do marcador */
-            font-weight: bold;
-            display: inline-block;
-            width: 1em;
-            margin-left: -1.5em; /* Ajusta a posição do marcador */
-            position: absolute;
-        }
-        /* Estilo específico para a lista de habilidades para alinhar melhor */
-        .skills-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem; /* Espaçamento entre os grupos de habilidades */
-        }
-        .skills-group {
-            flex: 1 1 45%; /* Permite que os grupos se ajustem em 2 colunas em telas maiores */
-            min-width: 280px; /* Largura mínima para evitar que fiquem muito estreitos */
-        }
-        /* Estilo para o rodapé */
-        footer {
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #e5e7eb;
-            text-align: center;
-            color: #6b7280;
-            font-size: 0.875rem; /* text-sm */
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Wiggers Academy | Sistema</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body { font-family: Inter, system-ui, sans-serif; }
+
+/* SPLASH */
+#splash {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  color: #FFD400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 9999;
+}
+.fade-out {
+  animation: fadeOut 1s forwards;
+}
+@keyframes fadeOut {
+  to { opacity: 0; visibility: hidden; }
+}
+
+/* BOTÕES FLUTUANTES */
+.fab {
+  position: fixed;
+  right: 16px;
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 22px;
+  font-weight: bold;
+  box-shadow: 0 8px 20px rgba(0,0,0,.3);
+  z-index: 999;
+}
+.fab-whatsapp {
+  bottom: 88px;
+  background: #25D366;
+}
+.fab-instagram {
+  bottom: 16px;
+  background: radial-gradient(circle at 30% 110%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+}
+</style>
 </head>
-<body>
-    <div class="container">
-        <!-- Cabeçalho com nome e informações de contato -->
-        <header class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-900 mb-2">Dionatan Wiggers</h1>
-            <p class="text-xl text-gray-700 mb-4">Estagiário de Teste de Software (QA) & Analista de Qualidade</p>
-            <div class="flex flex-col sm:flex-row justify-center items-center text-gray-600 text-sm sm:space-x-4">
-                <a href="mailto:dionegalato1212@gmail.com" class="text-blue-600 hover:underline mb-1 sm:mb-0">dionegalato1212@gmail.com</a>
-                <span class="hidden sm:inline">|</span>
-                <span>Porto Alegre, RS</span>
-                <span class="hidden sm:inline">|</span>
-                <a href="https://wiggers12.github.io/teste/" target="_blank" class="text-blue-600 hover:underline mt-1 sm:mt-0">Portfólio</a>
-            </div>
-        </header>
 
-        <!-- Seção de Resumo Profissional -->
-        <section class="mb-8">
-            <h2 class="section-title">Resumo Profissional</h2>
-            <p class="text-gray-700 leading-relaxed">
-                Estudante proativo e autodidata com forte interesse e habilidades em **Teste de Software (QA)**. Minha experiência em <span class="highlight">análise de desempenho de websites e desenvolvimento de lógica para jogos</span> me proporcionou um olhar crítico para identificar falhas e garantir a qualidade do produto. Minha trajetória de <span class="highlight">5 anos como CEO de academia e atleta profissional</span> me ensinou disciplina, atenção aos detalhes e uma abordagem metódica para a resolução de problemas. Tenho conhecimento em ferramentas de gestão e busco uma oportunidade como estagiário para aplicar minhas habilidades e contribuir para a entrega de produtos digitais de alta qualidade.
-            </p>
-        </section>
+<body class="bg-black text-white">
 
-        <!-- Seção de Experiência Profissional e Projetos -->
-        <section class="mb-8">
-            <h2 class="section-title">Experiência Profissional e Projetos</h2>
+<!-- SPLASH -->
+<div id="splash">
+  <h1 class="text-4xl md:text-5xl font-extrabold mb-4 text-center">
+    Wiggers Academy
+  </h1>
+  <p class="text-xl text-red-600 font-semibold">
+    SISTEMA
+  </p>
+</div>
 
-            <div class="mb-6">
-                <h3 class="subsection-title">Desenvolvedor e Analista de Projetos Digitais (Autônomo)</h3>
-                <p class="text-gray-600 mb-2">Janeiro de 2023 – Atualmente</p>
-                <ul class="text-gray-700">
-                    <li>**Testes e Garantia de Qualidade:** Atuei como QA em meus próprios projetos, realizando testes funcionais e de usabilidade para garantir que os sites e jogos (como o **Desafio dos 60 Segundos**) estivessem livres de bugs e oferecessem uma experiência de usuário consistente.</li>
-                    <li>**Análise de Requisitos:** Mapeei os requisitos dos clientes para criar planos de teste e garantir que todas as funcionalidades solicitadas fossem implementadas corretamente, sem falhas.</li>
-                    <li>**Bug Tracking:** Utilizei o **Git** para gerenciar e documentar falhas identificadas durante o desenvolvimento, aplicando um processo de controle de versões para correções.</li>
-                </ul>
-            </div>
-            
-            <div class="mb-6">
-                <h3 class="subsection-title">CEO e Professor (Academia de Jiu-Jitsu)</h3>
-                <p class="text-gray-600 mb-2">Janeiro de 2020 – Fevereiro de 2025</p>
-                <ul class="text-gray-700">
-                    <li>**Abordagem Metódica para Problemas:** Apliquei uma abordagem sistemática para analisar o desempenho de mais de 70 alunos, o que me treinou a identificar fraquezas (bugs) e desenvolver planos de ação (testes de regressão) para otimizar os resultados.</li>
-                    <li>**Otimização de Processos:** Gerenciei todos os setores da academia, o que me proporcionou uma visão completa do fluxo de trabalho e a habilidade de identificar pontos de melhoria e otimização.</li>
-                </ul>
-            </div>
+<!-- HEADER -->
+<header class="border-b border-gray-800">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-yellow-400">🥋 Wiggers Academy</h1>
+    <span class="text-sm text-gray-400">Pedro Charles Pereira dos Santos</span>
+  </div>
+</header>
 
-            <div class="mb-6">
-                <h3 class="subsection-title">Analista de Dados & Engenheiro de Dados (Freelancer/Consultor)</h3>
-                <p class="text-gray-600 mb-2">Janeiro de 2021 – Dezembro de 2023</p>
-                <ul class="text-gray-700">
-                    <li>**Análise de Consistência de Dados:** Atuei na construção de pipelines de dados, onde a principal responsabilidade era garantir a qualidade e a consistência dos dados, um processo similar à busca por falhas em um sistema.</li>
-                </ul>
-            </div>
-        </section>
+<!-- HERO -->
+<section class="max-w-5xl mx-auto px-6 py-16">
+  <h2 class="text-4xl md:text-5xl font-bold leading-tight mb-6">
+    A melhor plataforma para<br>
+    <span class="text-red-600">gerenciar o tatame</span>
+  </h2>
 
-        <!-- Seção de Formação Acadêmica -->
-        <section class="mb-8">
-            <h2 class="section-title">Formação Acadêmica</h2>
-            <div class="mb-4">
-                <h3 class="subsection-title">Análise e Desenvolvimento de Sistemas</h3>
-                <p class="text-gray-600">Unisinos Porto Alegre</p>
-                <p class="text-gray-600">Porto Alegre, RS | 2024 – Trancado</p>
-            </div>
-        </section>
+  <p class="text-gray-400 mb-10 text-lg">
+    Sistema exclusivo da Wiggers Academy para organização,
+    evolução e profissionalismo no Jiu-Jitsu.
+  </p>
 
-        <!-- Seção de Habilidades -->
-        <section class="mb-8">
-            <h2 class="section-title">Habilidades</h2>
-            <div class="skills-list">
-                <div class="skills-group">
-                    <h3 class="font-semibold text-gray-800 mb-2">Teste de Software e Análise:</h3>
-                    <ul class="text-gray-700">
-                        <li>**Testes Manuais:** Conhecimento em elaboração e execução de planos de teste.</li>
-                        <li>**Bug Tracking:** Experiência em documentação e rastreamento de bugs (Jira, Trello).</li>
-                        <li>**Análise de Requisitos:** Capacidade de traduzir requisitos em cenários de teste.</li>
-                        <li>**Raciocínio Lógico e Analítico:** Habilidade para identificar falhas e padrões.</li>
-                    </ul>
-                </div>
-                <div class="skills-group">
-                    <h3 class="font-semibold text-gray-800 mb-2">Tecnologias e Soft Skills:</h3>
-                    <ul class="text-gray-700">
-                        <li>**Desenvolvimento:** HTML, CSS, JavaScript.</li>
-                        <li>**Ferramentas:** Git, Google Analytics, Power BI, SQL.</li>
-                        <li>**Valores:** Disciplina, Resiliência e Foco em Resultados.</li>
-                        <li>**Liderança e Gestão:** Resolução de Problemas, Comunicação Eficaz.</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
+  <ul class="space-y-4 text-lg">
+    <li class="flex items-center gap-3"><span class="text-yellow-400">✔</span> Gestão financeira completa</li>
+    <li class="flex items-center gap-3"><span class="text-yellow-400">✔</span> Controle de mensalidades</li>
+    <li class="flex items-center gap-3"><span class="text-yellow-400">✔</span> Relatórios gerenciais</li>
+    <li class="flex items-center gap-3"><span class="text-yellow-400">✔</span> Aplicativo para alunos e professores</li>
+    <li class="flex items-center gap-3"><span class="text-yellow-400">✔</span> Totem de check-in</li>
+  </ul>
+</section>
 
-        <!-- Seção de Conquistas Esportivas -->
-        <section class="mb-8">
-            <h2 class="section-title">Conquistas Esportivas</h2>
-            <h3 class="subsection-title">Atleta Profissional de Jiu-Jitsu</h3>
-            <p class="text-gray-600 mb-2">2006 – 2021</p>
-            <ul class="text-gray-700">
-                        <li>Bicampeão Mundial, Bicampeão Europeu, Campeão Pan-Americano e Campeão Brasileiro.</li>
-            </ul>
-        </section>
+<!-- ÁREAS -->
+<section class="bg-gray-900 py-16">
+  <div class="max-w-6xl mx-auto px-6">
+    <h3 class="text-3xl font-bold text-center mb-12 text-yellow-400">
+      Áreas do Sistema
+    </h3>
 
-        <!-- Seção de Informações Adicionais -->
-        <section>
-            <h2 class="section-title">Informações Adicionais</h2>
-            <ul class="text-gray-700">
-                <li>Disponibilidade total de horário (24h) e para viagens.</li>
-                <li>Faixa preta de Jiu-Jitsu.</li>
-            </ul>
-        </section>
+    <div class="grid md:grid-cols-2 gap-10">
+
+      <!-- ALUNO -->
+      <div class="bg-black border border-gray-800 p-8 rounded-xl">
+        <h4 class="text-2xl font-bold mb-4 text-red-600">Área do Aluno</h4>
+        <ul class="space-y-3 text-gray-300">
+          <li>✔ Agenda de aulas</li>
+          <li>✔ Registro de presença</li>
+          <li>✔ Evolução de faixa e graus</li>
+          <li>✔ Histórico de treinos</li>
+          <li>✔ Avisos da academia</li>
+          <li>✔ Status da mensalidade</li>
+        </ul>
+      </div>
+
+      <!-- PROFESSOR -->
+      <div class="bg-black border border-gray-800 p-8 rounded-xl">
+        <h4 class="text-2xl font-bold mb-4 text-red-600">Área do Professor</h4>
+        <ul class="space-y-3 text-gray-300">
+          <li>✔ Lista de alunos</li>
+          <li>✔ Controle de presença</li>
+          <li>✔ Graduação e evolução</li>
+          <li>✔ Agenda de aulas</li>
+          <li>✔ Relatórios do tatame</li>
+          <li>✔ Comunicação com alunos</li>
+        </ul>
+      </div>
+
     </div>
+  </div>
+</section>
 
-    <!-- Rodapé -->
-    <footer>
-        <p>&copy; 2025 Dionatan Wiggers. Todos os direitos reservados.</p>
-    </footer>
+<!-- CTA -->
+<section class="py-20 text-center">
+  <h3 class="text-3xl font-bold mb-4 text-yellow-400">
+    Wiggers Academy Sistema
+  </h3>
+  <p class="text-gray-400 mb-8">
+    Mais controle. Mais evolução. Mais Jiu-Jitsu.
+  </p>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-black border-t border-gray-800 text-center py-6 text-sm text-gray-500">
+  © 2026 Wiggers Academy • Pedro Charles Pereira dos Santos
+</footer>
+
+<!-- BOTÕES FLUTUANTES -->
+<a href="https://wa.me/5551991271598" target="_blank" class="fab fab-whatsapp">💬</a>
+<a href="https://instagram.com/wiggersacademy" target="_blank" class="fab fab-instagram">📸</a>
+
+<script>
+// SPLASH TIMER
+setTimeout(() => {
+  document.getElementById("splash").classList.add("fade-out");
+}, 2000);
+</script>
+
 </body>
 </html>
