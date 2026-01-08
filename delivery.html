@@ -1,197 +1,509 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pro Sport - Campeonato OSS Jiu-Jítsu</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-body {font-family:"Poppins",sans-serif;background:#0d0d0d;color:#fff;margin:0;}
-/* Splash */
-#splash{position:fixed;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,#000 40%,#111 100%);z-index:9999;animation:fadeOut 1s ease-in-out 2.5s forwards;}
-#splash h1{font-size:3.6em;text-transform:uppercase;background:linear-gradient(90deg,#f8b400,#ffeb99,#f8b400);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shine 3s linear infinite;letter-spacing:4px;text-shadow:0 0 25px #f8b40055;}
-@keyframes shine{0%{background-position:0%}100%{background-position:200% center}}@keyframes fadeOut{to{opacity:0;visibility:hidden}}
-header{background:#111;color:#f8b400;text-align:center;padding:20px;font-size:1.8em;font-weight:bold;}
-section{display:none;animation:fadeIn .6s ease}@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-/* Home */
-#home{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;height:calc(100vh - 80px);}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:20px;width:80%;max-width:600px;}
-.card{background:#1a1a1a;border:2px solid #333;border-radius:12px;padding:25px 10px;transition:.3s;cursor:pointer;box-shadow:0 0 10px rgba(0,0,0,.4);}
-.card:hover{border-color:#f8b400;transform:scale(1.05);box-shadow:0 0 20px #f8b40033;}
-.card i{font-size:2.5em;color:#f8b400;margin-bottom:10px;}
-.card span{display:block;font-size:1.1em;color:#eee;}
-button.voltar{margin:15px;background:#f8b400;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;font-weight:bold;}
-.kpi-container{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:20px;}
-.kpi{background:linear-gradient(135deg,#f8b400,#c38a00);color:#000;border-radius:12px;width:260px;text-align:center;padding:20px;font-weight:bold;box-shadow:0 0 15px rgba(0,0,0,.3);}
-canvas{background:#1a1a1a;border-radius:10px;padding:10px;margin:20px auto;display:block;max-width:700px;}
-.table-container{overflow-x:auto;padding:20px;}
-table{width:100%;border-collapse:collapse;background-color:#111;color:#eee;}
-th,td{border:1px solid #333;padding:10px;text-align:center;}
-th{background-color:#f8b400;color:#000;}tfoot{font-weight:bold;background-color:#333;}
-.filtros{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:10px auto;}
-select,input{padding:10px;border-radius:8px;border:none;font-size:1em;}
-#search{width:300px;text-align:center;}
-#chaveamento{background:#111;border-top:2px solid #f8b400;margin:30px 0;padding:20px;}
-.bracket{display:flex;flex-wrap:wrap;justify-content:center;gap:40px;}
-.round{display:flex;flex-direction:column;gap:20px;}
-.match{background:#222;border-left:4px solid #f8b400;padding:10px 15px;border-radius:6px;width:180px;}
-.match span{display:block;padding:5px 0;font-size:0.9em;color:#ddd;}
-h2{text-align:center;color:#f8b400;margin-top:10px;}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WIGGERS ACADEMY | Wiggers online</title>
+
+    <link rel="manifest" href="manifest-painel.json">
+    <meta name="theme-color" content="#f5c542">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --cor-preto: #030303;
+            --cor-fundo-card: #0c0c0c;
+            --cor-ouro: #f5c542;
+            --cor-texto-claro: #ffffff;
+            --cor-texto-cinza: #a0a0a0;
+            --borda: rgba(255, 255, 255, 0.08);
+            --sucesso: #2ecc71;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background-color: var(--cor-preto); 
+            color: var(--cor-texto-claro); 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* AVATAR FLUTUANTE (MOBILE) */
+        .mobile-floating-avatar {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--cor-ouro);
+            z-index: 9999;
+            overflow: hidden;
+            background: var(--cor-fundo-card);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .mobile-floating-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* SPLASH SCREEN */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--cor-preto);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease, visibility 0.5s;
+        }
+
+        .splash-content { text-align: center; }
+        .splash-logo {
+            width: 140px;
+            height: 140px;
+            margin-bottom: 25px;
+            animation: pulse 2s infinite ease-in-out;
+        }
+        .splash-text {
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--cor-ouro);
+            letter-spacing: 4px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        .loader {
+            width: 50px;
+            height: 4px;
+            background: rgba(245, 197, 66, 0.1);
+            margin: 0 auto;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .loader::after {
+            content: '';
+            position: absolute;
+            width: 40%;
+            height: 100%;
+            background: var(--cor-ouro);
+            animation: loading 1.5s infinite ease-in-out;
+            border-radius: 10px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.08); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+        @keyframes loading {
+            0% { left: -40%; }
+            100% { left: 100%; }
+        }
+        .hidden-splash { opacity: 0; visibility: hidden; }
+
+        /* MODAL CADASTRO */
+        #modal-cadastro {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.98);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999; backdrop-filter: blur(15px); padding: 20px;
+        }
+        .form-container {
+            background: var(--cor-fundo-card); padding: 30px; border-radius: 25px; 
+            border: 1px solid var(--cor-ouro); width: 100%; max-width: 400px; text-align: center;
+        }
+        .avatar-upload-cadastro {
+            width: 110px; height: 110px; margin: 0 auto 25px;
+            border: 2px dashed var(--cor-ouro); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; overflow: hidden; position: relative;
+        }
+        .avatar-upload-cadastro img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .avatar-upload-cadastro span { color: var(--cor-ouro); font-size: 0.7rem; font-weight: bold; }
+
+        input, select {
+            width: 100%; padding: 14px; margin-bottom: 12px;
+            background: #151515; border: 1px solid var(--borda);
+            border-radius: 12px; color: white; font-size: 1rem;
+        }
+        .btn-enviar {
+            width: 100%; padding: 16px; background: var(--cor-ouro);
+            border: none; border-radius: 12px; font-weight: 800;
+            cursor: pointer; font-family: 'Space Grotesk'; font-size: 1rem;
+        }
+
+        /* LAYOUT PRINCIPAL */
+        .app-container { display: flex; min-height: 100vh; }
+        .sidebar { 
+            width: 280px; background: #080808; border-right: 1px solid var(--borda); 
+            padding: 40px 20px; position: fixed; height: 100vh; z-index: 100;
+            display: flex; flex-direction: column;
+        }
+        .main-content { margin-left: 280px; padding: 40px; width: 100%; padding-bottom: 100px; }
+
+        /* PERFIL SIDEBAR */
+        .user-profile { text-align: center; margin-bottom: 30px; border-bottom: 1px solid var(--borda); padding-bottom: 20px; }
+        .avatar-display {
+            width: 90px; height: 90px; margin: 0 auto 15px;
+            border-radius: 50%; border: 2px solid var(--cor-ouro);
+            overflow: hidden; background: #151515;
+        }
+        .avatar-display img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* NAVEGAÇÃO INTERNA */
+        .nav-link {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            color: var(--cor-texto-claro);
+            font-weight: 600;
+            border-radius: 10px;
+            transition: 0.3s;
+            margin-bottom: 5px;
+        }
+        .nav-link:hover { background: rgba(245, 197, 66, 0.1); color: var(--cor-ouro); }
+        .nav-link.active { color: var(--cor-ouro); }
+
+        /* CARDS DE AULA */
+        .modules-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 30px; }
+        .module-card {
+            background: var(--cor-fundo-card); border: 1px solid var(--borda);
+            padding: 25px; border-radius: 20px; transition: 0.3s; display: flex; flex-direction: column;
+        }
+        .module-card:hover { border-color: var(--cor-ouro); transform: translateY(-5px); }
+        .module-card h3 { font-family: 'Space Grotesk'; margin: 10px 0; font-size: 1.2rem; }
+        .btn-aula { 
+            display: block; width: 100%; padding: 14px; background: var(--cor-ouro); 
+            color: black; text-decoration: none; border-radius: 10px; font-weight: 800; 
+            text-align: center; margin-top: auto; transition: 0.2s;
+        }
+
+        /* DESIGN DO PORTAL DO ALUNO (MODAL EXPANDIDO) */
+        #modal-perfil {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: var(--cor-preto);
+            z-index: 10001;
+            overflow-y: auto;
+            padding-bottom: 50px;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .portal-container { max-width: 500px; margin: 0 auto; padding: 20px; }
+        .portal-header { text-align: center; padding: 40px 20px 20px; }
+        
+        .bjj-belt-display {
+            width: 100%; height: 40px; border-radius: 4px; margin: 25px 0;
+            position: relative; display: flex; align-items: center; justify-content: flex-end;
+            border-bottom: 3px solid rgba(0,0,0,0.2); box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .belt-tip {
+            width: 90px; height: 100%; background: #111;
+            position: absolute; right: 30px; display: flex;
+            align-items: center; justify-content: space-evenly; padding: 0 5px;
+        }
+        .belt-stripe { width: 6px; height: 24px; background: #fff; border-radius: 1px; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+        .stat-card {
+            background: var(--cor-fundo-card); border: 1px solid var(--borda);
+            padding: 20px; border-radius: 18px; text-align: center;
+        }
+        .stat-card span { font-size: 0.6rem; color: var(--cor-texto-cinza); text-transform: uppercase; display: block; margin-bottom: 8px; }
+        .stat-card h4 { font-family: 'Space Grotesk'; font-size: 1.3rem; color: var(--cor-ouro); }
+
+        .barra-progresso-bg { width: 100%; height: 10px; background: #1a1a1a; border-radius: 5px; overflow: hidden; margin: 10px 0; }
+        #barra-progresso-fill { width: 0%; height: 100%; background: var(--cor-ouro); transition: 1s ease; }
+
+        .finance-tag {
+            background: rgba(46, 204, 113, 0.05); color: var(--sucesso);
+            padding: 15px; border-radius: 15px; font-size: 0.75rem; font-weight: 800;
+            text-align: center; border: 1px solid rgba(46, 204, 113, 0.2); margin-top: 15px;
+        }
+
+        .btn-checkin-portal {
+            background: var(--cor-ouro); color: #000; width: 100%; padding: 20px;
+            border-radius: 18px; font-weight: 800; border: none; font-family: 'Space Grotesk';
+            margin-top: 25px; letter-spacing: 1px; cursor: pointer; transition: 0.3s;
+        }
+        .btn-checkin-portal:active { transform: scale(0.98); }
+
+        @media (max-width: 900px) {
+            .mobile-floating-avatar { display: block; }
+            .sidebar { 
+                width: 100%; height: 75px; position: fixed; bottom: 0; top: auto;
+                border-right: none; border-top: 1px solid var(--borda);
+                padding: 0 10px; flex-direction: row; justify-content: space-around;
+                background: rgba(8, 8, 8, 0.98); backdrop-filter: blur(15px);
+            }
+            .user-profile { display: none; }
+            .sidebar nav { display: flex !important; flex-direction: row !important; width: 100%; justify-content: space-around; align-items: center; }
+            .nav-link { flex-direction: column; gap: 4px; font-size: 0.65rem; text-transform: uppercase; padding: 5px; }
+            .nav-link span { font-size: 1.4rem; }
+            .nav-link p, .logout-btn, .sidebar nav p { display: none; }
+            .main-content { margin-left: 0; padding: 25px; padding-top: 70px; padding-bottom: 100px; }
+        }
+    </style>
 </head>
 <body>
 
-<div id="splash"><h1>Pro<span style="color:#fff">Sport</span></h1></div>
+    <div class="mobile-floating-avatar" id="avatar-trigger-mobile">
+        <img id="user-photo-mobile" src="https://ui-avatars.com/api/?name=U&background=151515&color=f5c542" alt="Foto Aluno">
+    </div>
 
-<header>🏆 Campeonato OSS Jiu-Jítsu</header>
+    <div id="splash-screen">
+        <div class="splash-content">
+            <img src="wiggers.192.png" alt="Logo Wiggers" class="splash-logo">
+            <h2 class="splash-text">WIGGERS ONLINE</h2>
+            <div class="loader"></div>
+        </div>
+    </div>
 
-<!-- HOME -->
-<section id="home">
-  <h2 style="color:#f8b400;margin-bottom:20px;">Selecione o que deseja visualizar:</h2>
-  <div class="grid">
-    <div class="card" onclick="abrirSecao('painel')"><i class="fa-solid fa-chart-line"></i><span>Painel Financeiro</span></div>
-    <div class="card" onclick="abrirSecao('equipes')"><i class="fa-solid fa-users"></i><span>Equipes & Categorias</span></div>
-    <div class="card" onclick="abrirSecao('graficos')"><i class="fa-solid fa-chart-pie"></i><span>Gráficos Financeiros</span></div>
-    <div class="card" onclick="abrirSecao('chaveamento')"><i class="fa-solid fa-diagram-project"></i><span>Chaveamento</span></div>
-  </div>
-</section>
+    <div id="modal-cadastro">
+        <div class="form-container">
+            <h2 style="font-family: 'Space Grotesk'; color: var(--cor-ouro); margin-bottom: 20px;">Portal de Graduação</h2>
+            <label class="avatar-upload-cadastro" for="input-foto">
+                <span id="label-upload">ADICIONAR FOTO</span>
+                <img id="preview-foto" src="" alt="Preview">
+                <input type="file" id="input-foto" accept="image/*" hidden onchange="previewImagem(this)">
+            </label>
+            <input type="text" id="reg-nome" placeholder="Nome Completo">
+            <select id="reg-graduacao">
+                <optgroup label="Adulto">
+                    <option value="Branca">Branca</option>
+                    <option value="Azul">Azul</option>
+                    <option value="Roxa">Roxa</option>
+                    <option value="Marrom">Marrom</option>
+                    <option value="Preta">Preta</option>
+                </optgroup>
+                <optgroup label="Kids">
+                    <option value="Kids Branca">Kids Branca</option>
+                    <option value="Kids Cinza">Kids Cinza</option>
+                    <option value="Kids Amarela">Kids Amarela</option>
+                </optgroup>
+            </select>
+            <input type="tel" id="reg-telefone" placeholder="WhatsApp">
+            <button class="btn-enviar" onclick="finalizarCadastro()">ACESSAR PORTAL</button>
+        </div>
+    </div>
 
-<!-- PAINEL -->
-<section id="painel">
-  <button class="voltar" onclick="voltarHome()">⬅ Voltar</button>
-  <div class="kpi-container">
-    <div class="kpi" id="kpi-equipes">Equipes: 0</div>
-    <div class="kpi" id="kpi-atletas">Atletas: 0</div>
-    <div class="kpi" id="kpi-torcedores">Torcedores: 0</div>
-    <div class="kpi" id="kpi-receita">Receita Total: R$ 0,00</div>
-  </div>
-</section>
+    <div id="modal-perfil">
+        <div class="portal-container">
+            <button onclick="fecharPerfil()" style="background:none; border:none; color:var(--cor-ouro); font-size:2rem; cursor:pointer; padding:10px;">✕</button>
+            
+            <div class="portal-header">
+                <div style="width:110px; height:110px; border-radius:50%; border:3px solid var(--cor-ouro); margin:0 auto 15px; overflow:hidden; box-shadow: 0 0 25px rgba(245,197,66,0.3);">
+                    <img id="perfil-foto" src="" style="width:100%; height:100%; object-fit:cover;">
+                </div>
+                <h2 id="perfil-nome" style="font-family:'Space Grotesk'; color:#fff; font-size: 1.6rem;">Nome Aluno</h2>
+                <p id="perfil-graduacao" style="font-size:0.75rem; color:var(--cor-ouro); text-transform:uppercase; letter-spacing:2px; font-weight:700;">Faixa</p>
 
-<!-- EQUIPES -->
-<section id="equipes">
-  <button class="voltar" onclick="voltarHome()">⬅ Voltar</button>
-  <div class="table-container">
-    <table id="tabela-equipes"><thead><tr>
-      <th>#</th><th>Equipe</th><th>Categoria</th><th>Faixa</th>
-      <th>Atletas</th><th>Torcedores</th><th>R$ Inscrições</th>
-      <th>R$ Ingressos</th><th>R$ Estacionamento</th><th>Total</th>
-    </tr></thead><tbody></tbody><tfoot><tr><td colspan="9">TOTAL</td><td id="totalGeral"></td></tr></tfoot></table>
-  </div>
-</section>
+                <div class="bjj-belt-display" id="faixa-bg">
+                    <div class="belt-tip" id="camada-graus"></div>
+                </div>
+            </div>
 
-<!-- GRÁFICOS -->
-<section id="graficos">
-  <button class="voltar" onclick="voltarHome()">⬅ Voltar</button>
-  <h2>📊 Gráficos Financeiros do Campeonato</h2>
-  <canvas id="graficoReceitas"></canvas>
-  <canvas id="graficoParticipantes"></canvas>
-  <canvas id="graficoEvolucao"></canvas>
-</section>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span>Treinos</span>
+                    <h4 id="stat-aulas">--</h4>
+                </div>
+                <div class="stat-card">
+                    <span>Frequência</span>
+                    <h4 id="stat-freq">Bom</h4>
+                </div>
+            </div>
 
-<!-- CHAVEAMENTO -->
-<section id="chaveamento">
-  <button class="voltar" onclick="voltarHome()">⬅ Voltar</button>
-  <h2>🔰 Chaveamento por Categoria</h2>
-  <div class="filtros">
-    <select id="filtroCategoria"><option value="">Selecione a Categoria</option></select>
-    <select id="filtroFaixa"><option value="">Selecione a Faixa</option></select>
-    <button onclick="gerarChaveamento()" style="background:#f8b400;color:#000;padding:10px 20px;border:none;border-radius:8px;cursor:pointer;">Gerar Chaveamento</button>
-  </div>
-  <div id="bracketContainer" class="bracket" style="margin-top:20px;"></div>
-</section>
+            <div style="background: var(--cor-fundo-card); padding: 20px; border-radius: 20px; border: 1px solid var(--borda);">
+                <p style="font-size:0.6rem; color:var(--cor-ouro); font-weight:800; text-transform: uppercase;">Progresso Técnico</p>
+                <div class="barra-progresso-bg"><div id="barra-progresso-fill"></div></div>
+                <p id="status-progresso" style="font-size:0.65rem; color:var(--cor-texto-cinza);">Avaliando evolução...</p>
+            </div>
 
-<script>
-// ===== Navegação =====
-function abrirSecao(id){document.querySelectorAll("section").forEach(s=>s.style.display="none");document.getElementById(id).style.display="block";}
-function voltarHome(){document.querySelectorAll("section").forEach(s=>s.style.display="none");document.getElementById("home").style.display="flex";}
-setTimeout(()=>document.getElementById("home").style.display="flex",3000);
+            <div class="finance-tag">✓ MENSALIDADE EM DIA</div>
 
-// ===== Dados Gerais =====
-const categorias=["Pré-Mirim","Mirim","Infantil","Infanto-Juvenil","Juvenil","Adulto","Master 1"];
-const faixas=["Branca","Azul","Roxa","Marrom","Preta"];
-const equipes=[];let totalAtletas=1500;
-for(let i=1;i<=150;i++){
-  const atletas=i<150?Math.floor(Math.random()*15)+5:totalAtletas;totalAtletas-=atletas;
-  equipes.push({id:i,nome:`Equipe ${i}`,categoria:categorias[Math.floor(Math.random()*categorias.length)],
-    faixa:faixas[Math.floor(Math.random()*faixas.length)],atletasPagantes:atletas,torcedores:(atletas+1)*2,
-    valorAtleta:200,ingresso:30,estacionamento:20});
-}
-if(totalAtletas>0)equipes[149].atletasPagantes+=totalAtletas;
+            <button class="btn-checkin-portal" onclick="realizarCheckin()">CONFIRMAR PRESENÇA (CHECK-IN)</button>
 
-// ===== Cálculos Financeiros =====
-const totalEquipes=equipes.length;
-const totalTorcedores=equipes.reduce((s,e)=>s+e.torcedores,0);
-const receitaInscricao=equipes.reduce((s,e)=>s+e.atletasPagantes*e.valorAtleta,0);
-const receitaTorcedores=equipes.reduce((s,e)=>s+e.torcedores*e.ingresso,0);
-const receitaEstacionamento=equipes.reduce((s,e)=>s+(e.atletasPagantes+1)*e.estacionamento,0);
-const receitaTotal=receitaInscricao+receitaTorcedores+receitaEstacionamento;
-const somaAtletas=equipes.reduce((s,e)=>s+e.atletasPagantes,0);
+            <button onclick="logout()" style="background:none; border:none; color:#ff4d4d; width:100%; padding:25px; font-size:0.7rem; font-weight:800; cursor:pointer; text-transform:uppercase; letter-spacing:1px;">Sair da Conta</button>
+        </div>
+    </div>
 
-// ===== KPIs =====
-document.getElementById("kpi-equipes").innerText=`Equipes: ${totalEquipes}`;
-document.getElementById("kpi-atletas").innerText=`Atletas: ${somaAtletas}`;
-document.getElementById("kpi-torcedores").innerText=`Torcedores: ${totalTorcedores}`;
-document.getElementById("kpi-receita").innerText=`Receita Total: R$ ${receitaTotal.toLocaleString('pt-BR')}`;
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="user-profile" id="avatar-trigger-desktop" style="cursor:pointer">
+                <div class="avatar-display">
+                    <img id="user-photo" src="https://ui-avatars.com/api/?name=U&background=151515&color=f5c542" alt="Foto">
+                </div>
+                <h3 id="display-name" style="color: var(--cor-ouro); font-family: 'Space Grotesk';">Carregando...</h3>
+                <p id="display-rank" style="font-size: 0.7rem; color: var(--cor-texto-cinza);">Graduação</p>
+            </div>
+            <nav>
+                <a href="#" class="nav-link active"><span>📚</span><b>Aulas</b></a>
+                <a href="videos.html" class="nav-link"><span>📽️</span><b>Vídeos</b></a>
+                <div onclick="atualizarApp()" class="nav-link" style="cursor:pointer"><span>🔄</span><b>Atualizar</b></div>
+                <div onclick="logout()" class="nav-link logout-btn" style="color: #ff4d4d; margin-top:20px;"><span>🚪</span><b>Sair</b></div>
+            </nav>
+        </aside>
 
-// ===== Tabela =====
-const tbody=document.querySelector("#tabela-equipes tbody");
-function montarTabela(){
-  tbody.innerHTML="";let total=0;
-  equipes.forEach(eq=>{
-    const r1=eq.atletasPagantes*eq.valorAtleta,r2=eq.torcedores*eq.ingresso,r3=(eq.atletasPagantes+1)*eq.estacionamento,t=r1+r2+r3;
-    total+=t;
-    tbody.innerHTML+=`<tr><td>${eq.id}</td><td>${eq.nome}</td><td>${eq.categoria}</td><td>${eq.faixa}</td><td>${eq.atletasPagantes}</td><td>${eq.torcedores}</td><td>R$ ${r1.toLocaleString('pt-BR')}</td><td>R$ ${r2.toLocaleString('pt-BR')}</td><td>R$ ${r3.toLocaleString('pt-BR')}</td><td>R$ ${t.toLocaleString('pt-BR')}</td></tr>`;
-  });
-  document.getElementById("totalGeral").innerText="R$ "+total.toLocaleString('pt-BR');
-}
-montarTabela();
+        <main class="main-content">
+            <header>
+                <h1 style="font-family: 'Space Grotesk';">BJJ Training</h1>
+                <p style="color: var(--cor-texto-cinza); font-size: 0.9rem;">Evolua seu jogo técnico todos os dias.</p>
+            </header>
 
-// ===== Gráficos (ligados ao painel) =====
-new Chart(document.getElementById('graficoReceitas'),{
-  type:'bar',
-  data:{labels:['Inscrições','Ingressos','Estacionamento'],
-  datasets:[{label:'Receita (R$)',data:[receitaInscricao,receitaTorcedores,receitaEstacionamento],
-  backgroundColor:['#f8b400','#ffda77','#c38a00']}]},
-  options:{plugins:{legend:{labels:{color:'#fff'}}},
-  scales:{x:{ticks:{color:'#fff'}},y:{ticks:{color:'#fff'}}}}});
+            <div class="modules-grid">
+                <div class="module-card">
+                    <span style="font-size: 0.6rem; color: var(--cor-ouro); font-weight: 800;">MÓDULO 01</span>
+                    <h3>História do Jiu-Jitsu</h3>
+                    <p style="font-size: 0.8rem; color: var(--cor-texto-cinza);">Linhagem e evolução da arte suave.</p>
+                    <a href="historia.html" class="btn-aula">ESTUDAR</a>
+                </div>
+                <div class="module-card">
+                    <span style="font-size: 0.6rem; color: var(--cor-ouro); font-weight: 800;">MÓDULO 02</span>
+                    <h3>O Alicerce: Base</h3>
+                    <p style="font-size: 0.8rem; color: var(--cor-texto-cinza);">Conceitos de equilíbrio e postura.</p>
+                    <a href="alicerce.html" class="btn-aula">ESTUDAR</a>
+                </div>
+                </div>
+        </main>
+    </div>
 
-new Chart(document.getElementById('graficoParticipantes'),{
-  type:'doughnut',
-  data:{labels:['Atletas','Torcedores'],
-  datasets:[{data:[somaAtletas,totalTorcedores],
-  backgroundColor:['#f8b400','#444'],hoverOffset:10}]},
-  options:{plugins:{legend:{labels:{color:'#fff',font:{size:14}}}}}});
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-new Chart(document.getElementById('graficoEvolucao'),{
-  type:'line',
-  data:{labels:['Inscrições','Ingressos','Estacionamento'],
-  datasets:[{label:'Tendência de Receita',
-  data:[receitaInscricao*0.8,receitaTorcedores*1.1,receitaEstacionamento*1.3],
-  borderColor:'#f8b400',backgroundColor:'#f8b40033',tension:0.3,fill:true}]},
-  options:{plugins:{legend:{labels:{color:'#fff'}}},
-  scales:{x:{ticks:{color:'#fff'}},y:{ticks:{color:'#fff'}}}}});
+        const firebaseConfig = {
+            apiKey: "AIzaSyBod8YVf5pKWI98m9rRR8axokDkNMlXX-k",
+            authDomain: "aviatordaniel100x.firebaseapp.app",
+            databaseURL: "https://aviatordaniel100x-default-rtdb.firebaseio.com",
+            projectId: "aviatordaniel100x",
+            storageBucket: "aviatordaniel100x.firebasestorage.app",
+            messagingSenderId: "169015417803",
+            appId: "1:169015417803:web:ce4aa4f9b77d5ddb07344e"
+        };
 
-// ===== Chaveamento =====
-const catSel=document.getElementById("filtroCategoria"),faixaSel=document.getElementById("filtroFaixa");
-categorias.forEach(c=>catSel.innerHTML+=`<option value="${c}">${c}</option>`);
-faixas.forEach(f=>faixaSel.innerHTML+=`<option value="${f}">${f}</option>`);
-function gerarChaveamento(){
-  const cat=catSel.value,faixa=faixaSel.value,div=document.getElementById("bracketContainer");
-  div.innerHTML="";if(!cat||!faixa){div.innerHTML="<p style='color:#aaa;text-align:center;'>Selecione categoria e faixa.</p>";return;}
-  const participantes=[];for(let i=0;i<16;i++){const e=equipes[Math.floor(Math.random()*equipes.length)];
-  participantes.push(`${e.nome} (${cat}-${faixa})`);}
-  const rounds=[[],[],[],[]];for(let i=0;i<8;i++)rounds[0].push([participantes[i*2],participantes[i*2+1]]);
-  rounds[1]=Array(4).fill(["Vencedor 1","Vencedor 2"]);
-  rounds[2]=Array(2).fill(["Semifinalista 1","Semifinalista 2"]);
-  rounds[3]=Array(1).fill(["Finalista 1","Finalista 2"]);
-  rounds.forEach((r,idx)=>{
-    const rd=document.createElement("div");rd.classList.add("round");
-    rd.innerHTML=`<h3>Rodada ${idx+1}</h3>`;
-    r.forEach(m=>{const mdiv=document.createElement("div");mdiv.classList.add("match");mdiv.innerHTML=`<span>${m[0]}</span><span>vs</span><span>${m[1]}</span>`;rd.appendChild(mdiv);});
-    div.appendChild(rd);
-  });
-}
-</script>
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        window.previewImagem = function(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const maxW = 300;
+                        canvas.width = maxW;
+                        canvas.height = img.height * (maxW / img.width);
+                        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                        document.getElementById('preview-foto').src = canvas.toDataURL('image/jpeg', 0.7);
+                        document.getElementById('preview-foto').style.display = 'block';
+                        document.getElementById('label-upload').style.display = 'none';
+                    };
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        };
+
+        window.finalizarCadastro = function() {
+            const nome = document.getElementById('reg-nome').value;
+            const rank = document.getElementById('reg-graduacao').value;
+            const tel = document.getElementById('reg-telefone').value;
+            const foto = document.getElementById('preview-foto').src;
+
+            if(!nome || !tel) return alert("Preencha os campos!");
+
+            const idUnico = Date.now().toString(); // ID Simples para este estágio
+            const alunoData = { 
+                nome, graduacao: rank, telefone: tel, 
+                foto: foto.startsWith('data') ? foto : null,
+                totalAulas: 0,
+                graus: 0
+            };
+
+            set(ref(db, 'alunos/' + idUnico), alunoData).then(() => {
+                localStorage.setItem('aluno_logado', 'true');
+                localStorage.setItem('aluno_id', idUnico);
+                localStorage.setItem('aluno_nome', nome);
+                localStorage.setItem('aluno_rank', rank);
+                if(foto.startsWith('data')) localStorage.setItem('aluno_foto', foto);
+                location.reload();
+            });
+        };
+
+        window.abrirPerfil = function() {
+            const nome = localStorage.getItem('aluno_nome');
+            const rank = localStorage.getItem('aluno_rank');
+            const foto = localStorage.getItem('aluno_foto');
+            const id = localStorage.getItem('aluno_id');
+
+            document.getElementById('perfil-nome').innerText = nome;
+            document.getElementById('perfil-graduacao').innerText = rank;
+            if(foto) document.getElementById('perfil-foto').src = foto;
+
+            // Cores da Faixa
+            const cores = { "Branca": "#fff", "Azul": "#0047AB", "Roxa": "#6A0DAD", "Marrom": "#5C4033", "Preta": "#111" };
+            document.getElementById('faixa-bg').style.backgroundColor = cores[rank] || "#fff";
+
+            // Busca dados reais do Firebase
+            onValue(ref(db, 'alunos/' + id), (snap) => {
+                const data = snap.val();
+                if(data) {
+                    document.getElementById('stat-aulas').innerText = data.totalAulas || 0;
+                    const containerGraus = document.getElementById('camada-graus');
+                    containerGraus.innerHTML = '';
+                    for(let i=0; i<(data.graus || 0); i++) {
+                        containerGraus.innerHTML += '<div class="belt-stripe"></div>';
+                    }
+                    let prog = ((data.totalAulas || 0) % 40) * 2.5; // Ex: 40 aulas por grau
+                    document.getElementById('barra-progresso-fill').style.width = prog + "%";
+                    document.getElementById('status-progresso').innerText = `Progresso técnico: ${Math.floor(prog)}%`;
+                }
+            });
+
+            document.getElementById('modal-perfil').style.display = 'block';
+        };
+
+        window.realizarCheckin = function() {
+            const id = localStorage.getItem('aluno_id');
+            const agora = new Date().toLocaleString();
+            
+            // Registra presença
+            const presencaRef = push(ref(db, `alunos/${id}/presencas`));
+            set(presencaRef, { data: agora }).then(() => {
+                alert("Check-in confirmado! Bom treino.");
+            });
+        };
+
+        window.fecharPerfil = () => document.getElementById('modal-perfil').style.display = 'none';
+        window.logout = () => { localStorage.clear(); location.reload(); };
+        window.atualizarApp = () => location.reload(true);
+
+        window.onload = () => {
+            if(localStorage.getItem('aluno_logado')) {
+                document.getElementById('modal-cadastro').style.display = 'none';
+                document.getElementById('display-name').innerText = localStorage.getItem('aluno_nome');
+                document.getElementById('display-rank').innerText = localStorage.getItem('aluno_rank');
+                const foto = localStorage.getItem('aluno_foto');
+                if(foto) {
+                    document.getElementById('user-photo').src = foto;
+                    document.getElementById('user-photo-mobile').src = foto;
+                }
+                // Ativa clicks
+                document.getElementById('avatar-trigger-desktop').onclick = abrirPerfil;
+                document.getElementById('avatar-trigger-mobile').onclick = abrirPerfil;
+            }
+            setTimeout(() => document.getElementById('splash-screen').classList.add('hidden-splash'), 2500);
+        };
+    </script>
 </body>
 </html>
