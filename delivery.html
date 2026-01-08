@@ -184,7 +184,7 @@
             text-align: center; margin-top: auto; transition: 0.2s;
         }
 
-        /* DESIGN DO PORTAL DO ALUNO (MODAL EXPANDIDO) */
+        /* --- PORTAL DO ALUNO (ESTILO MODAL FULL) --- */
         #modal-perfil {
             display: none;
             position: fixed;
@@ -192,50 +192,56 @@
             background: var(--cor-preto);
             z-index: 10001;
             overflow-y: auto;
-            padding-bottom: 50px;
-            animation: fadeIn 0.3s ease;
+            padding-bottom: 80px;
+            animation: slideUp 0.4s ease-out;
         }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .fechar-modal {
+            position: absolute; top: 20px; left: 20px;
+            background: none; border: none; color: var(--cor-ouro);
+            font-size: 2rem; cursor: pointer; z-index: 10;
+        }
 
         .portal-container { max-width: 500px; margin: 0 auto; padding: 20px; }
         .portal-header { text-align: center; padding: 40px 20px 20px; }
-        
+
         .bjj-belt-display {
-            width: 100%; height: 40px; border-radius: 4px; margin: 25px 0;
+            width: 100%; height: 42px; border-radius: 4px; margin: 25px 0;
             position: relative; display: flex; align-items: center; justify-content: flex-end;
-            border-bottom: 3px solid rgba(0,0,0,0.2); box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border-bottom: 3px solid rgba(0,0,0,0.3); box-shadow: 0 5px 15px rgba(0,0,0,0.4);
         }
         .belt-tip {
-            width: 90px; height: 100%; background: #111;
-            position: absolute; right: 30px; display: flex;
-            align-items: center; justify-content: space-evenly; padding: 0 5px;
+            width: 95px; height: 100%; background: #111;
+            position: absolute; right: 35px; display: flex;
+            align-items: center; justify-content: space-evenly; padding: 0 6px;
         }
-        .belt-stripe { width: 6px; height: 24px; background: #fff; border-radius: 1px; }
+        .belt-stripe { width: 7px; height: 26px; background: #fff; border-radius: 1px; }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 25px 0; }
         .stat-card {
             background: var(--cor-fundo-card); border: 1px solid var(--borda);
-            padding: 20px; border-radius: 18px; text-align: center;
+            padding: 20px; border-radius: 20px; text-align: center;
         }
-        .stat-card span { font-size: 0.6rem; color: var(--cor-texto-cinza); text-transform: uppercase; display: block; margin-bottom: 8px; }
-        .stat-card h4 { font-family: 'Space Grotesk'; font-size: 1.3rem; color: var(--cor-ouro); }
+        .stat-card span { font-size: 0.6rem; color: var(--cor-texto-cinza); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 10px; }
+        .stat-card h4 { font-family: 'Space Grotesk'; font-size: 1.5rem; color: var(--cor-ouro); }
 
-        .barra-progresso-bg { width: 100%; height: 10px; background: #1a1a1a; border-radius: 5px; overflow: hidden; margin: 10px 0; }
-        #barra-progresso-fill { width: 0%; height: 100%; background: var(--cor-ouro); transition: 1s ease; }
+        .barra-progresso-bg { width: 100%; height: 12px; background: #1a1a1a; border-radius: 6px; overflow: hidden; margin: 15px 0; }
+        #barra-progresso-fill { width: 0%; height: 100%; background: var(--cor-ouro); transition: 1.2s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
 
         .finance-tag {
             background: rgba(46, 204, 113, 0.05); color: var(--sucesso);
-            padding: 15px; border-radius: 15px; font-size: 0.75rem; font-weight: 800;
-            text-align: center; border: 1px solid rgba(46, 204, 113, 0.2); margin-top: 15px;
+            padding: 18px; border-radius: 15px; font-size: 0.8rem; font-weight: 800;
+            text-align: center; border: 1px solid rgba(46, 204, 113, 0.2); margin-top: 20px;
         }
 
         .btn-checkin-portal {
-            background: var(--cor-ouro); color: #000; width: 100%; padding: 20px;
-            border-radius: 18px; font-weight: 800; border: none; font-family: 'Space Grotesk';
-            margin-top: 25px; letter-spacing: 1px; cursor: pointer; transition: 0.3s;
+            background: var(--cor-ouro); color: #000; width: 100%; padding: 22px;
+            border-radius: 20px; font-weight: 800; border: none; font-family: 'Space Grotesk';
+            margin-top: 30px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase;
         }
-        .btn-checkin-portal:active { transform: scale(0.98); }
 
+        /* RESPONSIVIDADE MOBILE */
         @media (max-width: 900px) {
             .mobile-floating-avatar { display: block; }
             .sidebar { 
@@ -245,18 +251,24 @@
                 background: rgba(8, 8, 8, 0.98); backdrop-filter: blur(15px);
             }
             .user-profile { display: none; }
-            .sidebar nav { display: flex !important; flex-direction: row !important; width: 100%; justify-content: space-around; align-items: center; }
+            .sidebar nav { 
+                display: flex !important; 
+                flex-direction: row !important; 
+                width: 100%; 
+                justify-content: space-around; 
+                align-items: center;
+            }
             .nav-link { flex-direction: column; gap: 4px; font-size: 0.65rem; text-transform: uppercase; padding: 5px; }
             .nav-link span { font-size: 1.4rem; }
-            .nav-link p, .logout-btn, .sidebar nav p { display: none; }
-            .main-content { margin-left: 0; padding: 25px; padding-top: 70px; padding-bottom: 100px; }
+            .nav-link p, .sidebar nav p, .logout-btn { display: none; }
+            .main-content { margin-left: 0; padding: 25px; padding-top: 75px; padding-bottom: 100px; }
         }
     </style>
 </head>
 <body>
 
     <div class="mobile-floating-avatar" id="avatar-trigger-mobile">
-        <img id="user-photo-mobile" src="https://ui-avatars.com/api/?name=U&background=151515&color=f5c542" alt="Foto Aluno">
+        <img id="user-photo-mobile" src="https://ui-avatars.com/api/?name=U&background=151515&color=f5c542" alt="Foto">
     </div>
 
     <div id="splash-screen">
@@ -296,15 +308,14 @@
     </div>
 
     <div id="modal-perfil">
+        <button class="fechar-modal" onclick="fecharPerfil()">✕</button>
         <div class="portal-container">
-            <button onclick="fecharPerfil()" style="background:none; border:none; color:var(--cor-ouro); font-size:2rem; cursor:pointer; padding:10px;">✕</button>
-            
             <div class="portal-header">
-                <div style="width:110px; height:110px; border-radius:50%; border:3px solid var(--cor-ouro); margin:0 auto 15px; overflow:hidden; box-shadow: 0 0 25px rgba(245,197,66,0.3);">
+                <div style="width:120px; height:120px; border-radius:50%; border:3px solid var(--cor-ouro); margin:0 auto 15px; overflow:hidden; box-shadow: 0 0 25px rgba(245,197,66,0.3);">
                     <img id="perfil-foto" src="" style="width:100%; height:100%; object-fit:cover;">
                 </div>
-                <h2 id="perfil-nome" style="font-family:'Space Grotesk'; color:#fff; font-size: 1.6rem;">Nome Aluno</h2>
-                <p id="perfil-graduacao" style="font-size:0.75rem; color:var(--cor-ouro); text-transform:uppercase; letter-spacing:2px; font-weight:700;">Faixa</p>
+                <h2 id="perfil-nome" style="font-family:'Space Grotesk'; color:#fff; font-size: 1.8rem;">Nome</h2>
+                <p id="perfil-graduacao" style="font-size:0.8rem; color:var(--cor-ouro); text-transform:uppercase; letter-spacing:2px; font-weight:800;">Graduação</p>
 
                 <div class="bjj-belt-display" id="faixa-bg">
                     <div class="belt-tip" id="camada-graus"></div>
@@ -313,26 +324,26 @@
 
             <div class="stats-grid">
                 <div class="stat-card">
-                    <span>Treinos</span>
+                    <span>Total Aulas</span>
                     <h4 id="stat-aulas">--</h4>
                 </div>
                 <div class="stat-card">
-                    <span>Frequência</span>
-                    <h4 id="stat-freq">Bom</h4>
+                    <span>Desempenho</span>
+                    <h4 id="stat-desempenho">EVOLUINDO</h4>
                 </div>
             </div>
 
-            <div style="background: var(--cor-fundo-card); padding: 20px; border-radius: 20px; border: 1px solid var(--borda);">
-                <p style="font-size:0.6rem; color:var(--cor-ouro); font-weight:800; text-transform: uppercase;">Progresso Técnico</p>
+            <div style="background: var(--cor-fundo-card); padding: 25px; border-radius: 25px; border: 1px solid var(--borda);">
+                <p style="font-size:0.65rem; color:var(--cor-ouro); font-weight:800; text-transform: uppercase; letter-spacing: 1px;">Evolução Técnica</p>
                 <div class="barra-progresso-bg"><div id="barra-progresso-fill"></div></div>
-                <p id="status-progresso" style="font-size:0.65rem; color:var(--cor-texto-cinza);">Avaliando evolução...</p>
+                <p id="status-progresso" style="font-size:0.7rem; color:var(--cor-texto-cinza);">Carregando métricas...</p>
             </div>
 
-            <div class="finance-tag">✓ MENSALIDADE EM DIA</div>
+            <div class="finance-tag">✓ ASSINATURA WIGGERS ONLINE ATIVA</div>
 
-            <button class="btn-checkin-portal" onclick="realizarCheckin()">CONFIRMAR PRESENÇA (CHECK-IN)</button>
+            <button class="btn-checkin-portal" onclick="realizarCheckin()">CONFIRMAR CHECK-IN (GPS)</button>
 
-            <button onclick="logout()" style="background:none; border:none; color:#ff4d4d; width:100%; padding:25px; font-size:0.7rem; font-weight:800; cursor:pointer; text-transform:uppercase; letter-spacing:1px;">Sair da Conta</button>
+            <button onclick="logout()" style="background:none; border:none; color:#ff4d4d; width:100%; padding:30px; font-size:0.75rem; font-weight:800; cursor:pointer; text-transform:uppercase; letter-spacing:1px;">Encerrar Sessão</button>
         </div>
     </div>
 
@@ -345,34 +356,72 @@
                 <h3 id="display-name" style="color: var(--cor-ouro); font-family: 'Space Grotesk';">Carregando...</h3>
                 <p id="display-rank" style="font-size: 0.7rem; color: var(--cor-texto-cinza);">Graduação</p>
             </div>
+            
             <nav>
+                <p style="font-size: 0.6rem; color: var(--cor-texto-cinza); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px;">Menu de Acesso</p>
                 <a href="#" class="nav-link active"><span>📚</span><b>Aulas</b></a>
                 <a href="videos.html" class="nav-link"><span>📽️</span><b>Vídeos</b></a>
-                <div onclick="atualizarApp()" class="nav-link" style="cursor:pointer"><span>🔄</span><b>Atualizar</b></div>
-                <div onclick="logout()" class="nav-link logout-btn" style="color: #ff4d4d; margin-top:20px;"><span>🚪</span><b>Sair</b></div>
+                <div onclick="atualizarApp()" class="nav-link" style="cursor: pointer;"><span>🔄</span><b>Atualizar</b></div>
+                <div onclick="logout()" class="nav-link logout-btn" style="color: #ff4d4d; margin-top: 20px;"><span>🚪</span><b>Sair</b></div>
             </nav>
         </aside>
 
         <main class="main-content">
             <header>
-                <h1 style="font-family: 'Space Grotesk';">BJJ Training</h1>
-                <p style="color: var(--cor-texto-cinza); font-size: 0.9rem;">Evolua seu jogo técnico todos os dias.</p>
+                <h1 style="font-family: 'Space Grotesk'; margin-bottom: 5px;">BJJ Training</h1>
+                <p style="color: var(--cor-texto-cinza); font-size: 0.9rem;">Seu progresso técnico começa aqui.</p>
             </header>
 
             <div class="modules-grid">
                 <div class="module-card">
                     <span style="font-size: 0.6rem; color: var(--cor-ouro); font-weight: 800;">MÓDULO 01</span>
                     <h3>História do Jiu-Jitsu</h3>
-                    <p style="font-size: 0.8rem; color: var(--cor-texto-cinza);">Linhagem e evolução da arte suave.</p>
-                    <a href="historia.html" class="btn-aula">ESTUDAR</a>
+                    <p style="font-size: 0.85rem; color: var(--cor-texto-cinza); margin-bottom: 15px;">A linhagem e a evolução da arte suave no mundo.</p>
+                    <a href="historia.html" class="btn-aula">INICIAR ESTUDO</a>
                 </div>
+
                 <div class="module-card">
                     <span style="font-size: 0.6rem; color: var(--cor-ouro); font-weight: 800;">MÓDULO 02</span>
                     <h3>O Alicerce: Base</h3>
-                    <p style="font-size: 0.8rem; color: var(--cor-texto-cinza);">Conceitos de equilíbrio e postura.</p>
-                    <a href="alicerce.html" class="btn-aula">ESTUDAR</a>
+                    <p style="font-size: 0.85rem; color: var(--cor-texto-cinza); margin-bottom: 15px;">Postura, equilíbrio e conceitos fundamentais de base.</p>
+                    <a href="alicerce.html" class="btn-aula">INICIAR ESTUDO</a>
                 </div>
+
+                <div class="module-card">
+                    <span style="font-size: 0.6rem; color: var(--cor-ouro); font-weight: 800;">MÓDULO 03</span>
+                    <h3>Regras & Graduação</h3>
+                    <p style="font-size: 0.85rem; color: var(--cor-texto-cinza); margin-bottom: 15px;">Manual completo de faixas, idades, pontuação e categorias.</p>
+                    <a href="regras.html" class="btn-aula">INICIAR ESTUDO</a>
                 </div>
+
+                <div class="module-card">
+                    <span style="font-size: 0.6rem; color: var(--cor-ouro); font-weight: 800;">MÓDULO 04</span>
+                    <h3>Sobrevivência no Tatame</h3>
+                    <p style="font-size: 0.8rem; color: var(--cor-texto-cinza); margin-bottom: 15px;">Aprender a cair, levantar e se movimentar com segurança.</p>
+                    <a href="basico.html" class="btn-aula">ESTUDAR</a>
+                </div>
+
+                <div class="module-card">
+                    <span style="font-size: 0.6rem; color: var(--cor-ouro); font-weight: 800;">MÓDULO 05</span>
+                    <h3>Mapa da Luta</h3>
+                    <p style="font-size: 0.8rem; color: var(--cor-texto-cinza); margin-bottom: 15px;">Estratégias de queda, guarda e as principais passagens.</p>
+                    <a href="mapa.html" class="btn-aula">ESTUDAR</a>
+                </div>
+
+                <div class="module-card">
+                    <span style="font-size: 0.6rem; color: var(--cor-ouro); font-weight: 800;">MÓDULO 06</span>
+                    <h3>A Arte de Vencer</h3>
+                    <p style="font-size: 0.85rem; color: var(--cor-texto-cinza); margin-bottom: 15px;">Regras oficiais, pontuação, punições e finalizações.</p>
+                    <a href="vencer.html" class="btn-aula">INICIAR ESTUDO</a>
+                </div>
+
+                <div class="module-card">
+                    <span style="font-size: 0.6rem; color: var(--cor-ouro); font-weight: 800;">MÓDULO 07</span>
+                    <h3>Inteligência de Combate</h3>
+                    <p style="font-size: 0.85rem; color: var(--cor-texto-cinza); margin-bottom: 15px;">Estratégia, gestão de energia, flow e o sistema de dilemas.</p>
+                    <a href="estrategia.html" class="btn-aula">INICIAR ESTUDO</a>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -382,7 +431,7 @@
 
         const firebaseConfig = {
             apiKey: "AIzaSyBod8YVf5pKWI98m9rRR8axokDkNMlXX-k",
-            authDomain: "aviatordaniel100x.firebaseapp.app",
+            authDomain: "aviatordaniel100x.firebaseapp.com",
             databaseURL: "https://aviatordaniel100x-default-rtdb.firebaseio.com",
             projectId: "aviatordaniel100x",
             storageBucket: "aviatordaniel100x.firebasestorage.app",
@@ -393,13 +442,14 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        // PREVIEW FOTO
         window.previewImagem = function(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                reader.onload = e => {
+                reader.onload = function(e) {
                     const img = new Image();
                     img.src = e.target.result;
-                    img.onload = () => {
+                    img.onload = function() {
                         const canvas = document.createElement('canvas');
                         const maxW = 300;
                         canvas.width = maxW;
@@ -414,25 +464,21 @@
             }
         };
 
+        // CADASTRO
         window.finalizarCadastro = function() {
             const nome = document.getElementById('reg-nome').value;
             const rank = document.getElementById('reg-graduacao').value;
             const tel = document.getElementById('reg-telefone').value;
             const foto = document.getElementById('preview-foto').src;
 
-            if(!nome || !tel) return alert("Preencha os campos!");
+            if(!nome || !tel) return alert("Por favor, preencha todos os campos!");
 
-            const idUnico = Date.now().toString(); // ID Simples para este estágio
-            const alunoData = { 
-                nome, graduacao: rank, telefone: tel, 
-                foto: foto.startsWith('data') ? foto : null,
-                totalAulas: 0,
-                graus: 0
-            };
+            const idAluno = "ID_" + Date.now();
+            const data = { nome, graduacao: rank, telefone: tel, foto: foto.startsWith('data') ? foto : null, totalAulas: 0, graus: 0 };
 
-            set(ref(db, 'alunos/' + idUnico), alunoData).then(() => {
+            set(ref(db, 'alunos/' + idAluno), data).then(() => {
                 localStorage.setItem('aluno_logado', 'true');
-                localStorage.setItem('aluno_id', idUnico);
+                localStorage.setItem('aluno_id', idAluno);
                 localStorage.setItem('aluno_nome', nome);
                 localStorage.setItem('aluno_rank', rank);
                 if(foto.startsWith('data')) localStorage.setItem('aluno_foto', foto);
@@ -440,51 +486,49 @@
             });
         };
 
+        // ABRE O PORTAL DO ALUNO
         window.abrirPerfil = function() {
+            const id = localStorage.getItem('aluno_id');
             const nome = localStorage.getItem('aluno_nome');
             const rank = localStorage.getItem('aluno_rank');
             const foto = localStorage.getItem('aluno_foto');
-            const id = localStorage.getItem('aluno_id');
 
             document.getElementById('perfil-nome').innerText = nome;
             document.getElementById('perfil-graduacao').innerText = rank;
             if(foto) document.getElementById('perfil-foto').src = foto;
 
             // Cores da Faixa
-            const cores = { "Branca": "#fff", "Azul": "#0047AB", "Roxa": "#6A0DAD", "Marrom": "#5C4033", "Preta": "#111" };
+            const cores = { "Branca": "#fff", "Azul": "#0047AB", "Roxa": "#6A0DAD", "Marrom": "#5C4033", "Preta": "#111", "Kids Cinza": "#808080", "Kids Amarela": "#FFD700" };
             document.getElementById('faixa-bg').style.backgroundColor = cores[rank] || "#fff";
 
-            // Busca dados reais do Firebase
+            // Sincroniza dados em tempo real
             onValue(ref(db, 'alunos/' + id), (snap) => {
-                const data = snap.val();
-                if(data) {
-                    document.getElementById('stat-aulas').innerText = data.totalAulas || 0;
-                    const containerGraus = document.getElementById('camada-graus');
-                    containerGraus.innerHTML = '';
-                    for(let i=0; i<(data.graus || 0); i++) {
-                        containerGraus.innerHTML += '<div class="belt-stripe"></div>';
-                    }
-                    let prog = ((data.totalAulas || 0) % 40) * 2.5; // Ex: 40 aulas por grau
-                    document.getElementById('barra-progresso-fill').style.width = prog + "%";
-                    document.getElementById('status-progresso').innerText = `Progresso técnico: ${Math.floor(prog)}%`;
+                const val = snap.val();
+                if(val) {
+                    document.getElementById('stat-aulas').innerText = val.totalAulas || 0;
+                    const cGraus = document.getElementById('camada-graus');
+                    cGraus.innerHTML = '';
+                    for(let i=0; i<(val.graus || 0); i++) { cGraus.innerHTML += '<div class="belt-stripe"></div>'; }
+                    
+                    let perc = ((val.totalAulas || 0) % 40) * 2.5; 
+                    document.getElementById('barra-progresso-fill').style.width = perc + "%";
+                    document.getElementById('status-progresso').innerText = `Você completou ${Math.floor(perc)}% do nível atual.`;
                 }
             });
 
             document.getElementById('modal-perfil').style.display = 'block';
+            document.body.style.overflow = 'hidden';
         };
 
         window.realizarCheckin = function() {
             const id = localStorage.getItem('aluno_id');
-            const agora = new Date().toLocaleString();
-            
-            // Registra presença
             const presencaRef = push(ref(db, `alunos/${id}/presencas`));
-            set(presencaRef, { data: agora }).then(() => {
-                alert("Check-in confirmado! Bom treino.");
+            set(presencaRef, { timestamp: new Date().toISOString() }).then(() => {
+                alert("Check-in confirmado! Oss.");
             });
         };
 
-        window.fecharPerfil = () => document.getElementById('modal-perfil').style.display = 'none';
+        window.fecharPerfil = () => { document.getElementById('modal-perfil').style.display = 'none'; document.body.style.overflow = 'auto'; };
         window.logout = () => { localStorage.clear(); location.reload(); };
         window.atualizarApp = () => location.reload(true);
 
@@ -498,7 +542,6 @@
                     document.getElementById('user-photo').src = foto;
                     document.getElementById('user-photo-mobile').src = foto;
                 }
-                // Ativa clicks
                 document.getElementById('avatar-trigger-desktop').onclick = abrirPerfil;
                 document.getElementById('avatar-trigger-mobile').onclick = abrirPerfil;
             }
