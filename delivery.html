@@ -115,7 +115,6 @@
         .avatar-display { width: 90px; height: 90px; margin: 0 auto 15px; border-radius: 50%; border: 2px solid var(--cor-ouro); overflow: hidden; background: #151515; }
         .avatar-display img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* NAVEGAÇÃO INTERNA */
         .nav-link { text-decoration: none; display: flex; align-items: center; gap: 12px; padding: 12px; color: var(--cor-texto-claro); font-weight: 600; border-radius: 10px; transition: 0.3s; margin-bottom: 5px; }
         .nav-link:hover { background: rgba(245, 197, 66, 0.1); color: var(--cor-ouro); }
         .nav-link.active { color: var(--cor-ouro); }
@@ -129,18 +128,12 @@
 
         /* PORTAL DO ALUNO MODAL */
         #modal-perfil {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: var(--cor-preto);
-            z-index: 10001;
-            overflow-y: auto;
-            padding-bottom: 100px;
+            display: none; position: fixed; inset: 0; background: var(--cor-preto);
+            z-index: 10001; overflow-y: auto; padding-bottom: 100px;
         }
         .portal-header-premium {
             background: linear-gradient(180deg, rgba(245,197,66,0.15) 0%, rgba(3,3,3,1) 100%);
-            padding: 50px 20px 30px;
-            text-align: center;
+            padding: 50px 20px 30px; text-align: center;
         }
         .bjj-belt-luxury {
             width: 90%; max-width: 350px; height: 45px; margin: 25px auto;
@@ -157,17 +150,9 @@
 
         .section-title { font-size: 0.7rem; color: var(--cor-ouro); font-weight: 800; letter-spacing: 2px; margin: 20px 20px 10px; text-transform: uppercase; }
         
-        .consistencia-row { display: flex; justify-content: space-between; padding: 0 20px; margin-bottom: 20px; }
-        .day-dot { width: 40px; height: 40px; background: #111; border: 1px solid var(--borda); border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.6rem; }
-        .day-dot.active { background: var(--cor-ouro); color: #000; border: none; font-weight: 800; }
-
-        .badge-row { display: flex; gap: 15px; padding: 0 20px; overflow-x: auto; padding-bottom: 10px; }
-        .badge-item { min-width: 80px; text-align: center; opacity: 0.3; filter: grayscale(1); transition: 0.3s; }
-        .badge-item.unlocked { opacity: 1; filter: grayscale(0); }
-        .badge-icon { width: 50px; height: 50px; background: #151515; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-size: 1.5rem; border: 1px solid var(--borda); }
-
         .action-list { padding: 0 20px; }
-        .action-item { background: var(--cor-fundo-card); padding: 18px; border-radius: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; border: 1px solid var(--borda); }
+        .action-item { background: var(--cor-fundo-card); padding: 18px; border-radius: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; border: 1px solid var(--borda); transition: 0.2s; }
+        .action-item:active { transform: scale(0.98); background: #151515; }
         .action-icon { font-size: 1.2rem; }
         .action-info h5 { font-size: 0.9rem; margin-bottom: 2px; }
         .action-info p { font-size: 0.7rem; color: var(--cor-texto-cinza); }
@@ -175,7 +160,21 @@
         .barra-progresso-bg { width: 100%; height: 8px; background: #111; border-radius: 4px; margin-top: 10px; overflow: hidden; }
         #barra-progresso-fill { width: 0%; height: 100%; background: var(--cor-ouro); transition: 1s ease; }
 
-        /* RESPONSIVIDADE MOBILE */
+        /* MODAL FINANCEIRO ESPECÍFICO */
+        #modal-financeiro {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            z-index: 10002; backdrop-filter: blur(10px); padding: 20px;
+            align-items: center; justify-content: center;
+        }
+        .fin-container {
+            background: var(--cor-fundo-card); border: 1px solid var(--cor-ouro);
+            width: 100%; max-width: 400px; border-radius: 25px; padding: 25px;
+        }
+        .fin-header { text-align: center; margin-bottom: 20px; }
+        .fin-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--borda); font-size: 0.9rem; }
+        .fin-row span { color: var(--cor-texto-cinza); }
+        .fin-row b { color: var(--cor-texto-claro); }
+
         @media (max-width: 900px) {
             .mobile-floating-avatar { display: block; }
             .sidebar { width: 100%; height: 75px; position: fixed; bottom: 0; top: auto; border-right: none; border-top: 1px solid var(--borda); padding: 0 10px; flex-direction: row; justify-content: space-around; background: rgba(8, 8, 8, 0.98); backdrop-filter: blur(15px); }
@@ -236,31 +235,15 @@
             <div style="width:110px; height:110px; border-radius:50%; border:3px solid var(--cor-ouro); margin:0 auto 15px; overflow:hidden;">
                 <img id="perfil-foto" src="" style="width:100%; height:100%; object-fit:cover;">
             </div>
-            <h2 id="perfil-nome" style="font-family:'Space Grotesk'; font-size:1.6rem;">Nome do Aluno</h2>
-            <p id="perfil-rank-txt" style="color:var(--cor-ouro); font-size:0.7rem; letter-spacing:2px; font-weight:800; text-transform:uppercase;">Faixa Azul</p>
-            
-            <div class="bjj-belt-luxury" id="lux-belt">
-                <div class="belt-tip-black" id="lux-stripes"></div>
-            </div>
+            <h2 id="perfil-nome" style="font-family:'Space Grotesk'; font-size:1.6rem;">--</h2>
+            <p id="perfil-rank-txt" style="color:var(--cor-ouro); font-size:0.7rem; letter-spacing:2px; font-weight:800; text-transform:uppercase;">--</p>
+            <div class="bjj-belt-luxury" id="lux-belt"><div class="belt-tip-black" id="lux-stripes"></div></div>
         </div>
 
         <div class="premium-grid">
             <div class="p-card"><span>Treinos</span><h4 id="stat-total">--</h4></div>
-            <div class="p-card"><span>Ranking</span><h4 id="stat-rank">#12</h4></div>
-            <div class="p-card"><span>Faltam</span><h4 id="stat-faltam">40</h4></div>
-        </div>
-
-        <p class="section-title">Consistência (Últimos 7 dias)</p>
-        <div class="consistencia-row" id="calendar-row">
-            <div class="day-dot">S</div><div class="day-dot">T</div><div class="day-dot">Q</div><div class="day-dot active">Q</div><div class="day-dot">S</div><div class="day-dot">S</div><div class="day-dot">D</div>
-        </div>
-
-        <p class="section-title">Minhas Conquistas</p>
-        <div class="badge-row">
-            <div class="badge-item unlocked"><div class="badge-icon">🥋</div><span style="font-size:0.5rem">GUERREIRO</span></div>
-            <div class="badge-item unlocked"><div class="badge-icon">🔥</div><span style="font-size:0.5rem">7 DIAS</span></div>
-            <div class="badge-item"><div class="badge-icon">🏆</div><span style="font-size:0.5rem">CAMPEÃO</span></div>
-            <div class="badge-item"><div class="badge-icon">⭐</div><span style="font-size:0.5rem">TÉCNICO</span></div>
+            <div class="p-card"><span>Ranking</span><h4 id="stat-rank">#--</h4></div>
+            <div class="p-card"><span>Faltam</span><h4 id="stat-faltam">--</h4></div>
         </div>
 
         <p class="section-title">Secretaria & Evolução</p>
@@ -275,46 +258,54 @@
             </div>
             <div class="action-item" onclick="realizarCheckin()" style="cursor:pointer; border-color:var(--cor-ouro)">
                 <div class="action-icon">📍</div>
-                <div class="action-info">
-                    <h5 style="color:var(--cor-ouro)">Confirmar Presença</h5>
-                    <p>Fazer check-in via GPS agora</p>
-                </div>
+                <div class="action-info"><h5 style="color:var(--cor-ouro)">Confirmar Presença</h5><p>Fazer check-in agora</p></div>
             </div>
-            <div class="action-item">
+
+            <div class="action-item" onclick="abrirFinanceiro()" style="cursor:pointer;">
                 <div class="action-icon">💳</div>
                 <div class="action-info">
                     <h5>Financeiro</h5>
-                    <p style="color:var(--sucesso)">Mensalidade em dia • Prox. 10/02</p>
+                    <p id="fin-status-resumo" style="color:var(--sucesso)">Ver detalhes da mensalidade</p>
                 </div>
             </div>
+
             <div class="action-item">
                 <div class="action-icon">📱</div>
-                <div class="action-info">
-                    <h5>Carteira Digital</h5>
-                    <p>Clique para gerar QR Code de acesso</p>
-                </div>
+                <div class="action-info"><h5>Carteira Digital</h5><p>Gerar QR Code de acesso</p></div>
             </div>
         </div>
+        <button onclick="logout()" style="width:100%; background:none; border:none; color:var(--perigo); padding:40px 0; font-size:0.7rem; font-weight:800; text-transform:uppercase;">Sair da Conta</button>
+    </div>
 
-        <button onclick="logout()" style="width:100%; background:none; border:none; color:var(--perigo); padding:40px 0; font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:2px;">Sair da Conta</button>
+    <div id="modal-financeiro">
+        <div class="fin-container">
+            <div class="fin-header">
+                <h3 style="font-family:'Space Grotesk'; color:var(--cor-ouro)">Gestão Financeira</h3>
+                <p style="font-size:0.7rem; color:var(--cor-texto-cinza)">WIGGERS ACADEMY</p>
+            </div>
+            <div class="fin-row"><span>Valor da Mensalidade</span><b>R$ 180,00</b></div>
+            <div class="fin-row"><span>Status Atual</span><b id="fin-status-txt" style="color:var(--sucesso)">EM DIA</b></div>
+            <div class="fin-row"><span>Próximo Vencimento</span><b>10/02</b></div>
+            <div class="fin-row"><span>Primeiro Pagamento</span><b id="fin-data-inicio">--/--/----</b></div>
+            <div class="fin-row"><span>Mensalidades Pagas</span><b id="fin-qtd-pagas">0</b></div>
+            <div class="fin-row"><span>Investimento Total</span><b id="fin-total-investido" style="color:var(--cor-ouro)">R$ 0,00</b></div>
+            <div class="fin-row"><span>Histórico de Atrasos</span><b style="color:var(--sucesso)">NENHUM</b></div>
+            
+            <button onclick="fecharFinanceiro()" style="width:100%; padding:15px; background:var(--cor-ouro); border:none; border-radius:12px; font-weight:800; margin-top:20px; cursor:pointer;">FECHAR</button>
+        </div>
     </div>
 
     <div class="app-container">
         <aside class="sidebar">
             <div class="user-profile" id="trigger-desktop-perfil" style="cursor:pointer">
-                <div class="avatar-display">
-                    <img id="user-photo" src="https://ui-avatars.com/api/?name=U&background=151515&color=f5c542" alt="Foto">
-                </div>
+                <div class="avatar-display"><img id="user-photo" src=""></div>
                 <h3 id="display-name" style="color: var(--cor-ouro); font-family: 'Space Grotesk';">Carregando...</h3>
                 <p id="display-rank" style="font-size: 0.7rem; color: var(--cor-texto-cinza);">Graduação</p>
             </div>
-            
             <nav>
-                <p style="font-size: 0.6rem; color: var(--cor-texto-cinza); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px;">Menu de Acesso</p>
                 <a href="#" class="nav-link active"><span>📚</span><b>Aulas</b></a>
                 <a href="videos.html" class="nav-link"><span>📽️</span><b>Vídeos</b></a>
-                <div onclick="atualizarApp()" class="nav-link" style="cursor: pointer;"><span>🔄</span><b>Atualizar</b></div>
-                <div onclick="logout()" class="nav-link logout-btn" style="color: #ff4d4d; margin-top: 20px;"><span>🚪</span><b>Sair</b></div>
+                <div onclick="logout()" class="nav-link" style="color: #ff4d4d; margin-top: 20px; cursor:pointer;"><span>🚪</span><b>Sair</b></div>
             </nav>
         </aside>
 
@@ -388,7 +379,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // --- PREVIEW E CADASTRO ---
         window.previewImagem = function(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -404,15 +394,15 @@
         window.finalizarCadastro = function() {
             const nome = document.getElementById('reg-nome').value;
             const rank = document.getElementById('reg-graduacao').value;
-            const tel = document.getElementById('reg-telefone').value;
             const foto = document.getElementById('preview-foto').src;
             if(!nome) return alert("Nome é obrigatório!");
 
             const id = "ALUNO_" + Date.now();
+            const dataInicio = new Date().toISOString();
+            
             set(ref(db, 'alunos/' + id), { 
-                nome, graduacao: rank, telefone: tel, 
-                foto: foto.startsWith('data') ? foto : "", 
-                aulas: 0, graus: 0 
+                nome, graduacao: rank, foto: foto.startsWith('data') ? foto : "", 
+                aulas: 0, graus: 0, dataCadastro: dataInicio 
             }).then(() => {
                 localStorage.setItem('aluno_logado', 'true');
                 localStorage.setItem('aluno_id', id);
@@ -420,40 +410,20 @@
             });
         };
 
-        // --- LÓGICA DE CHECKIN CORRIGIDA ---
         window.realizarCheckin = function() {
             const id = localStorage.getItem('aluno_id');
-            if(!id) return;
-
-            // 1. Salva a data da presença
-            const presencaRef = push(ref(db, `alunos/${id}/presencas`));
-            set(presencaRef, { data: new Date().toISOString() });
-
-            // 2. Incrementa o contador de aulas (+1)
-            const alunoRef = ref(db, 'alunos/' + id);
-            runTransaction(alunoRef, (aluno) => {
-                if (aluno) {
-                    aluno.aulas = (aluno.aulas || 0) + 1;
-                }
+            runTransaction(ref(db, 'alunos/' + id), (aluno) => {
+                if (aluno) { aluno.aulas = (aluno.aulas || 0) + 1; }
                 return aluno;
-            }).then(() => {
-                alert("Check-in confirmado! Oss.");
-            });
+            }).then(() => alert("Check-in confirmado! Oss."));
         };
 
-        // --- SINCRONIZAÇÃO EM TEMPO REAL ---
         function sincronizar() {
             const id = localStorage.getItem('aluno_id');
             onValue(ref(db, 'alunos/' + id), (snap) => {
                 const val = snap.val();
                 if(!val) return;
 
-                // Salva no localstorage para persistência rápida
-                localStorage.setItem('aluno_nome', val.nome);
-                localStorage.setItem('aluno_rank', val.graduacao);
-                if(val.foto) localStorage.setItem('aluno_foto', val.foto);
-
-                // UI Sidebar
                 document.getElementById('display-name').innerText = val.nome;
                 document.getElementById('display-rank').innerText = "Faixa " + val.graduacao;
                 if(val.foto) {
@@ -462,37 +432,44 @@
                     document.getElementById('perfil-foto').src = val.foto;
                 }
 
-                // UI Modal Perfil
                 document.getElementById('perfil-nome').innerText = val.nome;
                 document.getElementById('perfil-rank-txt').innerText = "Faixa " + val.graduacao;
                 
-                // Stats
                 const aulasTotal = val.aulas || 0;
                 document.getElementById('stat-total').innerText = aulasTotal;
-                
-                // Progresso (40 aulas por grau)
                 const perc = (aulasTotal % 40) * 2.5;
                 document.getElementById('barra-progresso-fill').style.width = perc + "%";
                 document.getElementById('evolucao-txt').innerText = Math.floor(perc) + "% para o próximo grau";
                 document.getElementById('stat-faltam').innerText = 40 - (aulasTotal % 40);
 
-                // Graus na Faixa
                 const stripes = document.getElementById('lux-stripes');
                 stripes.innerHTML = '';
-                for(let i=0; i<(val.graus || 0); i++) {
-                    stripes.innerHTML += '<div class="belt-stripe-white"></div>';
-                }
+                for(let i=0; i<(val.graus || 0); i++) stripes.innerHTML += '<div class="belt-stripe-white"></div>';
 
-                // Cor da Faixa
                 const cores = { "Branca": "#fff", "Azul": "#0047AB", "Roxa": "#6A0DAD", "Marrom": "#5C4033", "Preta": "#111", "Kids Cinza": "#808080", "Kids Amarela": "#FFD700" };
                 document.getElementById('lux-belt').style.backgroundColor = cores[val.graduacao] || "#fff";
+
+                // LOGICA FINANCEIRA DINAMICA
+                if(val.dataCadastro) {
+                    const inicio = new Date(val.dataCadastro);
+                    const hoje = new Date();
+                    const meses = (hoje.getFullYear() - inicio.getFullYear()) * 12 + (hoje.getMonth() - inicio.getMonth()) + 1;
+                    
+                    document.getElementById('fin-data-inicio').innerText = inicio.toLocaleDateString('pt-BR');
+                    document.getElementById('fin-qtd-pagas').innerText = meses;
+                    document.getElementById('fin-total-investido').innerText = "R$ " + (meses * 180).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+                }
             });
         }
 
         window.abrirPerfil = () => { document.getElementById('modal-perfil').style.display = 'block'; document.body.style.overflow = 'hidden'; };
         window.fecharPerfil = () => { document.getElementById('modal-perfil').style.display = 'none'; document.body.style.overflow = 'auto'; };
+        
+        // FUNÇÕES FINANCEIRO
+        window.abrirFinanceiro = () => { document.getElementById('modal-financeiro').style.display = 'flex'; };
+        window.fecharFinanceiro = () => { document.getElementById('modal-financeiro').style.display = 'none'; };
+
         window.logout = () => { localStorage.clear(); location.reload(); };
-        window.atualizarApp = () => location.reload(true);
 
         window.onload = () => {
             if(localStorage.getItem('aluno_logado')) {
