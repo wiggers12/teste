@@ -6,17 +6,23 @@
 <title>Nascente BJJ | Brazilian Jiu-Jitsu</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
 :root{
-  --preto:#0b0b0b;
+  --preto:#0a0a0a;
   --cinza:#151515;
   --vermelho:#c1121f;
   --amarelo:#f5c542;
   --branco:#ffffff;
 }
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Inter',sans-serif;
+}
 
 body{
   background:var(--preto);
@@ -27,136 +33,139 @@ body{
 .hero{
   min-height:100vh;
   display:flex;
-  flex-direction:column;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
   text-align:center;
   padding:40px 20px;
-  background:linear-gradient(to bottom,rgba(0,0,0,.85),rgba(0,0,0,.95)),
-  url('https://images.unsplash.com/photo-1599058917212-d750089bc07b') center/cover;
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,.85), rgba(0,0,0,.95)),
+    url('https://images.unsplash.com/photo-1604014237800-1c9102c219da') center/cover;
 }
 
-.hero img{
-  width:140px;
-  margin-bottom:20px;
+.hero-content{
+  max-width:700px;
 }
 
 .hero h1{
-  font-size:36px;
+  font-size:42px;
   font-weight:900;
-  margin-bottom:10px;
+  margin-bottom:15px;
+  letter-spacing:1px;
 }
 
 .hero p{
   font-size:18px;
-  max-width:520px;
-  margin-bottom:30px;
   color:#ddd;
+  margin-bottom:30px;
 }
 
 .btn{
-  padding:16px 28px;
-  border-radius:40px;
-  font-size:16px;
-  font-weight:700;
-  text-decoration:none;
-  color:#000;
+  display:inline-block;
+  padding:16px 34px;
+  border-radius:50px;
   background:var(--amarelo);
+  color:#000;
+  font-weight:800;
+  text-decoration:none;
   transition:.3s;
 }
 
-.btn:hover{transform:scale(1.05);}
+.btn:hover{
+  transform:scale(1.05);
+}
 
-/* SEÇÕES */
+/* SECTIONS */
 section{
-  padding:70px 20px;
-  max-width:1100px;
+  padding:80px 20px;
+  max-width:1200px;
   margin:auto;
 }
 
-.section-title{
+.title{
   text-align:center;
-  margin-bottom:40px;
+  margin-bottom:50px;
 }
 
-.section-title h2{
-  font-size:32px;
+.title h2{
+  font-size:34px;
   font-weight:900;
-  margin-bottom:10px;
 }
 
-.section-title span{
+.title span{
   color:var(--amarelo);
 }
 
 /* CARDS */
 .cards{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:20px;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:25px;
 }
 
 .card{
   background:var(--cinza);
-  padding:30px;
-  border-radius:16px;
+  padding:35px;
+  border-radius:20px;
   text-align:center;
+}
+
+.card i{
+  font-size:38px;
+  color:var(--amarelo);
+  margin-bottom:15px;
 }
 
 .card h3{
   margin-bottom:10px;
-  font-size:20px;
 }
 
 .card p{
   color:#bbb;
-  font-size:15px;
 }
 
 /* PROFESSOR */
 .prof{
   display:flex;
   flex-wrap:wrap;
-  gap:30px;
+  gap:40px;
   align-items:center;
 }
 
 .prof img{
-  width:260px;
+  width:280px;
   border-radius:20px;
-}
-
-.prof div{
-  flex:1;
+  box-shadow:0 0 30px rgba(0,0,0,.6);
 }
 
 .prof h3{
-  font-size:26px;
+  font-size:28px;
   margin-bottom:10px;
 }
 
 .prof p{
   color:#ccc;
+  line-height:1.6;
 }
 
 /* LOCAL */
 .local{
   background:var(--cinza);
+  padding:35px;
   border-radius:20px;
-  padding:30px;
   text-align:center;
+  font-size:18px;
 }
 
-/* CTA FINAL */
+/* CTA */
 .cta{
   background:linear-gradient(135deg,var(--vermelho),#000);
   text-align:center;
-  padding:80px 20px;
+  padding:90px 20px;
 }
 
 .cta h2{
-  font-size:34px;
-  margin-bottom:20px;
+  font-size:36px;
+  margin-bottom:15px;
 }
 
 .cta p{
@@ -166,24 +175,36 @@ section{
   color:#eee;
 }
 
-/* BOTÃO WHATS */
-.whatsapp{
+/* BOTÕES FLUTUANTES */
+.float{
   position:fixed;
-  bottom:20px;
   right:20px;
-  background:#25d366;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  bottom:20px;
+}
+
+.float a{
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   color:#fff;
-  padding:16px 22px;
-  border-radius:50px;
-  font-weight:700;
+  font-size:22px;
   text-decoration:none;
-  box-shadow:0 0 20px rgba(0,0,0,.4);
+  box-shadow:0 0 20px rgba(0,0,0,.5);
   animation:pulse 1.5s infinite;
 }
 
+.whats{background:#25d366;}
+.insta{background:#e1306c;}
+
 @keyframes pulse{
   0%{transform:scale(1)}
-  50%{transform:scale(1.05)}
+  50%{transform:scale(1.07)}
   100%{transform:scale(1)}
 }
 </style>
@@ -192,67 +213,82 @@ section{
 <body>
 
 <!-- HERO -->
-<section class="hero">
-  <img src="https://i.imgur.com/2yaf2wb.png" alt="Nascente BJJ">
-  <h1>NASCENTE BJJ</h1>
-  <p>Transformando vidas através do Jiu-Jitsu. Disciplina, respeito e autoconfiança dentro e fora do tatame.</p>
-  <a class="btn" href="https://wa.me/5551999999999" target="_blank">Quero Treinar Jiu-Jitsu</a>
-</section>
+<div class="hero">
+  <div class="hero-content">
+    <h1>NASCENTE BJJ</h1>
+    <p>Transformando vidas através do Jiu-Jitsu. Disciplina, respeito e autoconfiança dentro e fora do tatame.</p>
+    <a class="btn" href="https://wa.me/5551986330621" target="_blank">Agendar Aula Experimental</a>
+  </div>
+</div>
 
 <!-- MODALIDADES -->
 <section>
-  <div class="section-title">
+  <div class="title">
     <h2>Para <span>quem é</span></h2>
   </div>
+
   <div class="cards">
     <div class="card">
-      <h3>👦 Kids</h3>
+      <i class="fa-solid fa-child"></i>
+      <h3>Kids</h3>
       <p>Disciplina, coordenação e valores desde cedo.</p>
     </div>
     <div class="card">
-      <h3>🧑 Juvenil</h3>
-      <p>Foco, respeito e desenvolvimento físico.</p>
+      <i class="fa-solid fa-user"></i>
+      <h3>Juvenil</h3>
+      <p>Autoconfiança, foco e evolução contínua.</p>
     </div>
     <div class="card">
-      <h3>🧔 Adulto</h3>
-      <p>Condicionamento, defesa pessoal e evolução contínua.</p>
+      <i class="fa-solid fa-user-ninja"></i>
+      <h3>Adulto</h3>
+      <p>Condicionamento físico, defesa pessoal e técnica.</p>
     </div>
   </div>
 </section>
 
 <!-- PROFESSOR -->
 <section>
-  <div class="section-title">
+  <div class="title">
     <h2>Professor</h2>
   </div>
+
   <div class="prof">
-    <img src="https://images.unsplash.com/photo-1599058917212-d750089bc07b" alt="Professor">
+    <img src="https://images.unsplash.com/photo-1599058917212-d750089bc07b">
     <div>
       <h3>Maurício Nascente</h3>
-      <p>Faixa Preta de Jiu-Jitsu, referência em disciplina, técnica e formação de atletas e cidadãos.</p>
+      <p>Faixa preta de Jiu-Jitsu, com foco na formação de atletas e cidadãos, transmitindo disciplina, respeito e excelência técnica.</p>
     </div>
   </div>
 </section>
 
 <!-- LOCAL -->
 <section>
-  <div class="section-title">
+  <div class="title">
     <h2>Onde estamos</h2>
   </div>
+
   <div class="local">
-    <p>📍 Avenida Integração, 1060 – 2º Andar</p>
-    <p>São Leopoldo – RS</p>
+    📍 Avenida Integração, 1060 – 2º Andar<br>
+    São Leopoldo – RS
   </div>
 </section>
 
-<!-- CTA FINAL -->
-<section class="cta">
-  <h2>Comece sua transformação hoje</h2>
-  <p>Entre em contato e agende uma aula experimental.</p>
-  <a class="btn" href="https://wa.me/5551999999999" target="_blank">Falar no WhatsApp</a>
-</section>
+<!-- CTA -->
+<div class="cta">
+  <h2>Comece hoje sua transformação</h2>
+  <p>Entre em contato e venha conhecer a Nascente BJJ.</p>
+  <a class="btn" href="https://wa.me/5551986330621" target="_blank">Falar no WhatsApp</a>
+</div>
 
-<a class="whatsapp" href="https://wa.me/5551999999999" target="_blank">WhatsApp</a>
+<!-- BOTÕES -->
+<div class="float">
+  <a class="whats" href="https://wa.me/5551986330621" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+  <a class="insta" href="https://instagram.com/equipe_nascentebjj" target="_blank">
+    <i class="fab fa-instagram"></i>
+  </a>
+</div>
 
 </body>
 </html>
