@@ -2,269 +2,257 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Sistema Terapêutico | Potira Barros</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nascente BJJ | Brazilian Jiu-Jitsu</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --verde:#4f7f6a;
-  --verde2:#cfe3d8;
-  --areia:#f6f4ef;
-  --branco:#fff;
-  --cinza:#ddd;
-  --escuro:#2f5d4a;
+  --preto:#0b0b0b;
+  --cinza:#151515;
+  --vermelho:#c1121f;
+  --amarelo:#f5c542;
+  --branco:#ffffff;
 }
-*{box-sizing:border-box;font-family:Segoe UI,sans-serif}
-body{margin:0;background:var(--areia);color:#333}
 
-/* SPLASH */
-#splash{
-  position:fixed;inset:0;
-  background:linear-gradient(135deg,#6fa58f,#2f5d4a);
-  display:flex;align-items:center;justify-content:center;
-  color:#fff;z-index:9999;
-  animation:fadeOut 1s forwards;animation-delay:3s
-}
-@keyframes fadeOut{to{opacity:0;visibility:hidden}}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
 
-/* NAV */
-nav{
-  display:flex;gap:8px;
-  background:#fff;padding:12px;
-  box-shadow:0 2px 12px rgba(0,0,0,.12)
+body{
+  background:var(--preto);
+  color:var(--branco);
 }
-nav button{
-  flex:1;padding:12px;border:none;
-  background:var(--verde2);
-  border-radius:10px;
-  cursor:pointer;font-weight:600
-}
-nav button.active{background:var(--verde);color:#fff}
 
-/* SECTIONS */
-section{display:none;padding:22px}
-section.active{display:block}
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:40px 20px;
+  background:linear-gradient(to bottom,rgba(0,0,0,.85),rgba(0,0,0,.95)),
+  url('https://images.unsplash.com/photo-1599058917212-d750089bc07b') center/cover;
+}
+
+.hero img{
+  width:140px;
+  margin-bottom:20px;
+}
+
+.hero h1{
+  font-size:36px;
+  font-weight:900;
+  margin-bottom:10px;
+}
+
+.hero p{
+  font-size:18px;
+  max-width:520px;
+  margin-bottom:30px;
+  color:#ddd;
+}
+
+.btn{
+  padding:16px 28px;
+  border-radius:40px;
+  font-size:16px;
+  font-weight:700;
+  text-decoration:none;
+  color:#000;
+  background:var(--amarelo);
+  transition:.3s;
+}
+
+.btn:hover{transform:scale(1.05);}
+
+/* SEÇÕES */
+section{
+  padding:70px 20px;
+  max-width:1100px;
+  margin:auto;
+}
+
+.section-title{
+  text-align:center;
+  margin-bottom:40px;
+}
+
+.section-title h2{
+  font-size:32px;
+  font-weight:900;
+  margin-bottom:10px;
+}
+
+.section-title span{
+  color:var(--amarelo);
+}
 
 /* CARDS */
-.card{
-  background:#fff;padding:22px;
-  border-radius:14px;margin-bottom:22px;
-  box-shadow:0 6px 18px rgba(0,0,0,.08)
-}
-
-input,select,textarea,button{
-  width:100%;padding:12px;margin-bottom:10px;
-  border-radius:8px;border:1px solid var(--cinza)
-}
-button{background:var(--verde);color:#fff;border:none;cursor:pointer}
-
-.list-item{
-  background:#f9f9f9;padding:14px;
-  border-radius:10px;margin-bottom:10px;
-  border-left:6px solid var(--verde)
-}
-
-.calendario{
+.cards{
   display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:8px;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
 }
-.dia{
-  background:#fff;
-  border-radius:10px;
-  padding:12px;
-  text-align:center;
-  cursor:pointer;
-  box-shadow:0 2px 6px rgba(0,0,0,.1)
-}
-.dia.indisponivel{opacity:.3;pointer-events:none}
-.dia.selecionado{background:var(--verde);color:#fff}
 
-.footer{
-  text-align:center;font-size:12px;
-  opacity:.5;padding:12px;
-  cursor:pointer
+.card{
+  background:var(--cinza);
+  padding:30px;
+  border-radius:16px;
+  text-align:center;
+}
+
+.card h3{
+  margin-bottom:10px;
+  font-size:20px;
+}
+
+.card p{
+  color:#bbb;
+  font-size:15px;
+}
+
+/* PROFESSOR */
+.prof{
+  display:flex;
+  flex-wrap:wrap;
+  gap:30px;
+  align-items:center;
+}
+
+.prof img{
+  width:260px;
+  border-radius:20px;
+}
+
+.prof div{
+  flex:1;
+}
+
+.prof h3{
+  font-size:26px;
+  margin-bottom:10px;
+}
+
+.prof p{
+  color:#ccc;
+}
+
+/* LOCAL */
+.local{
+  background:var(--cinza);
+  border-radius:20px;
+  padding:30px;
+  text-align:center;
+}
+
+/* CTA FINAL */
+.cta{
+  background:linear-gradient(135deg,var(--vermelho),#000);
+  text-align:center;
+  padding:80px 20px;
+}
+
+.cta h2{
+  font-size:34px;
+  margin-bottom:20px;
+}
+
+.cta p{
+  max-width:500px;
+  margin:auto;
+  margin-bottom:30px;
+  color:#eee;
+}
+
+/* BOTÃO WHATS */
+.whatsapp{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:#25d366;
+  color:#fff;
+  padding:16px 22px;
+  border-radius:50px;
+  font-weight:700;
+  text-decoration:none;
+  box-shadow:0 0 20px rgba(0,0,0,.4);
+  animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.05)}
+  100%{transform:scale(1)}
 }
 </style>
 </head>
 
 <body>
 
-<!-- SPLASH -->
-<div id="splash">
-  <div style="text-align:center">
-    <h1>Potira Barros</h1>
-    <p>Terapeuta Integrativa</p>
-    <p>Cuidado • Equilíbrio • Consciência</p>
+<!-- HERO -->
+<section class="hero">
+  <img src="https://i.imgur.com/2yaf2wb.png" alt="Nascente BJJ">
+  <h1>NASCENTE BJJ</h1>
+  <p>Transformando vidas através do Jiu-Jitsu. Disciplina, respeito e autoconfiança dentro e fora do tatame.</p>
+  <a class="btn" href="https://wa.me/5551999999999" target="_blank">Quero Treinar Jiu-Jitsu</a>
+</section>
+
+<!-- MODALIDADES -->
+<section>
+  <div class="section-title">
+    <h2>Para <span>quem é</span></h2>
   </div>
-</div>
-
-<!-- NAV -->
-<nav>
-  <button class="active" onclick="show('agendaCliente')">Agenda</button>
-  <button onclick="show('cliente')">Área do Cliente</button>
-  <button id="btnAgendaProf" onclick="show('agendaProf')">Agenda Profissional</button>
-  <button id="btnPacientes" onclick="show('pacientes')">Pacientes</button>
-  <button id="btnFinanceiro" onclick="show('financeiro')">Financeiro</button>
-</nav>
-
-<!-- AGENDA CLIENTE -->
-<section id="agendaCliente" class="active">
-  <div class="card">
-    <h2>Escolha uma data</h2>
-    <div class="calendario" id="calendario"></div>
-  </div>
-
-  <div class="card">
-    <h2>Agendar Sessão</h2>
-    <input id="cNome" placeholder="Seu nome">
-    <input id="cTelefone" placeholder="Seu telefone">
-    <input type="time" id="cHora">
-    <button onclick="agendar()">Confirmar Agendamento</button>
+  <div class="cards">
+    <div class="card">
+      <h3>👦 Kids</h3>
+      <p>Disciplina, coordenação e valores desde cedo.</p>
+    </div>
+    <div class="card">
+      <h3>🧑 Juvenil</h3>
+      <p>Foco, respeito e desenvolvimento físico.</p>
+    </div>
+    <div class="card">
+      <h3>🧔 Adulto</h3>
+      <p>Condicionamento, defesa pessoal e evolução contínua.</p>
+    </div>
   </div>
 </section>
 
-<!-- ÁREA DO CLIENTE -->
-<section id="cliente">
-  <div class="card">
-    <h2>Meu Histórico</h2>
-    <div id="historicoCliente"></div>
+<!-- PROFESSOR -->
+<section>
+  <div class="section-title">
+    <h2>Professor</h2>
+  </div>
+  <div class="prof">
+    <img src="https://images.unsplash.com/photo-1599058917212-d750089bc07b" alt="Professor">
+    <div>
+      <h3>Maurício Nascente</h3>
+      <p>Faixa Preta de Jiu-Jitsu, referência em disciplina, técnica e formação de atletas e cidadãos.</p>
+    </div>
   </div>
 </section>
 
-<!-- AGENDA PROFISSIONAL -->
-<section id="agendaProf">
-  <div class="card">
-    <h2>Agenda Completa</h2>
-    <div id="listaAgenda"></div>
+<!-- LOCAL -->
+<section>
+  <div class="section-title">
+    <h2>Onde estamos</h2>
+  </div>
+  <div class="local">
+    <p>📍 Avenida Integração, 1060 – 2º Andar</p>
+    <p>São Leopoldo – RS</p>
   </div>
 </section>
 
-<!-- PACIENTES -->
-<section id="pacientes">
-  <div class="card">
-    <h2>Pacientes</h2>
-    <div id="listaPacientes"></div>
-  </div>
+<!-- CTA FINAL -->
+<section class="cta">
+  <h2>Comece sua transformação hoje</h2>
+  <p>Entre em contato e agende uma aula experimental.</p>
+  <a class="btn" href="https://wa.me/5551999999999" target="_blank">Falar no WhatsApp</a>
 </section>
 
-<!-- FINANCEIRO -->
-<section id="financeiro">
-  <div class="card">
-    <h2>Financeiro</h2>
-    <p>Total de sessões: <span id="fQtd">0</span></p>
-    <p>Total faturado: R$ <span id="fTotal">0</span></p>
-  </div>
-</section>
-
-<div class="footer" onclick="acessoTerapeuta()">Acesso Profissional</div>
-
-<script>
-/* CONFIG */
-const SENHA_TERAPEUTA = "potira123";
-let modo = localStorage.getItem("modo") || "cliente";
-
-/* DADOS */
-let agenda = JSON.parse(localStorage.getItem("agenda")) || [];
-let diaSelecionado = null;
-
-/* CONTROLE DE ACESSO */
-function controlarAcesso(){
-  if(modo==="cliente"){
-    btnAgendaProf.style.display="none";
-    btnPacientes.style.display="none";
-    btnFinanceiro.style.display="none";
-  }
-}
-controlarAcesso();
-
-/* LOGIN TERAPEUTA */
-function acessoTerapeuta(){
-  const s = prompt("Acesso restrito ao profissional");
-  if(s===SENHA_TERAPEUTA){
-    localStorage.setItem("modo","terapeuta");
-    location.reload();
-  }else alert("Senha incorreta");
-}
-
-/* NAVEGAÇÃO */
-function show(id){
-  document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
-  event.target.classList.add("active");
-}
-
-/* CALENDÁRIO */
-function gerarCalendario(){
-  calendario.innerHTML="";
-  for(let i=1;i<=30;i++){
-    const d=document.createElement("div");
-    d.className="dia";
-    d.innerText=i;
-    d.onclick=()=>selecionarDia(i);
-    calendario.appendChild(d);
-  }
-}
-function selecionarDia(dia){
-  document.querySelectorAll(".dia").forEach(el=>el.classList.remove("selecionado"));
-  event.target.classList.add("selecionado");
-  diaSelecionado=dia;
-}
-
-/* AGENDAR */
-function agendar(){
-  if(!diaSelecionado||!cNome.value||!cHora.value){
-    alert("Preencha tudo");
-    return;
-  }
-  agenda.push({
-    dia:diaSelecionado,
-    nome:cNome.value,
-    telefone:cTelefone.value,
-    hora:cHora.value,
-    valor:150
-  });
-  localStorage.setItem("agenda",JSON.stringify(agenda));
-  alert("Agendamento realizado!");
-  render();
-}
-
-/* RENDER */
-function render(){
-  listaAgenda.innerHTML="";
-  listaPacientes.innerHTML="";
-  historicoCliente.innerHTML="";
-  let total=0;
-
-  agenda.forEach(a=>{
-    listaAgenda.innerHTML+=`
-      <div class="list-item">
-        Dia ${a.dia} • ${a.hora}<br>
-        ${a.nome} (${a.telefone})
-      </div>
-    `;
-    listaPacientes.innerHTML+=`<div class="list-item">${a.nome}</div>`;
-    total+=a.valor;
-  });
-
-  fQtd.innerText=agenda.length;
-  fTotal.innerText=total.toFixed(2);
-
-  agenda
-    .filter(a=>a.nome===cNome.value)
-    .forEach(a=>{
-      historicoCliente.innerHTML+=`
-        <div class="list-item">
-          Dia ${a.dia} • ${a.hora}
-        </div>
-      `;
-    });
-}
-
-gerarCalendario();
-render();
-</script>
+<a class="whatsapp" href="https://wa.me/5551999999999" target="_blank">WhatsApp</a>
 
 </body>
 </html>
